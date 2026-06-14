@@ -468,6 +468,72 @@ async function ghTestAuth(){
   return data;
 }
 
+/* --------- Git Data API path for files > 1 MB --------- */
+async function ghJSON(method, urlPath, body){
+  const res = await fetch(GH + '/repos/' + settings.owner + '/' + settings.repo + urlPath, {
+    method, headers: ghHeaders(),
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw Object.assign(new Error(err.message || ('GitHub ' + res.status)), { status: res.status });
+  }
+  return res.json();
+}
+
+async function ghPutLarge(path, content, commitMsg){
+  // 5-step commit via Git Data API. Retry once on stale-ref (422).
+  let attempts = 0;
+  while (true) {
+    try {
+      const blob = await ghJSON('POST', '/git/blobs', {
+        content: b64encode(content), encoding: 'base64'
+      });
+      const ref = await ghJSON('GET', '/git/ref/heads/main');
+      const commitSha = ref.object.sha;
+      const baseCommit = await ghJSON('GET', '/git/commits/' + commitSha);
+      const newTree = await ghJSON('POST', '/git/trees', {
+        base_tree: baseCommit.tree.sha,
+        tree: [{ path, mode: '100644', type: 'blob', sha: blob.sha }]
+      });
+      const newCommit = await ghJSON('POST', '/git/commits', {
+        message: commitMsg, tree: newTree.sha, parents: [commitSha]
+      });
+      await ghJSON('PATCH', '/git/refs/heads/main', { sha: newCommit.sha });
+      // Return a shape that matches what Contents API gives us
+      return { content: { sha: blob.sha, path } };
+    } catch (e) {
+      attempts++;
+      if (attempts >= 2 || (e.status !== 422 && e.status !== 409)) throw e;
+      // retry once with fresh ref
+    }
+  }
+}
+
+async function ghGetLarge(blobSha){
+  const blob = await ghJSON('GET', '/git/blobs/' + blobSha);
+  return b64decode(blob.content);
+}
+
+const LARGE_THRESHOLD = 900 * 1024;   // route at 900 KB; Contents API caps near 1 MB
+const HARD_LIMIT     = 10 * 1024 * 1024;  // 10 MB total ceiling
+
+async function smartPut(path, content, existingSha, commitMsg){
+  if (content.length > LARGE_THRESHOLD) {
+    return ghPutLarge(path, content, commitMsg);
+  }
+  return ghPutContents(path, content, existingSha, commitMsg);
+}
+
+async function smartGet(file){
+  if ((file.size || 0) > LARGE_THRESHOLD) {
+    return ghGetLarge(file.sha);
+  }
+  const got = await ghGetContents(file.path);
+  if (!got) throw new Error('File missing on GitHub');
+  return b64decode(got.content);
+}
+
 /* =========================================================
    MANIFEST  (library.json shape)
    ========================================================= */
@@ -945,15 +1011,13 @@ async function moveFile(file, targetFolderId){
     let cached = await fileGet(file.id);
     let content = cached && cached.content;
     if (!content) {
-      const got = await ghGetContents(file.path);
-      if (!got) throw new Error('File missing on GitHub');
-      content = b64decode(got.content);
+      content = await smartGet(file);
     }
     const newPath = 'library/' + target.name + '/' + file.name;
     const oldPath = file.path;
     const oldSha = file.sha;
-    // 1. PUT to new path
-    const put = await ghPutContents(newPath, content, null, 'Move ' + file.name + ' to ' + target.name);
+    // 1. PUT to new path (auto-routes to Git Data API if large)
+    const put = await smartPut(newPath, content, null, 'Move ' + file.name + ' to ' + target.name);
     const newSha = put.content.sha;
     // 2. Update manifest to point at new location
     await commitManifest(m => {
@@ -1037,8 +1101,8 @@ $('#fileInput').addEventListener('change', async (e) => {
   const reader = new FileReader();
   reader.onload = async () => {
     const content = reader.result;
-    if (content.length > 950 * 1024) {
-      toast('File is over 950 KB — GitHub API rejects files near 1 MB. Push via git instead.', 'bad');
+    if (content.length > HARD_LIMIT) {
+      toast('File is over 10 MB — too big to upload from the app. Push via git CLI instead.', 'bad');
       pendingFolderId = null;
       return;
     }
@@ -1056,7 +1120,7 @@ $('#fileInput').addEventListener('change', async (e) => {
 
     setSync('syncing');
     try {
-      const put = await ghPutContents(path, content, existing ? existing.sha : null, (existing?'Update ':'Upload ') + name);
+      const put = await smartPut(path, content, existing ? existing.sha : null, (existing?'Update ':'Upload ') + name);
       const rec = {
         id: existing ? existing.id : uid('fl'),
         name, folderId: folder.id, path,
@@ -1100,9 +1164,7 @@ async function runFile(id){
   if (!content) {
     setSync('syncing');
     try {
-      const got = await ghGetContents(rec.path);
-      if (!got) throw new Error('Missing on GitHub');
-      content = b64decode(got.content);
+      content = await smartGet(rec);
       await filePut({ id, content });
       setSync('idle');
     } catch (e) {
