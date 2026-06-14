@@ -15,14 +15,15 @@
 
 <style>
   :root{
-    --bg:#0E1116;        /* console surface */
-    --panel:#161B22;     /* raised card */
-    --panel-2:#1C232C;   /* hover / pressed */
-    --line:#283039;      /* hairlines */
-    --text:#E6EDF3;      /* primary */
-    --muted:#8B949E;     /* secondary / labels */
-    --amber:#E8A33D;     /* single signal accent: active / run */
+    --bg:#0E1116;
+    --panel:#161B22;
+    --panel-2:#1C232C;
+    --line:#283039;
+    --text:#E6EDF3;
+    --muted:#8B949E;
+    --amber:#E8A33D;
     --danger:#C9533F;
+    --good:#3FB950;
     --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   }
@@ -32,41 +33,70 @@
     background:var(--bg); color:var(--text); font-family:var(--sans);
     -webkit-font-smoothing:antialiased; overflow:hidden;
   }
-  .safe-top{padding-top:env(safe-area-inset-top);}
   button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  input,textarea{font-family:inherit;}
   .label{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);}
+  .hide{display:none !important;}
 
   /* ---- HOME ---- */
   #home{height:100%; display:flex; flex-direction:column;}
   header{
-    padding:calc(env(safe-area-inset-top) + 22px) 20px 18px;
+    padding:calc(env(safe-area-inset-top) + 18px) 20px 16px;
     border-bottom:1px solid var(--line);
+    flex:none;
   }
-  header .kicker{display:flex; align-items:center; gap:8px;}
-  header .dot{width:7px; height:7px; border-radius:50%; background:var(--amber);}
-  header h1{
-    margin:10px 0 0; font-size:26px; font-weight:680; letter-spacing:-.01em; line-height:1.1;
+  .head-top{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .kicker{display:flex; align-items:center; gap:8px; min-width:0;}
+  .kicker .dot{width:7px; height:7px; border-radius:50%; background:var(--amber); flex:none;}
+  .head-actions{display:flex; align-items:center; gap:6px; flex:none;}
+  .icon-btn{
+    width:34px; height:34px; border-radius:9px; display:grid; place-items:center;
+    color:var(--muted); border:1px solid var(--line); background:var(--panel);
   }
-  header p{margin:7px 0 0; color:var(--muted); font-size:13.5px; line-height:1.45; max-width:38ch;}
+  .icon-btn:active{background:var(--panel-2); color:var(--text);}
+  .icon-btn svg{width:15px; height:15px;}
+  .icon-btn.sync.syncing{color:var(--amber);}
+  .icon-btn.sync.syncing svg{animation:spin 1s linear infinite;}
+  .icon-btn.sync.error{color:var(--danger);}
+  @keyframes spin{to{transform:rotate(360deg);}}
 
-  .actions{padding:18px 20px 6px;}
-  .open-btn{
-    width:100%; display:flex; align-items:center; gap:12px; justify-content:center;
-    background:var(--amber); color:#1a1205; font-weight:680; font-size:16px;
-    padding:16px; border-radius:14px; letter-spacing:-.01em;
+  header h1{margin:14px 0 0; font-size:24px; font-weight:680; letter-spacing:-.01em; line-height:1.15;}
+  header .crumb{display:flex; align-items:center; gap:8px; margin-top:14px;}
+  header .crumb button{
+    display:flex; align-items:center; gap:6px; color:var(--muted); font-size:13px;
+    padding:6px 8px; margin-left:-8px; border-radius:8px;
+  }
+  header .crumb button:active{background:var(--panel-2);}
+  header .crumb svg{width:14px; height:14px;}
+  header .crumb .now{font-size:24px; font-weight:680; letter-spacing:-.01em;}
+  header p{margin:7px 0 0; color:var(--muted); font-size:13px; line-height:1.45; max-width:38ch;}
+
+  .actions{padding:16px 20px 4px; display:flex; gap:10px;}
+  .btn-primary{
+    flex:1; display:flex; align-items:center; gap:10px; justify-content:center;
+    background:var(--amber); color:#1a1205; font-weight:680; font-size:15px;
+    padding:14px; border-radius:13px; letter-spacing:-.01em;
     transition:transform .08s ease, filter .15s ease;
   }
-  .open-btn:active{transform:scale(.985); filter:brightness(.95);}
-  .open-btn svg{width:19px; height:19px;}
+  .btn-primary:active{transform:scale(.985); filter:brightness(.95);}
+  .btn-primary:disabled{opacity:.5; filter:saturate(.4);}
+  .btn-primary svg{width:17px; height:17px;}
+  .btn-secondary{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--panel); border:1px solid var(--line); color:var(--text);
+    padding:14px 16px; border-radius:13px; font-size:14px; font-weight:600;
+  }
+  .btn-secondary:active{background:var(--panel-2);}
+  .btn-secondary svg{width:16px; height:16px;}
 
-  .shelf{flex:1; overflow-y:auto; padding:8px 20px calc(env(safe-area-inset-bottom) + 28px); -webkit-overflow-scrolling:touch;}
+  .shelf{flex:1; overflow-y:auto; padding:6px 20px calc(env(safe-area-inset-bottom) + 28px); -webkit-overflow-scrolling:touch;}
   .shelf-head{display:flex; align-items:center; justify-content:space-between; padding:18px 2px 10px;}
   .shelf-head .count{font-family:var(--mono); font-size:11px; color:var(--muted);}
 
   .card{
     display:flex; align-items:center; gap:14px;
-    background:var(--panel); border:1px solid var(--line); border-radius:14px;
-    padding:14px 14px 14px 16px; margin-bottom:10px;
+    background:var(--panel); border:1px solid var(--line); border-radius:13px;
+    padding:13px 13px 13px 15px; margin-bottom:9px;
     transition:background .12s ease, transform .08s ease;
   }
   .card:active{background:var(--panel-2); transform:scale(.99);}
@@ -75,78 +105,184 @@
     border:1px solid var(--line); display:grid; place-items:center; color:var(--amber);
     font-family:var(--mono); font-size:13px; font-weight:700;
   }
+  .card .glyph svg{width:18px; height:18px;}
   .card .meta{flex:1; min-width:0;}
   .card .name{font-size:15px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .card .sub{margin-top:3px; font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.02em;}
-  .card .del{
+  .card .more{
     flex:none; width:34px; height:34px; border-radius:9px; color:var(--muted);
     display:grid; place-items:center; border:1px solid transparent;
   }
-  .card .del:active{background:#2a1a16; color:var(--danger); border-color:#3a221c;}
-  .card .del svg{width:16px; height:16px;}
+  .card .more:active{background:var(--panel-2); border-color:var(--line); color:var(--text);}
+  .card .more svg{width:16px; height:16px;}
 
   .empty{
-    text-align:center; color:var(--muted); padding:46px 18px; border:1px dashed var(--line);
+    text-align:center; color:var(--muted); padding:42px 18px; border:1px dashed var(--line);
     border-radius:14px; margin-top:6px;
   }
   .empty .big{font-size:14px; color:var(--text); font-weight:600;}
-  .empty .small{margin-top:6px; font-size:12.5px; line-height:1.5;}
+  .empty .small{margin-top:6px; font-size:12.5px; line-height:1.55;}
 
   /* ---- RUNNER ---- */
   #runner{position:fixed; inset:0; background:#fff; display:none; flex-direction:column;}
   #runner.on{display:flex;}
   .bar{
-    flex:none; display:flex; align-items:center; gap:10px;
+    flex:none; display:flex; align-items:center; gap:8px;
     background:var(--bg); color:var(--text);
-    padding:calc(env(safe-area-inset-top) + 8px) 12px 8px;
+    padding:calc(env(safe-area-inset-top) + 8px) 10px 8px;
     border-bottom:1px solid var(--line);
   }
   .bar button{
-    height:34px; padding:0 12px; border-radius:9px; background:var(--panel);
-    border:1px solid var(--line); font-size:14px; display:flex; align-items:center; gap:7px;
+    height:34px; padding:0 11px; border-radius:9px; background:var(--panel);
+    border:1px solid var(--line); font-size:13px; display:flex; align-items:center; gap:6px;
   }
   .bar button:active{background:var(--panel-2);}
   .bar .title{flex:1; min-width:0; font-family:var(--mono); font-size:12px; color:var(--muted);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center;}
-  .bar svg{width:15px; height:15px;}
+  .bar svg{width:14px; height:14px;}
   #frame{flex:1; width:100%; border:0; background:#fff;}
 
-  .hide{display:none !important;}
+  /* ---- MODAL ---- */
+  .scrim{
+    position:fixed; inset:0; background:rgba(0,0,0,.55);
+    display:none; align-items:flex-end; justify-content:center; z-index:50;
+    padding:0; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  }
+  .scrim.on{display:flex;}
+  .sheet{
+    width:100%; max-width:520px;
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:18px 18px 0 0; padding:18px 18px calc(env(safe-area-inset-bottom) + 18px);
+    max-height:88vh; overflow-y:auto;
+  }
+  .sheet h2{margin:6px 0 4px; font-size:18px; font-weight:680; letter-spacing:-.01em;}
+  .sheet p.h{margin:0 0 14px; color:var(--muted); font-size:13px; line-height:1.5;}
+  .sheet .grab{width:38px; height:4px; border-radius:99px; background:var(--line); margin:0 auto 14px;}
+
+  .field{margin-bottom:12px;}
+  .field label{display:block; font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:6px;}
+  .field input, .field textarea, .field select{
+    width:100%; background:#0c1117; color:var(--text); border:1px solid var(--line);
+    border-radius:10px; padding:12px 13px; font-size:15px; font-family:var(--sans);
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{outline:none; border-color:var(--amber);}
+  .field .hint{margin-top:6px; font-size:12px; color:var(--muted); line-height:1.45;}
+  .field .hint a{color:var(--amber); text-decoration:none;}
+
+  .row{display:flex; gap:10px; margin-top:14px;}
+  .row button{flex:1; padding:13px; border-radius:11px; font-size:14.5px; font-weight:600;}
+  .row .ok{background:var(--amber); color:#1a1205;}
+  .row .ok:disabled{opacity:.45;}
+  .row .cancel{background:var(--panel-2); color:var(--text); border:1px solid var(--line);}
+  .row .destroy{background:#2a1a16; color:var(--danger); border:1px solid #3a221c;}
+
+  .pick-list{display:flex; flex-direction:column; gap:6px; max-height:50vh; overflow-y:auto; margin-bottom:6px;}
+  .pick-item{
+    display:flex; align-items:center; gap:12px; padding:12px 14px;
+    background:#0c1117; border:1px solid var(--line); border-radius:11px; cursor:pointer;
+  }
+  .pick-item:active{background:var(--panel-2);}
+  .pick-item .pglyph{width:32px; height:32px; border-radius:8px; background:#10151b; border:1px solid var(--line); display:grid; place-items:center; color:var(--amber);}
+  .pick-item .pglyph svg{width:15px; height:15px;}
+  .pick-item .pname{font-size:14.5px; font-weight:600;}
+  .pick-item .psub{font-size:11.5px; color:var(--muted); font-family:var(--mono); margin-top:2px;}
+
+  /* ---- TOAST ---- */
+  .toast{
+    position:fixed; left:50%; transform:translateX(-50%) translateY(20px);
+    bottom:calc(env(safe-area-inset-bottom) + 22px);
+    background:var(--panel); border:1px solid var(--line); color:var(--text);
+    padding:11px 16px; border-radius:11px; font-size:13.5px; z-index:80;
+    opacity:0; transition:opacity .18s ease, transform .18s ease;
+    pointer-events:none; max-width:90vw; text-align:center;
+    box-shadow:0 6px 24px rgba(0,0,0,.45);
+  }
+  .toast.on{opacity:1; transform:translateX(-50%) translateY(0);}
+  .toast.good{border-color:#1e3a23;}
+  .toast.bad{border-color:#3a221c; color:#e6a99c;}
+
+  /* setup banner */
+  .setup-banner{
+    background:var(--panel); border:1px solid var(--line); border-radius:13px;
+    padding:14px 15px; margin-bottom:14px; display:flex; gap:12px; align-items:flex-start;
+  }
+  .setup-banner .sb-ic{width:30px; height:30px; border-radius:8px; background:#10151b; border:1px solid var(--line); display:grid; place-items:center; color:var(--amber); flex:none;}
+  .setup-banner .sb-ic svg{width:15px; height:15px;}
+  .setup-banner .sb-text{flex:1; min-width:0;}
+  .setup-banner .sb-text b{font-size:13.5px; font-weight:600;}
+  .setup-banner .sb-text div{margin-top:3px; font-size:12.5px; color:var(--muted); line-height:1.45;}
+  .setup-banner button.go{
+    background:var(--amber); color:#1a1205; font-weight:680; font-size:12.5px;
+    padding:7px 10px; border-radius:8px; flex:none; align-self:center;
+  }
 </style>
 </head>
 <body>
 
 <main id="home">
   <header>
-    <div class="kicker"><span class="dot"></span><span class="label">HTML Runner</span></div>
-    <h1>Run your own tools, offline.</h1>
-    <p>Load an HTML file once. It runs with full JavaScript and stays on your shelf to reopen any time, no connection needed.</p>
+    <div class="head-top">
+      <div class="kicker"><span class="dot"></span><span class="label">HTML Runner</span></div>
+      <div class="head-actions">
+        <button class="icon-btn sync" id="syncBtn" aria-label="Sync">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg>
+        </button>
+        <button class="icon-btn" id="settingsBtn" aria-label="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="headRoot">
+      <h1>Run your own tools, offline.</h1>
+      <p>Files sync to your GitHub repo and stay on this device for offline use.</p>
+    </div>
+    <div id="headFolder" class="crumb hide">
+      <button id="backToRoot">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        Shelf
+      </button>
+      <span class="now" id="folderNow"></span>
+    </div>
   </header>
 
   <div class="actions">
-    <button class="open-btn" id="openBtn">
+    <button class="btn-primary" id="uploadBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-      Open HTML file
+      Upload HTML
+    </button>
+    <button class="btn-secondary" id="newFolderBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 11v6M9 14h6"/></svg>
+      Folder
     </button>
     <input id="fileInput" type="file" accept=".html,.htm,text/html" class="hide">
   </div>
 
   <div class="shelf">
+    <div id="setupBanner" class="setup-banner hide">
+      <div class="sb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 6v4m0 4h.01"/></svg></div>
+      <div class="sb-text"><b>Connect your GitHub repo</b><div>Add a fine-grained token to enable upload, sync, and share.</div></div>
+      <button class="go" id="openSetup">Set up</button>
+    </div>
     <div class="shelf-head">
-      <span class="label">Your shelf</span>
+      <span class="label" id="shelfLabel">Folders</span>
       <span class="count" id="count"></span>
     </div>
     <div id="list"></div>
   </div>
 </main>
 
+<!-- ============ RUNNER ============ -->
 <section id="runner">
   <div class="bar">
     <button id="backBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      Shelf
+      Back
     </button>
     <span class="title" id="runTitle"></span>
+    <button id="shareBtn" aria-label="Share">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+    </button>
     <button id="reloadBtn" aria-label="Reload">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg>
     </button>
@@ -154,40 +290,249 @@
   <iframe id="frame" title="Running tool"></iframe>
 </section>
 
+<!-- ============ MODALS ============ -->
+<div class="scrim" id="scrim">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-/* ---------- tiny IndexedDB layer ---------- */
-const DB_NAME = 'html-runner', STORE = 'files';
+/* =========================================================
+   STORAGE — IndexedDB v2 (manifest cache + file content)
+   ========================================================= */
+const DB_NAME = 'html-runner-v2';
+const STORE_KV = 'kv';        // single-key entries (manifest, last sync)
+const STORE_FILES = 'files';  // cached HTML content by file id
+
 function openDB(){
   return new Promise((res, rej) => {
     const r = indexedDB.open(DB_NAME, 1);
     r.onupgradeneeded = () => {
       const db = r.result;
-      if (!db.objectStoreNames.contains(STORE)) {
-        db.createObjectStore(STORE, { keyPath: 'id' });
-      }
+      if (!db.objectStoreNames.contains(STORE_KV)) db.createObjectStore(STORE_KV);
+      if (!db.objectStoreNames.contains(STORE_FILES)) db.createObjectStore(STORE_FILES, { keyPath:'id' });
     };
     r.onsuccess = () => res(r.result);
     r.onerror = () => rej(r.error);
   });
 }
-async function tx(mode, fn){
+async function kvGet(k){
   const db = await openDB();
   return new Promise((res, rej) => {
-    const t = db.transaction(STORE, mode);
-    const store = t.objectStore(STORE);
-    const out = fn(store);
-    t.oncomplete = () => res(out && out.result !== undefined ? out.result : out);
+    const t = db.transaction(STORE_KV, 'readonly');
+    const r = t.objectStore(STORE_KV).get(k);
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function kvSet(k, v){
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const t = db.transaction(STORE_KV, 'readwrite');
+    t.objectStore(STORE_KV).put(v, k);
+    t.oncomplete = () => res();
     t.onerror = () => rej(t.error);
   });
 }
-const dbAll    = () => tx('readonly',  s => s.getAll());
-const dbPut    = (rec) => tx('readwrite', s => s.put(rec));
-const dbDel    = (id) => tx('readwrite', s => s.delete(id));
-const dbGet    = (id) => tx('readonly',  s => s.get(id));
+async function fileGet(id){
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const t = db.transaction(STORE_FILES, 'readonly');
+    const r = t.objectStore(STORE_FILES).get(id);
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function filePut(rec){
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const t = db.transaction(STORE_FILES, 'readwrite');
+    t.objectStore(STORE_FILES).put(rec);
+    t.oncomplete = () => res();
+    t.onerror = () => rej(t.error);
+  });
+}
+async function fileDel(id){
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const t = db.transaction(STORE_FILES, 'readwrite');
+    t.objectStore(STORE_FILES).delete(id);
+    t.oncomplete = () => res();
+    t.onerror = () => rej(t.error);
+  });
+}
 
-/* ---------- helpers ---------- */
+/* =========================================================
+   SETTINGS — repo + PAT in localStorage
+   ========================================================= */
+const LS_KEY = 'hr_settings_v1';
+
+function detectRepo(){
+  const host = location.host;
+  const path = location.pathname;
+  if (!host.endsWith('.github.io')) return null;
+  const owner = host.split('.')[0];
+  const parts = path.split('/').filter(Boolean);
+  const repo = parts[0] || (owner + '.github.io');
+  return { owner, repo };
+}
+function pagesBaseUrl(owner, repo){
+  if (repo === owner + '.github.io') return 'https://' + owner + '.github.io/';
+  return 'https://' + owner + '.github.io/' + repo + '/';
+}
+function loadSettings(){
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e){}
+  const d = detectRepo();
+  return { owner: d ? d.owner : '', repo: d ? d.repo : '', token: '' };
+}
+function saveSettings(s){ localStorage.setItem(LS_KEY, JSON.stringify(s)); }
+let settings = loadSettings();
+function hasAuth(){ return !!(settings.token && settings.owner && settings.repo); }
+
+/* =========================================================
+   GITHUB API
+   ========================================================= */
+const GH = 'https://api.github.com';
+const MANIFEST_PATH = 'library.json';
+
+function b64encode(str){
+  // Unicode-safe base64
+  return btoa(unescape(encodeURIComponent(str)));
+}
+function b64decode(b64){
+  return decodeURIComponent(escape(atob(b64.replace(/\s/g,''))));
+}
+function ghHeaders(){
+  return {
+    'Accept': 'application/vnd.github+json',
+    'Authorization': 'Bearer ' + settings.token,
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Content-Type': 'application/json'
+  };
+}
+async function ghGetContents(path){
+  const url = GH + '/repos/' + settings.owner + '/' + settings.repo +
+    '/contents/' + encodeURI(path) + '?ref=main';
+  const res = await fetch(url, { headers: ghHeaders() });
+  if (res.status === 404) return null;
+  if (!res.ok) throw Object.assign(new Error('GitHub ' + res.status), { status: res.status });
+  return res.json();
+}
+async function ghPutContents(path, contentStr, sha, message){
+  const url = GH + '/repos/' + settings.owner + '/' + settings.repo +
+    '/contents/' + encodeURI(path);
+  const body = { message, content: b64encode(contentStr), branch: 'main' };
+  if (sha) body.sha = sha;
+  const res = await fetch(url, { method:'PUT', headers: ghHeaders(), body: JSON.stringify(body) });
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw Object.assign(new Error(err.message || ('GitHub ' + res.status)), { status: res.status });
+  }
+  return res.json();
+}
+async function ghDelContents(path, sha, message){
+  const url = GH + '/repos/' + settings.owner + '/' + settings.repo +
+    '/contents/' + encodeURI(path);
+  const res = await fetch(url, {
+    method:'DELETE', headers: ghHeaders(),
+    body: JSON.stringify({ message, sha, branch: 'main' })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw Object.assign(new Error(err.message || ('GitHub ' + res.status)), { status: res.status });
+  }
+  return res.json();
+}
+async function ghTestAuth(){
+  const res = await fetch(GH + '/repos/' + settings.owner + '/' + settings.repo, { headers: ghHeaders() });
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.message || ('GitHub ' + res.status));
+  }
+  const data = await res.json();
+  return data;
+}
+
+/* =========================================================
+   MANIFEST  (library.json shape)
+   ========================================================= */
+let manifest = null;     // in-memory current manifest
+let manifestSha = null;  // sha of library.json on remote
+
+function emptyManifest(){
+  return { version: 1, updatedAt: Date.now(), folders: [], files: [] };
+}
+async function fetchManifest(){
+  const r = await ghGetContents(MANIFEST_PATH);
+  if (!r) {
+    manifest = emptyManifest();
+    manifestSha = null;
+    return manifest;
+  }
+  manifestSha = r.sha;
+  try {
+    manifest = JSON.parse(b64decode(r.content));
+  } catch(e) {
+    manifest = emptyManifest();
+  }
+  // persist offline copy
+  await kvSet('manifest', { body: manifest, sha: manifestSha, at: Date.now() });
+  return manifest;
+}
+async function loadCachedManifest(){
+  const v = await kvGet('manifest');
+  if (v) { manifest = v.body; manifestSha = v.sha; return v; }
+  manifest = emptyManifest();
+  manifestSha = null;
+  return null;
+}
+async function commitManifest(diffFn, commitMsg){
+  // Apply diff to current manifest, push; on conflict refetch + retry up to 3x.
+  // The diff function must be idempotent — it may be applied multiple times
+  // against successive fresh manifest snapshots.
+  let attempts = 0;
+  while (true) {
+    const snapshot = JSON.parse(JSON.stringify(manifest));
+    const snapshotSha = manifestSha;
+    diffFn(manifest);
+    manifest.updatedAt = Date.now();
+    try {
+      const out = await ghPutContents(MANIFEST_PATH, JSON.stringify(manifest, null, 2), manifestSha, commitMsg);
+      manifestSha = out.content.sha;
+      await kvSet('manifest', { body: manifest, sha: manifestSha, at: Date.now() });
+      return;
+    } catch (e) {
+      attempts++;
+      if (e.status === 409 || e.status === 422 || (e.status === 404 && manifestSha !== null)) {
+        if (attempts >= 3) {
+          manifest = snapshot; manifestSha = snapshotSha;
+          throw e;
+        }
+        // refetch and retry with same diff
+        await fetchManifest();
+      } else {
+        // non-retryable: roll back in-memory state
+        manifest = snapshot; manifestSha = snapshotSha;
+        throw e;
+      }
+    }
+  }
+}
+
+/* =========================================================
+   UI STATE
+   ========================================================= */
+let view = 'root';           // 'root' | 'folder'
+let currentFolderId = null;
 const $ = sel => document.querySelector(sel);
-const fmtBytes = n => n < 1024 ? n+' B' : n < 1048576 ? (n/1024).toFixed(0)+' KB' : (n/1048576).toFixed(1)+' MB';
+
+function fmtBytes(n){
+  return n < 1024 ? n+' B' : n < 1048576 ? (n/1024).toFixed(0)+' KB' : (n/1048576).toFixed(1)+' MB';
+}
 function fmtWhen(ts){
   if(!ts) return 'never opened';
   const d = Math.floor((Date.now()-ts)/1000);
@@ -196,73 +541,485 @@ function fmtWhen(ts){
   if (d < 86400) return Math.floor(d/3600)+' h ago';
   return Math.floor(d/86400)+' d ago';
 }
-function ext(name){ const m = (name||'').match(/\.([a-z0-9]+)$/i); return m ? m[1].toUpperCase().slice(0,4) : 'HTM'; }
+function safeFolderName(s){
+  return s.trim().replace(/[\/\\:*?"<>|]/g,'').slice(0,40);
+}
+function safeFilename(s){
+  // keep dot-extension but drop path separators
+  return s.replace(/[\/\\:*?"<>|]/g,'').slice(0,80);
+}
+function uid(prefix){ return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
-/* ---------- render shelf ---------- */
-async function renderShelf(){
-  const recs = (await dbAll()).sort((a,b) => (b.lastOpened||b.savedAt) - (a.lastOpened||a.savedAt));
-  const list = $('#list'), count = $('#count');
-  count.textContent = recs.length ? recs.length + (recs.length===1?' file':' files') : '';
+/* =========================================================
+   RENDER
+   ========================================================= */
+function render(){
+  const setupNeeded = !hasAuth();
+  $('#setupBanner').classList.toggle('hide', !setupNeeded);
+  $('#uploadBtn').disabled = setupNeeded;
+  $('#newFolderBtn').disabled = setupNeeded;
+
+  if (view === 'root') {
+    $('#headRoot').classList.remove('hide');
+    $('#headFolder').classList.add('hide');
+    $('#shelfLabel').textContent = 'Folders';
+    renderFolders();
+  } else {
+    $('#headRoot').classList.add('hide');
+    $('#headFolder').classList.remove('hide');
+    const f = manifest.folders.find(x => x.id === currentFolderId);
+    $('#folderNow').textContent = f ? f.name : '(missing folder)';
+    $('#shelfLabel').textContent = 'Files';
+    renderFiles();
+  }
+}
+
+function renderFolders(){
+  const list = $('#list'); const count = $('#count');
+  const folders = (manifest && manifest.folders) ? [...manifest.folders] : [];
+  folders.sort((a,b) => a.name.localeCompare(b.name));
+  count.textContent = folders.length ? folders.length + (folders.length===1?' folder':' folders') : '';
   list.innerHTML = '';
-  if (!recs.length){
-    list.innerHTML = '<div class="empty"><div class="big">Shelf is empty</div><div class="small">Tap “Open HTML file” to load your first tool.<br>It will appear here and work offline.</div></div>';
+  if (!folders.length) {
+    list.innerHTML = '<div class="empty"><div class="big">No folders yet</div><div class="small">Tap “Folder” to create one, then upload HTML files into it.</div></div>';
     return;
   }
-  for (const r of recs){
+  for (const f of folders) {
+    const filesIn = manifest.files.filter(x => x.folderId === f.id).length;
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML =
-      '<div class="glyph">'+ext(r.name)+'</div>'+
-      '<div class="meta">'+
-        '<div class="name"></div>'+
-        '<div class="sub">'+fmtBytes(r.size)+' · '+fmtWhen(r.lastOpened)+'</div>'+
-      '</div>'+
-      '<button class="del" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>';
-    card.querySelector('.name').textContent = r.name;
-    card.addEventListener('click', () => run(r.id));
-    card.querySelector('.del').addEventListener('click', async (e) => {
+      '<div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>'+
+      '<div class="meta"><div class="name"></div><div class="sub">'+filesIn+' '+(filesIn===1?'file':'files')+'</div></div>'+
+      '<button class="more" aria-label="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>';
+    card.querySelector('.name').textContent = f.name;
+    card.addEventListener('click', () => { currentFolderId = f.id; view = 'folder'; render(); });
+    card.querySelector('.more').addEventListener('click', (e) => {
       e.stopPropagation();
-      if (confirm('Remove “'+r.name+'” from the shelf?')) { await dbDel(r.id); renderShelf(); }
+      openFolderMenu(f);
     });
     list.appendChild(card);
   }
 }
 
-/* ---------- load a file ---------- */
-$('#openBtn').addEventListener('click', () => $('#fileInput').click());
-$('#fileInput').addEventListener('change', (e) => {
+function renderFiles(){
+  const list = $('#list'); const count = $('#count');
+  const files = manifest.files.filter(x => x.folderId === currentFolderId);
+  files.sort((a,b) => (b.uploadedAt||0) - (a.uploadedAt||0));
+  count.textContent = files.length ? files.length + (files.length===1?' file':' files') : '';
+  list.innerHTML = '';
+  if (!files.length) {
+    list.innerHTML = '<div class="empty"><div class="big">Folder is empty</div><div class="small">Tap “Upload HTML” to add a file here.</div></div>';
+    return;
+  }
+  for (const f of files) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const extLabel = (f.name.match(/\.([a-z0-9]+)$/i) || [,'HTM'])[1].toUpperCase().slice(0,4);
+    card.innerHTML =
+      '<div class="glyph">'+extLabel+'</div>'+
+      '<div class="meta"><div class="name"></div><div class="sub">'+fmtBytes(f.size||0)+' · '+fmtWhen(f.lastOpened)+'</div></div>'+
+      '<button class="more" aria-label="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>';
+    card.querySelector('.name').textContent = f.name;
+    card.addEventListener('click', () => runFile(f.id));
+    card.querySelector('.more').addEventListener('click', (e) => {
+      e.stopPropagation();
+      openFileMenu(f);
+    });
+    list.appendChild(card);
+  }
+}
+
+/* =========================================================
+   MODALS — generic sheet renderer
+   ========================================================= */
+function openSheet(html, opts){
+  const sheet = $('#sheet');
+  sheet.innerHTML = '<div class="grab"></div>' + html;
+  $('#scrim').classList.add('on');
+  if (opts && opts.onMount) opts.onMount(sheet);
+}
+function closeSheet(){ $('#scrim').classList.remove('on'); }
+$('#scrim').addEventListener('click', (e) => { if (e.target === $('#scrim')) closeSheet(); });
+
+/* ---- toast ---- */
+let toastTimer = null;
+function toast(msg, kind){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast on' + (kind ? ' '+kind : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = 'toast'; }, 2400);
+}
+
+/* =========================================================
+   SYNC indicator
+   ========================================================= */
+function setSync(state){
+  const b = $('#syncBtn');
+  b.classList.remove('syncing','error');
+  if (state === 'syncing') b.classList.add('syncing');
+  else if (state === 'error') b.classList.add('error');
+}
+async function doSync(){
+  if (!hasAuth()) { openSettings(); return; }
+  setSync('syncing');
+  try {
+    await fetchManifest();
+    render();
+    setSync('idle');
+    toast('Synced from GitHub', 'good');
+  } catch (e) {
+    setSync('error');
+    toast('Sync failed: ' + (e.message || 'unknown'), 'bad');
+  }
+}
+$('#syncBtn').addEventListener('click', doSync);
+
+/* =========================================================
+   SETTINGS sheet
+   ========================================================= */
+function openSettings(){
+  const s = settings;
+  openSheet(
+    '<h2>GitHub connection</h2>'+
+    '<p class="h">Files are stored as commits in your public repo. Each upload is a commit; each shared link is the GitHub Pages URL.</p>'+
+    '<div class="field"><label>Owner (GitHub username)</label><input id="setOwner" autocapitalize="off" autocomplete="off" spellcheck="false"></div>'+
+    '<div class="field"><label>Repository</label><input id="setRepo" autocapitalize="off" autocomplete="off" spellcheck="false"></div>'+
+    '<div class="field"><label>Fine-grained PAT</label><input id="setToken" type="password" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="github_pat_…">'+
+    '<div class="hint">Create one at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noreferrer">github.com/settings/personal-access-tokens</a> — restrict to this repo, give it <b>Contents: Read and write</b>, set a short expiry, then rotate it from there if your phone is ever lost.</div></div>'+
+    '<div class="row"><button class="cancel" id="setCancel">Cancel</button><button class="ok" id="setSave">Test & save</button></div>'+
+    (s.token ? '<div class="row"><button class="destroy" id="setSignout">Sign out</button></div>' : '')
+    , { onMount(){
+      $('#setOwner').value = s.owner || '';
+      $('#setRepo').value = s.repo || '';
+      $('#setToken').value = s.token || '';
+      $('#setCancel').onclick = closeSheet;
+      $('#setSave').onclick = async () => {
+        const owner = $('#setOwner').value.trim();
+        const repo = $('#setRepo').value.trim();
+        const token = $('#setToken').value.trim();
+        if (!owner || !repo || !token) { toast('All three fields are required', 'bad'); return; }
+        const trial = { owner, repo, token };
+        const prev = settings;
+        settings = trial;
+        try {
+          await ghTestAuth();
+          saveSettings(settings);
+          closeSheet();
+          toast('Connected', 'good');
+          await doSync();
+        } catch (e) {
+          settings = prev;
+          toast('Connection failed: ' + (e.message || 'check token'), 'bad');
+        }
+      };
+      const so = $('#setSignout');
+      if (so) so.onclick = () => {
+        if (!confirm('Sign out and clear the token from this device?')) return;
+        settings = { owner: settings.owner, repo: settings.repo, token: '' };
+        saveSettings(settings);
+        closeSheet();
+        render();
+        toast('Signed out', 'good');
+      };
+    }}
+  );
+}
+$('#settingsBtn').addEventListener('click', openSettings);
+$('#openSetup').addEventListener('click', openSettings);
+
+/* =========================================================
+   NEW FOLDER
+   ========================================================= */
+function openNewFolder(onCreated){
+  openSheet(
+    '<h2>New folder</h2>'+
+    '<p class="h">Folder names become paths in your repo (<code>library/&lt;name&gt;/</code>). Avoid slashes and special characters.</p>'+
+    '<div class="field"><label>Name</label><input id="newFName" autocapitalize="words" autocomplete="off" spellcheck="false" placeholder="e.g. Devotional"></div>'+
+    '<div class="row"><button class="cancel" id="nfCancel">Cancel</button><button class="ok" id="nfCreate" disabled>Create</button></div>'
+    , { onMount(){
+      const input = $('#newFName');
+      const btn = $('#nfCreate');
+      input.focus();
+      input.oninput = () => { btn.disabled = !safeFolderName(input.value); };
+      $('#nfCancel').onclick = closeSheet;
+      btn.onclick = async () => {
+        const name = safeFolderName(input.value);
+        if (!name) return;
+        if (manifest.folders.some(f => f.name.toLowerCase() === name.toLowerCase())) {
+          toast('A folder with that name already exists', 'bad'); return;
+        }
+        const folder = { id: uid('fd'), name, createdAt: Date.now() };
+        btn.disabled = true; btn.textContent = 'Creating…';
+        setSync('syncing');
+        try {
+          await commitManifest(m => {
+            // idempotent on retry: dedupe by id and by name
+            if (m.folders.some(f => f.id === folder.id)) return;
+            if (m.folders.some(f => f.name.toLowerCase() === folder.name.toLowerCase())) return;
+            m.folders.push(folder);
+          }, 'Create folder ' + name);
+          setSync('idle');
+          closeSheet();
+          toast('Folder created', 'good');
+          render();
+          if (onCreated) onCreated(folder);
+        } catch (e) {
+          setSync('error');
+          toast('Failed: ' + (e.message || 'unknown'), 'bad');
+          btn.disabled = false; btn.textContent = 'Create';
+        }
+      };
+    }}
+  );
+}
+$('#newFolderBtn').addEventListener('click', () => openNewFolder(null));
+
+/* =========================================================
+   FOLDER MENU (rename / delete)
+   ========================================================= */
+function openFolderMenu(folder){
+  const fileCount = manifest.files.filter(x => x.folderId === folder.id).length;
+  openSheet(
+    '<h2>'+escapeHtml(folder.name)+'</h2>'+
+    '<p class="h">'+fileCount+' '+(fileCount===1?'file':'files')+' in this folder.</p>'+
+    '<div class="row"><button class="destroy" id="fmDelete">Delete folder</button></div>'+
+    '<div class="row"><button class="cancel" id="fmClose">Close</button></div>'
+    , { onMount(){
+      $('#fmClose').onclick = closeSheet;
+      $('#fmDelete').onclick = async () => {
+        if (fileCount > 0) {
+          if (!confirm('Delete folder “'+folder.name+'” and all '+fileCount+' file(s) inside? This commits deletions to GitHub.')) return;
+        } else {
+          if (!confirm('Delete folder “'+folder.name+'”?')) return;
+        }
+        closeSheet();
+        await deleteFolder(folder);
+      };
+    }}
+  );
+}
+
+async function deleteFolder(folder){
+  setSync('syncing');
+  try {
+    const files = manifest.files.filter(x => x.folderId === folder.id);
+    // 1. Remove from manifest first so app stops referencing these files.
+    await commitManifest(m => {
+      m.folders = m.folders.filter(x => x.id !== folder.id);
+      m.files = m.files.filter(x => x.folderId !== folder.id);
+    }, 'Delete folder ' + folder.name);
+    // 2. Then delete files + local cache. Failures here just leak repo storage,
+    //    they no longer break the app.
+    for (const f of files) {
+      try { await ghDelContents(f.path, f.sha, 'Delete ' + f.path); } catch(e){ /* leaked */ }
+      await fileDel(f.id);
+    }
+    setSync('idle');
+    toast('Folder deleted', 'good');
+    if (currentFolderId === folder.id) { currentFolderId = null; view = 'root'; }
+    render();
+  } catch (e) {
+    setSync('error');
+    toast('Delete failed: ' + (e.message || 'unknown'), 'bad');
+    await fetchManifest();
+    render();
+  }
+}
+
+/* =========================================================
+   FILE MENU (share / delete)
+   ========================================================= */
+function openFileMenu(file){
+  const folder = manifest.folders.find(f => f.id === file.folderId);
+  const shareUrl = pagesBaseUrl(settings.owner, settings.repo) + encodePath(file.path);
+  openSheet(
+    '<h2>'+escapeHtml(file.name)+'</h2>'+
+    '<p class="h">'+fmtBytes(file.size||0)+' · in '+(folder ? escapeHtml(folder.name) : '?')+'</p>'+
+    '<div class="field"><label>Share URL</label><input id="fmUrl" readonly value="'+escapeAttr(shareUrl)+'"><div class="hint">GitHub Pages may take ~1 min to publish a newly uploaded file.</div></div>'+
+    '<div class="row"><button class="ok" id="fmCopy">Copy link</button></div>'+
+    '<div class="row"><button class="destroy" id="fmDel">Delete file</button></div>'+
+    '<div class="row"><button class="cancel" id="fmClose">Close</button></div>'
+    , { onMount(){
+      $('#fmClose').onclick = closeSheet;
+      $('#fmCopy').onclick = async () => {
+        try { await navigator.clipboard.writeText(shareUrl); toast('Link copied', 'good'); }
+        catch(e){ $('#fmUrl').select(); document.execCommand('copy'); toast('Link copied', 'good'); }
+      };
+      $('#fmDel').onclick = async () => {
+        if (!confirm('Delete “'+file.name+'”? This removes it from GitHub.')) return;
+        closeSheet();
+        await deleteFile(file);
+      };
+    }}
+  );
+}
+
+async function deleteFile(file){
+  setSync('syncing');
+  try {
+    // 1. Remove from manifest first so app stops referencing it.
+    await commitManifest(m => {
+      m.files = m.files.filter(x => x.id !== file.id);
+    }, 'Remove ' + file.name + ' from manifest');
+    // 2. Then delete the blob + local cache. Failures here just leak repo storage.
+    try { await ghDelContents(file.path, file.sha, 'Delete ' + file.path); }
+    catch(e){ /* leaked blob; not fatal */ }
+    await fileDel(file.id);
+    setSync('idle');
+    toast('File deleted', 'good');
+    render();
+  } catch (e) {
+    setSync('error');
+    toast('Delete failed: ' + (e.message || 'unknown'), 'bad');
+    await fetchManifest();
+    render();
+  }
+}
+
+/* =========================================================
+   UPLOAD flow — pick folder, then file
+   ========================================================= */
+$('#uploadBtn').addEventListener('click', () => {
+  if (!hasAuth()) { openSettings(); return; }
+  if (view === 'folder') {
+    // already in a folder, go straight to file picker
+    pendingFolderId = currentFolderId;
+    $('#fileInput').click();
+  } else {
+    openFolderPicker();
+  }
+});
+
+let pendingFolderId = null;
+function openFolderPicker(){
+  const folders = [...(manifest.folders||[])].sort((a,b) => a.name.localeCompare(b.name));
+  let html = '<h2>Upload to which folder?</h2><p class="h">Pick a folder, or create a new one.</p><div class="pick-list">';
+  for (const f of folders) {
+    const ct = manifest.files.filter(x => x.folderId === f.id).length;
+    html +=
+      '<div class="pick-item" data-id="'+f.id+'">'+
+      '<div class="pglyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>'+
+      '<div><div class="pname"></div><div class="psub">'+ct+' '+(ct===1?'file':'files')+'</div></div>'+
+      '</div>';
+  }
+  html += '</div>';
+  html += '<div class="row"><button class="cancel" id="pickNew">New folder</button><button class="cancel" id="pickCancel">Cancel</button></div>';
+  openSheet(html, { onMount(s){
+    // set folder names safely
+    s.querySelectorAll('.pick-item').forEach((el, i) => {
+      el.querySelector('.pname').textContent = folders[i].name;
+      el.addEventListener('click', () => {
+        pendingFolderId = el.dataset.id;
+        closeSheet();
+        $('#fileInput').click();
+      });
+    });
+    $('#pickCancel').onclick = closeSheet;
+    $('#pickNew').onclick = () => {
+      closeSheet();
+      openNewFolder((folder) => {
+        pendingFolderId = folder.id;
+        $('#fileInput').click();
+      });
+    };
+  }});
+}
+
+$('#fileInput').addEventListener('change', async (e) => {
   const file = e.target.files[0];
-  if (!file) return;
+  e.target.value = '';
+  if (!file) { pendingFolderId = null; return; }
+  if (!pendingFolderId) {
+    toast('Pick a folder first', 'bad');
+    return;
+  }
+  const folder = manifest.folders.find(x => x.id === pendingFolderId);
+  if (!folder) { pendingFolderId = null; toast('Folder not found', 'bad'); return; }
+
   const reader = new FileReader();
   reader.onload = async () => {
     const content = reader.result;
-    const rec = {
-      id: 'f_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
-      name: file.name || 'untitled.html',
-      content,
-      size: content.length,
-      savedAt: Date.now(),
-      lastOpened: null
-    };
-    await dbPut(rec);
-    e.target.value = '';
-    await renderShelf();
-    run(rec.id);
+    if (content.length > 950 * 1024) {
+      toast('File is over 950 KB — GitHub API rejects files near 1 MB. Push via git instead.', 'bad');
+      pendingFolderId = null;
+      return;
+    }
+    const name = safeFilename(file.name || 'untitled.html');
+    const path = 'library/' + folder.name + '/' + name;
+
+    // Detect collision
+    const existing = manifest.files.find(x => x.folderId === folder.id && x.name === name);
+    if (existing) {
+      if (!confirm('A file named “'+name+'” already exists in '+folder.name+'. Replace it?')) {
+        pendingFolderId = null;
+        return;
+      }
+    }
+
+    setSync('syncing');
+    try {
+      const put = await ghPutContents(path, content, existing ? existing.sha : null, (existing?'Update ':'Upload ') + name);
+      const rec = {
+        id: existing ? existing.id : uid('fl'),
+        name, folderId: folder.id, path,
+        size: content.length,
+        sha: put.content.sha,
+        uploadedAt: Date.now(),
+        lastOpened: null
+      };
+      // cache content locally
+      await filePut({ id: rec.id, content });
+      await commitManifest(m => {
+        m.files = m.files.filter(x => x.id !== rec.id);
+        m.files.push(rec);
+      }, (existing?'Update ':'Add ') + name + ' in ' + folder.name);
+      setSync('idle');
+      toast(existing ? 'File replaced' : 'File uploaded', 'good');
+      // jump into folder
+      currentFolderId = folder.id;
+      view = 'folder';
+      render();
+    } catch (err) {
+      setSync('error');
+      toast('Upload failed: ' + (err.message || 'unknown'), 'bad');
+    } finally {
+      pendingFolderId = null;
+    }
   };
-  reader.onerror = () => alert('Could not read that file. Make sure it is an .html file.');
+  reader.onerror = () => { toast('Could not read file', 'bad'); pendingFolderId = null; };
   reader.readAsText(file);
 });
 
-/* ---------- run a tool ---------- */
-let current = null;
-async function run(id){
-  const rec = await dbGet(id);
-  if (!rec) { alert('That file is no longer on the shelf.'); renderShelf(); return; }
-  current = rec;
+/* =========================================================
+   RUN a file (use local cache; if missing, fetch from GitHub)
+   ========================================================= */
+let currentRun = null;
+async function runFile(id){
+  const rec = manifest.files.find(x => x.id === id);
+  if (!rec) { toast('File not found in manifest', 'bad'); return; }
+  let cached = await fileGet(id);
+  let content = cached && cached.content;
+  if (!content) {
+    setSync('syncing');
+    try {
+      const got = await ghGetContents(rec.path);
+      if (!got) throw new Error('Missing on GitHub');
+      content = b64decode(got.content);
+      await filePut({ id, content });
+      setSync('idle');
+    } catch (e) {
+      setSync('error');
+      toast('Cannot load file: ' + (e.message || 'offline?'), 'bad');
+      return;
+    }
+  }
   rec.lastOpened = Date.now();
-  dbPut(rec);
-  const frame = $('#frame');
-  frame.srcdoc = rec.content;          // full JS executes here, unlike Files preview
+  // update manifest local copy; persist quietly without commit
+  await kvSet('manifest', { body: manifest, sha: manifestSha, at: Date.now() });
+  currentRun = { rec, content };
+  $('#frame').srcdoc = content;
   $('#runTitle').textContent = rec.name;
   $('#runner').classList.add('on');
   document.documentElement.style.overflow = 'hidden';
@@ -270,18 +1027,49 @@ async function run(id){
 $('#backBtn').addEventListener('click', () => {
   $('#runner').classList.remove('on');
   $('#frame').srcdoc = '';
-  current = null;
-  renderShelf();
+  currentRun = null;
+  render();
 });
 $('#reloadBtn').addEventListener('click', () => {
-  if (current) { const c = current.content; $('#frame').srcdoc=''; requestAnimationFrame(()=>$('#frame').srcdoc=c); }
+  if (currentRun) {
+    const c = currentRun.content;
+    $('#frame').srcdoc='';
+    requestAnimationFrame(() => $('#frame').srcdoc = c);
+  }
+});
+$('#shareBtn').addEventListener('click', async () => {
+  if (!currentRun) return;
+  const url = pagesBaseUrl(settings.owner, settings.repo) + encodePath(currentRun.rec.path);
+  try { await navigator.clipboard.writeText(url); toast('Share link copied', 'good'); }
+  catch(e){ prompt('Share link', url); }
 });
 
-/* ---------- boot ---------- */
-renderShelf();
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
-}
+/* =========================================================
+   BACK navigation from folder view
+   ========================================================= */
+$('#backToRoot').addEventListener('click', () => { view = 'root'; currentFolderId = null; render(); });
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function escapeAttr(s){ return escapeHtml(s); }
+function encodePath(p){ return p.split('/').map(encodeURIComponent).join('/'); }
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+(async function boot(){
+  await loadCachedManifest();
+  render();
+  if (hasAuth()) {
+    // background refresh
+    doSync();
+  }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  }
+})();
 </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-const CACHE = 'html-runner-v1';
+const CACHE = 'html-runner-v2';
 const SHELL = [
   './',
   './index.html',
@@ -23,10 +23,17 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Cache-first for the shell; network passthrough for anything a loaded tool fetches.
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+
+  // Never intercept GitHub API or githubusercontent — must hit network.
+  if (url.host === 'api.github.com' ||
+      url.host.endsWith('.githubusercontent.com')) {
+    return;
+  }
+
   e.respondWith(
     caches.match(req).then((hit) => {
       if (hit) return hit;
