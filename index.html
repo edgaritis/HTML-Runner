@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>HTML Runner</title>
+
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0E1116">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Runner">
+
+<style>
+  :root{
+    --bg:#0E1116;        /* console surface */
+    --panel:#161B22;     /* raised card */
+    --panel-2:#1C232C;   /* hover / pressed */
+    --line:#283039;      /* hairlines */
+    --text:#E6EDF3;      /* primary */
+    --muted:#8B949E;     /* secondary / labels */
+    --amber:#E8A33D;     /* single signal accent: active / run */
+    --danger:#C9533F;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; height:100%;}
+  body{
+    background:var(--bg); color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; overflow:hidden;
+  }
+  .safe-top{padding-top:env(safe-area-inset-top);}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  .label{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);}
+
+  /* ---- HOME ---- */
+  #home{height:100%; display:flex; flex-direction:column;}
+  header{
+    padding:calc(env(safe-area-inset-top) + 22px) 20px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  header .kicker{display:flex; align-items:center; gap:8px;}
+  header .dot{width:7px; height:7px; border-radius:50%; background:var(--amber);}
+  header h1{
+    margin:10px 0 0; font-size:26px; font-weight:680; letter-spacing:-.01em; line-height:1.1;
+  }
+  header p{margin:7px 0 0; color:var(--muted); font-size:13.5px; line-height:1.45; max-width:38ch;}
+
+  .actions{padding:18px 20px 6px;}
+  .open-btn{
+    width:100%; display:flex; align-items:center; gap:12px; justify-content:center;
+    background:var(--amber); color:#1a1205; font-weight:680; font-size:16px;
+    padding:16px; border-radius:14px; letter-spacing:-.01em;
+    transition:transform .08s ease, filter .15s ease;
+  }
+  .open-btn:active{transform:scale(.985); filter:brightness(.95);}
+  .open-btn svg{width:19px; height:19px;}
+
+  .shelf{flex:1; overflow-y:auto; padding:8px 20px calc(env(safe-area-inset-bottom) + 28px); -webkit-overflow-scrolling:touch;}
+  .shelf-head{display:flex; align-items:center; justify-content:space-between; padding:18px 2px 10px;}
+  .shelf-head .count{font-family:var(--mono); font-size:11px; color:var(--muted);}
+
+  .card{
+    display:flex; align-items:center; gap:14px;
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:14px 14px 14px 16px; margin-bottom:10px;
+    transition:background .12s ease, transform .08s ease;
+  }
+  .card:active{background:var(--panel-2); transform:scale(.99);}
+  .card .glyph{
+    flex:none; width:38px; height:38px; border-radius:10px; background:#10151b;
+    border:1px solid var(--line); display:grid; place-items:center; color:var(--amber);
+    font-family:var(--mono); font-size:13px; font-weight:700;
+  }
+  .card .meta{flex:1; min-width:0;}
+  .card .name{font-size:15px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .card .sub{margin-top:3px; font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.02em;}
+  .card .del{
+    flex:none; width:34px; height:34px; border-radius:9px; color:var(--muted);
+    display:grid; place-items:center; border:1px solid transparent;
+  }
+  .card .del:active{background:#2a1a16; color:var(--danger); border-color:#3a221c;}
+  .card .del svg{width:16px; height:16px;}
+
+  .empty{
+    text-align:center; color:var(--muted); padding:46px 18px; border:1px dashed var(--line);
+    border-radius:14px; margin-top:6px;
+  }
+  .empty .big{font-size:14px; color:var(--text); font-weight:600;}
+  .empty .small{margin-top:6px; font-size:12.5px; line-height:1.5;}
+
+  /* ---- RUNNER ---- */
+  #runner{position:fixed; inset:0; background:#fff; display:none; flex-direction:column;}
+  #runner.on{display:flex;}
+  .bar{
+    flex:none; display:flex; align-items:center; gap:10px;
+    background:var(--bg); color:var(--text);
+    padding:calc(env(safe-area-inset-top) + 8px) 12px 8px;
+    border-bottom:1px solid var(--line);
+  }
+  .bar button{
+    height:34px; padding:0 12px; border-radius:9px; background:var(--panel);
+    border:1px solid var(--line); font-size:14px; display:flex; align-items:center; gap:7px;
+  }
+  .bar button:active{background:var(--panel-2);}
+  .bar .title{flex:1; min-width:0; font-family:var(--mono); font-size:12px; color:var(--muted);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center;}
+  .bar svg{width:15px; height:15px;}
+  #frame{flex:1; width:100%; border:0; background:#fff;}
+
+  .hide{display:none !important;}
+</style>
+</head>
+<body>
+
+<main id="home">
+  <header>
+    <div class="kicker"><span class="dot"></span><span class="label">HTML Runner</span></div>
+    <h1>Run your own tools, offline.</h1>
+    <p>Load an HTML file once. It runs with full JavaScript and stays on your shelf to reopen any time, no connection needed.</p>
+  </header>
+
+  <div class="actions">
+    <button class="open-btn" id="openBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      Open HTML file
+    </button>
+    <input id="fileInput" type="file" accept=".html,.htm,text/html" class="hide">
+  </div>
+
+  <div class="shelf">
+    <div class="shelf-head">
+      <span class="label">Your shelf</span>
+      <span class="count" id="count"></span>
+    </div>
+    <div id="list"></div>
+  </div>
+</main>
+
+<section id="runner">
+  <div class="bar">
+    <button id="backBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      Shelf
+    </button>
+    <span class="title" id="runTitle"></span>
+    <button id="reloadBtn" aria-label="Reload">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"/></svg>
+    </button>
+  </div>
+  <iframe id="frame" title="Running tool"></iframe>
+</section>
+
+<script>
+/* ---------- tiny IndexedDB layer ---------- */
+const DB_NAME = 'html-runner', STORE = 'files';
+function openDB(){
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(DB_NAME, 1);
+    r.onupgradeneeded = () => {
+      const db = r.result;
+      if (!db.objectStoreNames.contains(STORE)) {
+        db.createObjectStore(STORE, { keyPath: 'id' });
+      }
+    };
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function tx(mode, fn){
+  const db = await openDB();
+  return new Promise((res, rej) => {
+    const t = db.transaction(STORE, mode);
+    const store = t.objectStore(STORE);
+    const out = fn(store);
+    t.oncomplete = () => res(out && out.result !== undefined ? out.result : out);
+    t.onerror = () => rej(t.error);
+  });
+}
+const dbAll    = () => tx('readonly',  s => s.getAll());
+const dbPut    = (rec) => tx('readwrite', s => s.put(rec));
+const dbDel    = (id) => tx('readwrite', s => s.delete(id));
+const dbGet    = (id) => tx('readonly',  s => s.get(id));
+
+/* ---------- helpers ---------- */
+const $ = sel => document.querySelector(sel);
+const fmtBytes = n => n < 1024 ? n+' B' : n < 1048576 ? (n/1024).toFixed(0)+' KB' : (n/1048576).toFixed(1)+' MB';
+function fmtWhen(ts){
+  if(!ts) return 'never opened';
+  const d = Math.floor((Date.now()-ts)/1000);
+  if (d < 60) return 'just now';
+  if (d < 3600) return Math.floor(d/60)+' min ago';
+  if (d < 86400) return Math.floor(d/3600)+' h ago';
+  return Math.floor(d/86400)+' d ago';
+}
+function ext(name){ const m = (name||'').match(/\.([a-z0-9]+)$/i); return m ? m[1].toUpperCase().slice(0,4) : 'HTM'; }
+
+/* ---------- render shelf ---------- */
+async function renderShelf(){
+  const recs = (await dbAll()).sort((a,b) => (b.lastOpened||b.savedAt) - (a.lastOpened||a.savedAt));
+  const list = $('#list'), count = $('#count');
+  count.textContent = recs.length ? recs.length + (recs.length===1?' file':' files') : '';
+  list.innerHTML = '';
+  if (!recs.length){
+    list.innerHTML = '<div class="empty"><div class="big">Shelf is empty</div><div class="small">Tap “Open HTML file” to load your first tool.<br>It will appear here and work offline.</div></div>';
+    return;
+  }
+  for (const r of recs){
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML =
+      '<div class="glyph">'+ext(r.name)+'</div>'+
+      '<div class="meta">'+
+        '<div class="name"></div>'+
+        '<div class="sub">'+fmtBytes(r.size)+' · '+fmtWhen(r.lastOpened)+'</div>'+
+      '</div>'+
+      '<button class="del" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>';
+    card.querySelector('.name').textContent = r.name;
+    card.addEventListener('click', () => run(r.id));
+    card.querySelector('.del').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (confirm('Remove “'+r.name+'” from the shelf?')) { await dbDel(r.id); renderShelf(); }
+    });
+    list.appendChild(card);
+  }
+}
+
+/* ---------- load a file ---------- */
+$('#openBtn').addEventListener('click', () => $('#fileInput').click());
+$('#fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const content = reader.result;
+    const rec = {
+      id: 'f_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+      name: file.name || 'untitled.html',
+      content,
+      size: content.length,
+      savedAt: Date.now(),
+      lastOpened: null
+    };
+    await dbPut(rec);
+    e.target.value = '';
+    await renderShelf();
+    run(rec.id);
+  };
+  reader.onerror = () => alert('Could not read that file. Make sure it is an .html file.');
+  reader.readAsText(file);
+});
+
+/* ---------- run a tool ---------- */
+let current = null;
+async function run(id){
+  const rec = await dbGet(id);
+  if (!rec) { alert('That file is no longer on the shelf.'); renderShelf(); return; }
+  current = rec;
+  rec.lastOpened = Date.now();
+  dbPut(rec);
+  const frame = $('#frame');
+  frame.srcdoc = rec.content;          // full JS executes here, unlike Files preview
+  $('#runTitle').textContent = rec.name;
+  $('#runner').classList.add('on');
+  document.documentElement.style.overflow = 'hidden';
+}
+$('#backBtn').addEventListener('click', () => {
+  $('#runner').classList.remove('on');
+  $('#frame').srcdoc = '';
+  current = null;
+  renderShelf();
+});
+$('#reloadBtn').addEventListener('click', () => {
+  if (current) { const c = current.content; $('#frame').srcdoc=''; requestAnimationFrame(()=>$('#frame').srcdoc=c); }
+});
+
+/* ---------- boot ---------- */
+renderShelf();
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
