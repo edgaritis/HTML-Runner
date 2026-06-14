@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1781469453436,
+  "updatedAt": 1781470227470,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -102,16 +102,6 @@
       "size": 726138,
       "sha": "aa2a564aebe89806b218be4bc0003d0bd1eb7d49",
       "uploadedAt": 1781469332272,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqe8wzn7m6zqh",
-      "name": "hello.html",
-      "folderId": "fd_mqe8vcsz78dn2",
-      "path": "library/The Bible Says/hello.html",
-      "size": 157,
-      "sha": "b5f9ce656cd3658fe14d5a13d08e8a4af8087366",
-      "uploadedAt": 1781469453427,
       "lastOpened": null
     }
   ]
