@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1781477065368,
+  "updatedAt": 1781478062536,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -127,16 +127,6 @@
       "size": 4048251,
       "sha": "5adf71bc106f081aa08d20286d59a77eb9e507a0",
       "uploadedAt": 1781470456918,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqedg51fg0ire",
-      "name": "bait-posts-v2.html",
-      "folderId": "fd_mqedfy1k7izxg",
-      "path": "library/Test Case/bait-posts-v2.html",
-      "size": 37227,
-      "sha": "5a4b78362bd80a2d2719350a813ad6ba5f2120c3",
-      "uploadedAt": 1781477065347,
       "lastOpened": null
     }
   ]
