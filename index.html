@@ -134,6 +134,25 @@
   /* ---- RUNNER ---- */
   #runner{position:fixed; inset:0; background:#fff; display:none; flex-direction:column;}
   #runner.on{display:flex;}
+  .run-overlay{
+    position:absolute; left:0; right:0; bottom:0;
+    top:calc(env(safe-area-inset-top) + 52px);
+    background:#fff; z-index:2;
+    display:none; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; padding:20px; text-align:center;
+  }
+  .run-overlay.on{display:flex;}
+  .run-overlay .spin{
+    width:28px; height:28px; border-radius:50%;
+    border:3px solid #e6e6e6; border-top-color:var(--amber);
+    animation:spin .9s linear infinite;
+  }
+  .run-overlay .msg{font:14px/1.5 var(--sans); color:#555; max-width:32ch;}
+  .run-overlay .sub{font:12px var(--mono); color:#999; margin-top:-6px;}
+  .run-overlay .retry{
+    background:var(--amber); color:#1a1205; font-weight:680; font-size:14px;
+    padding:10px 18px; border-radius:10px; border:none;
+  }
   .bar{
     flex:none; display:flex; align-items:center; gap:8px;
     background:var(--bg); color:var(--text);
@@ -299,6 +318,16 @@
     </button>
   </div>
   <iframe id="frame" title="Running tool"></iframe>
+  <div class="run-overlay" id="runLoading">
+    <div class="spin"></div>
+    <div class="msg" id="runLoadingMsg">Loading…</div>
+    <div class="sub" id="runLoadingSub"></div>
+  </div>
+  <div class="run-overlay" id="runError">
+    <div class="msg"><b>Could not open file</b></div>
+    <div class="msg" id="runErrorMsg" style="color:#a44"></div>
+    <button class="retry" id="runRetry">Try again</button>
+  </div>
 </section>
 
 <!-- ============ MODALS ============ -->
@@ -1156,12 +1185,58 @@ $('#fileInput').addEventListener('change', async (e) => {
    RUN a file (use local cache; if missing, fetch from GitHub)
    ========================================================= */
 let currentRun = null;
+let currentBlobUrl = null;
+
+const SRCDOC_LIMIT = 1500 * 1024;   // above this, use Blob URL (avoids iOS srcdoc render fail)
+
+function showRunOverlay(which, msg, sub){
+  $('#runLoading').classList.toggle('on', which === 'loading');
+  $('#runError').classList.toggle('on', which === 'error');
+  if (which === 'loading') {
+    $('#runLoadingMsg').textContent = msg || 'Loading…';
+    $('#runLoadingSub').textContent = sub || '';
+  } else if (which === 'error') {
+    $('#runErrorMsg').textContent = msg || 'Unknown error';
+  }
+}
+function hideRunOverlays(){
+  $('#runLoading').classList.remove('on');
+  $('#runError').classList.remove('on');
+}
+
+function loadIntoFrame(content){
+  // Tear down previous blob URL if any
+  if (currentBlobUrl) { try { URL.revokeObjectURL(currentBlobUrl); } catch(e){} currentBlobUrl = null; }
+  const frame = $('#frame');
+  if (content.length > SRCDOC_LIMIT) {
+    const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
+    currentBlobUrl = URL.createObjectURL(blob);
+    frame.removeAttribute('srcdoc');
+    frame.src = currentBlobUrl;
+  } else {
+    frame.removeAttribute('src');
+    frame.srcdoc = content;
+  }
+}
+
 async function runFile(id){
   const rec = manifest.files.find(x => x.id === id);
   if (!rec) { toast('File not found in manifest', 'bad'); return; }
+
+  // Open the runner view IMMEDIATELY so the user gets feedback on tap.
+  $('#runTitle').textContent = rec.name;
+  $('#runner').classList.add('on');
+  document.documentElement.style.overflow = 'hidden';
+  $('#frame').removeAttribute('src');
+  $('#frame').removeAttribute('srcdoc');
+
+  // Load from cache, or fetch from GitHub.
   let cached = await fileGet(id);
   let content = cached && cached.content;
+
   if (!content) {
+    const sizeKB = Math.round((rec.size || 0) / 1024);
+    showRunOverlay('loading', 'Downloading from GitHub…', sizeKB ? sizeKB + ' KB' : '');
     setSync('syncing');
     try {
       content = await smartGet(rec);
@@ -1169,31 +1244,45 @@ async function runFile(id){
       setSync('idle');
     } catch (e) {
       setSync('error');
-      toast('Cannot load file: ' + (e.message || 'offline?'), 'bad');
+      showRunOverlay('error', e.message || 'Network or auth error');
+      currentRun = { rec, content: null };
       return;
     }
+  } else {
+    // Cached — still show a brief loading state so any render delay is visible
+    showRunOverlay('loading', 'Opening…');
   }
+
   rec.lastOpened = Date.now();
-  // update manifest local copy; persist quietly without commit
   await kvSet('manifest', { body: manifest, sha: manifestSha, at: Date.now() });
   currentRun = { rec, content };
-  $('#frame').srcdoc = content;
-  $('#runTitle').textContent = rec.name;
-  $('#runner').classList.add('on');
-  document.documentElement.style.overflow = 'hidden';
+
+  loadIntoFrame(content);
+  // The iframe load event signals the content has finished rendering.
+  $('#frame').onload = () => { hideRunOverlays(); };
+  // Fallback in case onload doesn't fire (some edge cases)
+  setTimeout(() => { hideRunOverlays(); }, 5000);
 }
 $('#backBtn').addEventListener('click', () => {
   $('#runner').classList.remove('on');
-  $('#frame').srcdoc = '';
+  hideRunOverlays();
+  if (currentBlobUrl) { try { URL.revokeObjectURL(currentBlobUrl); } catch(e){} currentBlobUrl = null; }
+  $('#frame').removeAttribute('src');
+  $('#frame').removeAttribute('srcdoc');
   currentRun = null;
   render();
 });
 $('#reloadBtn').addEventListener('click', () => {
-  if (currentRun) {
-    const c = currentRun.content;
-    $('#frame').srcdoc='';
-    requestAnimationFrame(() => $('#frame').srcdoc = c);
+  if (currentRun && currentRun.content) {
+    showRunOverlay('loading', 'Reloading…');
+    loadIntoFrame(currentRun.content);
   }
+});
+$('#runRetry').addEventListener('click', async () => {
+  if (!currentRun || !currentRun.rec) return;
+  // Drop cache and retry
+  await fileDel(currentRun.rec.id);
+  runFile(currentRun.rec.id);
 });
 $('#shareBtn').addEventListener('click', async () => {
   if (!currentRun) return;
