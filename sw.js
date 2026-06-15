@@ -1,4 +1,4 @@
-const CACHE = 'html-runner-v2';
+const CACHE = 'html-runner-v3';
 const SHELL = [
   './',
   './index.html',
@@ -34,6 +34,25 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
+  // Network-first for the HTML shell so updates land immediately when online.
+  // Falls back to cache when offline.
+  const isShell = req.mode === 'navigate'
+    || req.destination === 'document'
+    || url.pathname.endsWith('/index.html')
+    || url.pathname.endsWith('/');
+
+  if (isShell) {
+    e.respondWith(
+      fetch(req).then((res) => {
+        const clone = res.clone();
+        caches.open(CACHE).then((c) => c.put(req, clone)).catch(()=>{});
+        return res;
+      }).catch(() => caches.match(req).then((hit) => hit || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Cache-first for static assets (icons, manifest, etc.)
   e.respondWith(
     caches.match(req).then((hit) => {
       if (hit) return hit;
