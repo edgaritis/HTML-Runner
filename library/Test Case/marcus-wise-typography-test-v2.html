@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marcus Wise — Lists Typography Test v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400;1,9..144,500&family=Inter:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #1a1a1a;
+  color: #c0c0c0;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  padding: 40px;
+  min-height: 100vh;
+}
+
+.page-header {
+  margin-bottom: 32px;
+  max-width: 1400px;
+}
+.page-header h1 {
+  font-size: 13px;
+  color: #888;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.page-header p {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  max-width: 800px;
+}
+.changes {
+  margin-top: 14px;
+  font-size: 12px;
+  color: #888;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+}
+.changes b {
+  color: #c0c0c0;
+  font-style: normal;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
+
+.row {
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+.col-label {
+  font-size: 10px;
+  color: #888;
+  margin-bottom: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.col-sublabel {
+  font-size: 11px;
+  color: #555;
+  margin-top: 10px;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   CANVAS — exact 1080×1350 export dimensions
+   ────────────────────────────────────────────────────────────── */
+
+.scale-wrap {
+  position: relative;
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+}
+
+.scale-export-large { width: 540px; height: 675px; overflow: hidden; }
+.scale-export-large .canvas { transform: scale(0.5); transform-origin: top left; }
+
+.scale-thumb { width: 270px; height: 337.5px; overflow: hidden; }
+.scale-thumb .canvas { transform: scale(0.25); transform-origin: top left; }
+
+.canvas {
+  width: 1080px;
+  height: 1350px;
+  background: #0F0E0D;
+  position: relative;
+  padding: 8% 13% 12% 13%;     /* L/R widened 10% → 13% */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   LOCKED TYPOGRAPHY — Marcus Wise Lists v1
+   ────────────────────────────────────────────────────────────── */
+
+.title {
+  font-family: 'Fraunces', serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-variation-settings: "opsz" 96;
+  font-size: 76px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: #EDE4D3;
+  text-align: center;
+  margin-bottom: 8%;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  margin-bottom: 28px;
+  font-family: 'Inter', sans-serif;
+  font-size: 34px;
+  line-height: 1.45;
+  color: #EDE4D3;
+}
+.item:last-child { margin-bottom: 0; }
+
+.item .num {
+  font-family: 'Fraunces', serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-variant-numeric: oldstyle-nums;
+  color: #A89C84;
+  margin-right: 0.45em;
+  flex-shrink: 0;
+}
+
+.item .body { flex: 1; }
+.item em { font-style: italic; font-family: 'Inter', sans-serif; }
+
+.closer {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 20px;
+  color: #A89C84;
+  text-align: center;
+  margin-top: 5%;
+}
+
+.brand-mark {
+  position: absolute;
+  bottom: 6%;
+  right: 6%;
+  text-align: right;
+  line-height: 1;
+}
+
+.brand-mark .mono {
+  font-family: 'Fraunces', serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 32px;
+  color: #A89C84;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.brand-mark .wordmark {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  font-variant: small-caps;
+  letter-spacing: 0.18em;
+  color: #A89C84;
+  display: block;
+}
+
+.notes {
+  margin-top: 48px;
+  max-width: 800px;
+  font-size: 12px;
+  color: #777;
+  line-height: 1.6;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+}
+.notes b {
+  color: #aaa;
+  font-style: normal;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Marcus Wise — Lists v2 · Title Wrap Test</h1>
+  <p>Same locked typography. Three title-length variants to see how 76px Fraunces breathes when forced to wrap.</p>
+  <div class="changes">
+    <b>Changes from v1:</b> Side padding widened from 10% → 13% (more breathing room). Card number "№ 001" removed from canvas — will live in gallery UI only, not in export.
+  </div>
+</div>
+
+<div class="row">
+
+  <!-- 1-LINE TITLE -->
+  <div class="col">
+    <div class="col-label">Title · 1 Line</div>
+    <div class="scale-wrap scale-export-large">
+      <div class="canvas">
+        <h2 class="title">Six Truths Men Forget</h2>
+        <ol class="list">
+          <li class="item"><span class="num">1.</span><span class="body">Don't get angry at someone who is eating.</span></li>
+          <li class="item"><span class="num">2.</span><span class="body">If someone offers you food in their home, accept even a small bite as respect.</span></li>
+          <li class="item"><span class="num">3.</span><span class="body">If you ever find a market in the middle of a mountain, don't buy anything there.</span></li>
+          <li class="item"><span class="num">4.</span><span class="body">When your parents tell you not to go somewhere, think twice.</span></li>
+          <li class="item"><span class="num">5.</span><span class="body">Never joke about someone's flaws. You don't know what they're fighting to accept.</span></li>
+          <li class="item"><span class="num">6.</span><span class="body">Never disrespect the people who stayed when things were hard.</span></li>
+        </ol>
+        <div class="closer">Save this for later.</div>
+        <div class="brand-mark">
+          <span class="mono">MW</span>
+          <span class="wordmark">Marcus Wise</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sublabel">"Six Truths Men Forget" · 21 chars</div>
+  </div>
+
+  <!-- 2-LINE TITLE -->
+  <div class="col">
+    <div class="col-label">Title · 2 Lines</div>
+    <div class="scale-wrap scale-export-large">
+      <div class="canvas">
+        <h2 class="title">Six Unwritten Life Lessons</h2>
+        <ol class="list">
+          <li class="item"><span class="num">1.</span><span class="body">Don't get angry at someone who is eating.</span></li>
+          <li class="item"><span class="num">2.</span><span class="body">If someone offers you food in their home, accept even a small bite as respect.</span></li>
+          <li class="item"><span class="num">3.</span><span class="body">If you ever find a market in the middle of a mountain, don't buy anything there.</span></li>
+          <li class="item"><span class="num">4.</span><span class="body">When your parents tell you not to go somewhere, think twice.</span></li>
+          <li class="item"><span class="num">5.</span><span class="body">Never joke about someone's flaws. You don't know what they're fighting to accept.</span></li>
+          <li class="item"><span class="num">6.</span><span class="body">Never disrespect the people who stayed when things were hard.</span></li>
+        </ol>
+        <div class="closer">Save this for later.</div>
+        <div class="brand-mark">
+          <span class="mono">MW</span>
+          <span class="wordmark">Marcus Wise</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sublabel">"Six Unwritten Life Lessons" · 26 chars</div>
+  </div>
+
+  <!-- 3-LINE TITLE -->
+  <div class="col">
+    <div class="col-label">Title · 3 Lines</div>
+    <div class="scale-wrap scale-export-large">
+      <div class="canvas">
+        <h2 class="title">Five Quiet Habits That Reveal A Disciplined Man</h2>
+        <ol class="list">
+          <li class="item"><span class="num">1.</span><span class="body">He arrives early and leaves on time.</span></li>
+          <li class="item"><span class="num">2.</span><span class="body">He answers fewer questions than people expect.</span></li>
+          <li class="item"><span class="num">3.</span><span class="body">He keeps the same routine on hard days and easy ones.</span></li>
+          <li class="item"><span class="num">4.</span><span class="body">He doesn't explain his reasons to people who didn't ask.</span></li>
+          <li class="item"><span class="num">5.</span><span class="body">He treats slow progress the same way he treats fast progress.</span></li>
+        </ol>
+        <div class="closer">Save this for later.</div>
+        <div class="brand-mark">
+          <span class="mono">MW</span>
+          <span class="wordmark">Marcus Wise</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sublabel">"Five Quiet Habits That Reveal A Disciplined Man" · 47 chars</div>
+  </div>
+
+</div>
+
+<div class="row" style="margin-top:48px">
+  <!-- FEED THUMB — 2-line variant -->
+  <div class="col">
+    <div class="col-label">Feed Thumb · 25% · 2-Line Title</div>
+    <div class="scale-wrap scale-thumb">
+      <div class="canvas">
+        <h2 class="title">Six Unwritten Life Lessons</h2>
+        <ol class="list">
+          <li class="item"><span class="num">1.</span><span class="body">Don't get angry at someone who is eating.</span></li>
+          <li class="item"><span class="num">2.</span><span class="body">If someone offers you food in their home, accept even a small bite as respect.</span></li>
+          <li class="item"><span class="num">3.</span><span class="body">If you ever find a market in the middle of a mountain, don't buy anything there.</span></li>
+          <li class="item"><span class="num">4.</span><span class="body">When your parents tell you not to go somewhere, think twice.</span></li>
+          <li class="item"><span class="num">5.</span><span class="body">Never joke about someone's flaws. You don't know what they're fighting to accept.</span></li>
+          <li class="item"><span class="num">6.</span><span class="body">Never disrespect the people who stayed when things were hard.</span></li>
+        </ol>
+        <div class="closer">Save this for later.</div>
+        <div class="brand-mark">
+          <span class="mono">MW</span>
+          <span class="wordmark">Marcus Wise</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sublabel">Feed scale, wider padding</div>
+  </div>
+
+  <!-- FEED THUMB — 3-line variant -->
+  <div class="col">
+    <div class="col-label">Feed Thumb · 25% · 3-Line Title</div>
+    <div class="scale-wrap scale-thumb">
+      <div class="canvas">
+        <h2 class="title">Five Quiet Habits That Reveal A Disciplined Man</h2>
+        <ol class="list">
+          <li class="item"><span class="num">1.</span><span class="body">He arrives early and leaves on time.</span></li>
+          <li class="item"><span class="num">2.</span><span class="body">He answers fewer questions than people expect.</span></li>
+          <li class="item"><span class="num">3.</span><span class="body">He keeps the same routine on hard days and easy ones.</span></li>
+          <li class="item"><span class="num">4.</span><span class="body">He doesn't explain his reasons to people who didn't ask.</span></li>
+          <li class="item"><span class="num">5.</span><span class="body">He treats slow progress the same way he treats fast progress.</span></li>
+        </ol>
+        <div class="closer">Save this for later.</div>
+        <div class="brand-mark">
+          <span class="mono">MW</span>
+          <span class="wordmark">Marcus Wise</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sublabel">3-line at thumb is the danger zone</div>
+  </div>
+
+</div>
+
+<div class="notes">
+  <p><b>What to judge.</b> At 2 lines the title sits comfortably and the list still has breathing room. At 3 lines the title eats more vertical real estate — list compresses, closer line crowds the brand mark. This is where the engine's auto-shrink will kick in: if total content exceeds safe-zone, the title scales down. For this static test no shrink is applied — you're seeing what 76px does naturally at each length so we can set the auto-shrink floor (probably never below 60px).</p>
+  <p style="margin-top:12px"><b>Bait point check.</b> The 1-line and 2-line cards both contain the original "market in the middle of a mountain" item at #3. At thumb scale, does it disappear into the list as planned, or does the visual word "market" pull attention from a passing reader?</p>
+</div>
+
+</body>
+</html>
