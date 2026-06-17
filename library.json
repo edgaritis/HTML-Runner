@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1781676917011,
+  "updatedAt": 1781676924148,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -42,16 +42,6 @@
       "size": 530298,
       "sha": "650be0db720c406af4b5ded6f6643564aa4a5065",
       "uploadedAt": 1781469125588,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqe8qnx0o0qfk",
-      "name": "taller-contenido-3.html",
-      "folderId": "fd_mqe8lb8crjwl8",
-      "path": "library/Psicología Conocida/taller-contenido-3.html",
-      "size": 558388,
-      "sha": "54334d7cbc6434b3d708ca9a905cc9daed7ae833",
-      "uploadedAt": 1781469158292,
       "lastOpened": null
     },
     {
