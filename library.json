@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1781690294502,
+  "updatedAt": 1781690299567,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -92,16 +92,6 @@
       "size": 159629,
       "sha": "18cbdb39d75162ceef4ae06efae778c5f4f364d0",
       "uploadedAt": 1781681395112,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqhr3tugkue24",
-      "name": "Layout 2-File 2.html",
-      "folderId": "fd_mqe8lb8crjwl8",
-      "path": "library/Psicología Conocida/Layout 2-File 2.html",
-      "size": 158716,
-      "sha": "177cd6d2c4c5e7c5059aabb577a45b73034dcad9",
-      "uploadedAt": 1781681404120,
       "lastOpened": null
     }
   ]
