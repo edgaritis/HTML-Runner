@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1781676935140,
+  "updatedAt": 1781676940693,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -24,16 +24,6 @@
     }
   ],
   "files": [
-    {
-      "id": "fl_mqe8ppx1gq2uy",
-      "name": "taller-contenido-1.html",
-      "folderId": "fd_mqe8lb8crjwl8",
-      "path": "library/Psicología Conocida/taller-contenido-1.html",
-      "size": 518684,
-      "sha": "63cfc909d934ae6ce7ab83e49de4a3ee74ab0bc8",
-      "uploadedAt": 1781469114229,
-      "lastOpened": null
-    },
     {
       "id": "fl_mqejf0kq8ggli",
       "name": "The Bible Says Posts-Vol 1.html",
