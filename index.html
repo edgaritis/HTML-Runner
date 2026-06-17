@@ -635,7 +635,27 @@ async function commitManifest(diffFn, commitMsg){
 let view = 'root';           // 'root' | 'folder'
 let currentFolderId = null;
 let searchQuery = '';        // current search filter for file list
+let currentRun = null;       // { rec, content } when a file is open in the runner
+let currentBlobUrl = null;   // for revoking when leaving the runner
 const $ = sel => document.querySelector(sel);
+
+/* Persist UI nav state across iOS-kill / cold-restart.
+   Saved: which view (root/folder), which folder, which file is running.
+   Restored on boot if within 15 min. */
+const STATE_KEY = 'hr_ui_state_v1';
+const STATE_TTL = 15 * 60 * 1000;
+function persistUI(){
+  try {
+    localStorage.setItem(STATE_KEY, JSON.stringify({
+      view, currentFolderId,
+      runningFileId: currentRun ? currentRun.rec.id : null,
+      at: Date.now()
+    }));
+  } catch(e) {}
+}
+function clearUIState(){
+  try { localStorage.removeItem(STATE_KEY); } catch(e) {}
+}
 
 function fmtBytes(n){
   return n < 1024 ? n+' B' : n < 1048576 ? (n/1024).toFixed(0)+' KB' : (n/1048576).toFixed(1)+' MB';
@@ -702,7 +722,7 @@ function renderFolders(){
       '<div class="meta"><div class="name"></div><div class="sub">'+filesIn+' '+(filesIn===1?'file':'files')+'</div></div>'+
       '<button class="more" aria-label="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>';
     card.querySelector('.name').textContent = f.name;
-    card.addEventListener('click', () => { currentFolderId = f.id; view = 'folder'; searchQuery = ''; $('#searchInput').value = ''; render(); });
+    card.addEventListener('click', () => { currentFolderId = f.id; view = 'folder'; searchQuery = ''; $('#searchInput').value = ''; persistUI(); render(); });
     card.querySelector('.more').addEventListener('click', (e) => {
       e.stopPropagation();
       openFolderMenu(f);
@@ -1184,9 +1204,6 @@ $('#fileInput').addEventListener('change', async (e) => {
 /* =========================================================
    RUN a file (use local cache; if missing, fetch from GitHub)
    ========================================================= */
-let currentRun = null;
-let currentBlobUrl = null;
-
 const SRCDOC_LIMIT = 1500 * 1024;   // above this, use Blob URL (avoids iOS srcdoc render fail)
 
 function showRunOverlay(which, msg, sub){
@@ -1256,6 +1273,7 @@ async function runFile(id){
   rec.lastOpened = Date.now();
   await kvSet('manifest', { body: manifest, sha: manifestSha, at: Date.now() });
   currentRun = { rec, content };
+  persistUI();
 
   loadIntoFrame(content);
   // The iframe load event signals the content has finished rendering.
@@ -1270,6 +1288,7 @@ $('#backBtn').addEventListener('click', () => {
   $('#frame').removeAttribute('src');
   $('#frame').removeAttribute('srcdoc');
   currentRun = null;
+  persistUI();
   render();
 });
 $('#reloadBtn').addEventListener('click', () => {
@@ -1294,7 +1313,7 @@ $('#shareBtn').addEventListener('click', async () => {
 /* =========================================================
    BACK navigation from folder view
    ========================================================= */
-$('#backToRoot').addEventListener('click', () => { view = 'root'; currentFolderId = null; searchQuery = ''; $('#searchInput').value = ''; render(); });
+$('#backToRoot').addEventListener('click', () => { view = 'root'; currentFolderId = null; searchQuery = ''; $('#searchInput').value = ''; persistUI(); render(); });
 
 $('#searchInput').addEventListener('input', (e) => {
   searchQuery = e.target.value;
@@ -1313,7 +1332,35 @@ function encodePath(p){ return p.split('/').map(encodeURIComponent).join('/'); }
    ========================================================= */
 (async function boot(){
   await loadCachedManifest();
+
+  // Attempt to restore last UI state (iOS PWA kill recovery).
+  let restoreFileId = null;
+  try {
+    const raw = localStorage.getItem(STATE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      if (saved && (Date.now() - (saved.at || 0)) < STATE_TTL) {
+        if (saved.view === 'folder' && saved.currentFolderId
+            && manifest && manifest.folders.find(f => f.id === saved.currentFolderId)) {
+          view = 'folder';
+          currentFolderId = saved.currentFolderId;
+        }
+        if (saved.runningFileId
+            && manifest && manifest.files.find(f => f.id === saved.runningFileId)) {
+          restoreFileId = saved.runningFileId;
+        }
+      } else {
+        // Expired — drop it
+        clearUIState();
+      }
+    }
+  } catch(e) { clearUIState(); }
+
   render();
+  if (restoreFileId) {
+    // Defer so initial home render completes; user sees runner appear immediately after
+    setTimeout(() => runFile(restoreFileId), 0);
+  }
   if (hasAuth()) {
     // background refresh
     doSync();
