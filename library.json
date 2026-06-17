@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1781681404124,
+  "updatedAt": 1781681457281,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -52,16 +52,6 @@
       "size": 148740,
       "sha": "00b3e97b6bd44e3f75952b36ce39661ee01dee7a",
       "uploadedAt": 1781627541012,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqhqhidbwuy3n",
-      "name": "pc-layout-2-blank.html",
-      "folderId": "fd_mqedfy1k7izxg",
-      "path": "library/Test Case/pc-layout-2-blank.html",
-      "size": 60220,
-      "sha": "7fa6bec61f0c294d0e8a456b4d024a041108626e",
-      "uploadedAt": 1781680362815,
       "lastOpened": null
     },
     {
