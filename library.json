@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1781734879799,
+  "updatedAt": 1781734884208,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -72,16 +72,6 @@
       "size": 261018,
       "sha": "75291f64fa17dfc4c34e8eb8b4f0159b637c2614",
       "uploadedAt": 1781721884189,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqif7sum5ygco",
-      "name": "pc-layout-2-3points.html",
-      "folderId": "fd_mqe8lb8crjwl8",
-      "path": "library/Psicología Conocida/pc-layout-2-3points.html",
-      "size": 732316,
-      "sha": "10832aaad3edfdb8a76012d54e310503cfc014c0",
-      "uploadedAt": 1781721900238,
       "lastOpened": null
     }
   ]
