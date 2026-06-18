@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1781788598784,
+  "updatedAt": 1781788601152,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -77,16 +77,6 @@
       "size": 262829,
       "sha": "a1b343622378f9eaeab065951c8f99f8b9e5942d",
       "uploadedAt": 1781735083059,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqin2vvg3zp0x",
-      "name": "pc-layout-2-lists.html",
-      "folderId": "fd_mqe8lb8crjwl8",
-      "path": "library/Psicología Conocida/pc-layout-2-lists.html",
-      "size": 457346,
-      "sha": "5634d07a2d51dd6117403265e2604fbe12bc091c",
-      "uploadedAt": 1781735107804,
       "lastOpened": null
     },
     {
