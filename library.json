@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1781794004758,
+  "updatedAt": 1781820765134,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -72,16 +72,6 @@
       "size": 200854,
       "sha": "bb631c49c69ca7e9d6ab86635016e2157ad9edc1",
       "uploadedAt": 1781791403610,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqjkmixhks1gq",
-      "name": "marcus-wise-engine-blank.html",
-      "folderId": "fd_mqgj5ezpxrbt9",
-      "path": "library/Marcus Wise/marcus-wise-engine-blank.html",
-      "size": 150091,
-      "sha": "c021dfccdcae0aa04ded87ec44d33a92c14114d8",
-      "uploadedAt": 1781791451477,
       "lastOpened": null
     },
     {
