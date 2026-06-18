@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1781788613579,
+  "updatedAt": 1781788623335,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -48,16 +48,6 @@
       "sha": "5adf71bc106f081aa08d20286d59a77eb9e507a0",
       "uploadedAt": 1781487151425,
       "lastOpened": 1781488167542
-    },
-    {
-      "id": "fl_mqgv1ct04m4vb",
-      "name": "marcus-wise-engine-v13.html",
-      "folderId": "fd_mqgj5ezpxrbt9",
-      "path": "library/Marcus Wise/marcus-wise-engine-v13.html",
-      "size": 148740,
-      "sha": "00b3e97b6bd44e3f75952b36ce39661ee01dee7a",
-      "uploadedAt": 1781627541012,
-      "lastOpened": null
     },
     {
       "id": "fl_mqj2iuarh3t8f",
