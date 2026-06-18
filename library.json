@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1781786447293,
+  "updatedAt": 1781788583319,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -127,16 +127,6 @@
       "size": 682991,
       "sha": "a45c7bb3b1a13740695aeeb17af4249f56cc0fa0",
       "uploadedAt": 1781735115357,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqin38kue7l8e",
-      "name": "pc-layout-2-scripts.html",
-      "folderId": "fd_mqe8lb8crjwl8",
-      "path": "library/Psicología Conocida/pc-layout-2-scripts.html",
-      "size": 693388,
-      "sha": "61419179fb3e4c3f5009189c7cf884b3df70d7e0",
-      "uploadedAt": 1781735124270,
       "lastOpened": null
     },
     {
