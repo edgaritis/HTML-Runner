@@ -977,6 +977,7 @@ function openFileMenu(file){
     '<p class="h">'+fmtBytes(file.size||0)+' · in '+(folder ? escapeHtml(folder.name) : '?')+'</p>'+
     '<div class="field"><label>Share URL</label><input id="fmUrl" readonly value="'+escapeAttr(shareUrl)+'"><div class="hint">GitHub Pages may take ~1 min to publish a newly uploaded file.</div></div>'+
     '<div class="row"><button class="ok" id="fmCopy">Copy link</button></div>'+
+    '<div class="row"><button class="cancel" id="fmDownload">Download file</button></div>'+
     (otherFolderCount > 0 ? '<div class="row"><button class="cancel" id="fmMove">Move to other folder</button></div>' : '')+
     '<div class="row"><button class="destroy" id="fmDel">Delete file</button></div>'+
     '<div class="row"><button class="cancel" id="fmClose">Close</button></div>'
@@ -985,6 +986,10 @@ function openFileMenu(file){
       $('#fmCopy').onclick = async () => {
         try { await navigator.clipboard.writeText(shareUrl); toast('Link copied', 'good'); }
         catch(e){ $('#fmUrl').select(); document.execCommand('copy'); toast('Link copied', 'good'); }
+      };
+      $('#fmDownload').onclick = async () => {
+        closeSheet();
+        await downloadFile(file);
       };
       const mv = $('#fmMove');
       if (mv) mv.onclick = () => { closeSheet(); openMovePicker(file); };
@@ -995,6 +1000,34 @@ function openFileMenu(file){
       };
     }}
   );
+}
+
+async function downloadFile(file){
+  setSync('syncing');
+  try {
+    // Get content — local cache first, else fetch
+    let cached = await fileGet(file.id);
+    let content = cached && cached.content;
+    if (!content) {
+      content = await smartGet(file);
+      await filePut({ id: file.id, content });
+    }
+    // Trigger browser download
+    const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => { try { URL.revokeObjectURL(url); } catch(e){} }, 1000);
+    setSync('idle');
+    toast('Download started', 'good');
+  } catch (e) {
+    setSync('error');
+    toast('Download failed: ' + (e.message || 'unknown'), 'bad');
+  }
 }
 
 async function deleteFile(file){
