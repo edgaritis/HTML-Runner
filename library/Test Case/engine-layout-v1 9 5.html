@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Engine Layout</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='14' fill='%23111'/%3E%3Crect x='18' y='18' width='64' height='64' rx='8' fill='%23FFB300'/%3E%3Ctext x='50' y='68' font-family='system-ui,sans-serif' font-size='44' font-weight='900' text-anchor='middle' fill='%23111'%3EE%3C/text%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#111;color:#fff;font-family:'Segoe UI',system-ui,sans-serif}
+.topbar{position:sticky;top:0;z-index:100;background:#111;border-bottom:1px solid #333;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:1600px;margin:0 auto;width:100%;box-sizing:border-box}
+.topbar-bg{position:sticky;top:0;z-index:99;background:#111;border-bottom:1px solid #333}
+.topbar h1{font-size:14px;color:#888}
+.topbar select,.topbar input{background:#222;color:#fff;border:1px solid #444;padding:4px 8px;border-radius:4px;font-size:13px}
+.topbar button{background:#333;color:#fff;border:1px solid #555;padding:5px 12px;border-radius:4px;cursor:pointer;font-size:12px}
+.topbar button:hover{background:#444}
+.topbar .counter{font-size:12px;color:#666}
+.topbar input[type=search]{background:#222;color:#fff;border:1px solid #444;padding:4px 10px;border-radius:4px;font-size:13px;min-width:180px}
+
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;padding:16px;max-width:1600px;margin:0 auto;width:100%;box-sizing:border-box}
+.card-container{border-radius:8px;overflow:hidden;border:1px solid #2a2a2a;background:#1a1a1a;position:relative}
+.card-number{position:absolute;top:8px;left:10px;font-size:11px;color:#666;font-weight:600;letter-spacing:.5px;z-index:5;pointer-events:none}
+.card-toolbar{display:flex;gap:5px;padding:7px 10px;align-items:center;flex-wrap:wrap}
+.card-toolbar button{background:#2a2a2a;color:#ccc;border:1px solid #444;padding:3px 9px;border-radius:3px;cursor:pointer;font-size:11px}
+.card-toolbar button:hover{background:#3a3a3a;color:#fff}
+.card-toolbar select{background:#2a2a2a;color:#ccc;border:1px solid #444;padding:2px 6px;border-radius:3px;font-size:11px}
+.tb-sep{width:1px;height:14px;background:#444}
+.bg-chip{width:18px;height:18px;border-radius:3px;border:2px solid #444;cursor:pointer;display:inline-block;vertical-align:middle}
+.bg-chip.active{border-color:#fff}
+.bg-chip:hover{border-color:#aaa}
+.tb-lbl{font-size:10px;color:#666;margin-right:2px}
+
+/* ── Card: 4:5 ratio with ABSOLUTE-POSITIONED ZONES (v1.9.5) ──
+   Each section lives in its own positioned zone with overflow:hidden.
+   Default positions (Top mode): title 8-25% · body 25-87% · closer 87-92% · watermark 92-95%.
+   Center mode (overlay panel toggle) repositions title/body/closer to center the composition
+   vertically above the anchored watermark.
+   Per-zone fit (applyFontsWithFit) shrinks each zone INDEPENDENTLY if its content overflows. */
+.card{width:100%;aspect-ratio:4/5;position:relative;overflow:hidden}
+.card .zone-title    {position:absolute;left:10%;right:10%;top:8%; height:17%;display:flex;align-items:center;justify-content:center;overflow:hidden;text-align:center}
+.card .zone-body     {position:absolute;left:10%;right:10%;top:25%;height:62%;display:flex;flex-direction:column;overflow:hidden}
+.card .zone-closer   {position:absolute;left:10%;right:10%;top:87%;height:5%; display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card .zone-watermark{position:absolute;left:0;  right:0;  top:92%;height:3%; display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card .watermark{text-align:center;font-size:11px;letter-spacing:1.5px;font-weight:700;width:100%}
+.card .closer{font-weight:600;width:100%;text-align:center}
+.card .card-title{width:100%}
+
+/* List (blue) */
+.card .card-title{font-weight:900;text-align:center}  /* v1.9.5: zone-title handles spacing */
+.card.fmt-list .card-title{font-size:18px;text-transform:uppercase;line-height:1.15;color:#3EA6FF}
+.card.fmt-list .item{margin-bottom:5px;font-size:12.5px;line-height:1.35}
+.card.fmt-list .item .num,.card.fmt-list .item .kw{font-weight:800;color:#3EA6FF}
+.card.fmt-list .closer{font-size:9.5px;text-align:center}
+
+/* Identity (red) */
+.card.fmt-identity .card-title{font-size:16px;line-height:1.2;color:#fff}
+.card.fmt-identity .card-title .accent{color:#FF4444}
+.card.fmt-identity .item{margin-bottom:4px;font-size:12px;line-height:1.3}
+.card.fmt-identity .item .label{font-weight:800;color:#FF6B35}
+.card.fmt-identity .item .hi{font-weight:700;color:#FF4444}
+.card.fmt-identity .closer{font-size:9.5px;text-align:center}
+
+/* Question (purple) */
+.card.fmt-question .card-title{font-size:22px;line-height:1.25;color:#fff;margin-bottom:6%}
+.card.fmt-question .card-title .accent{color:#B388FF}
+.card.fmt-question .sub{font-size:13px;color:rgba(255,255,255,.55);text-align:center;font-style:italic;line-height:1.4}
+.card.fmt-question .closer{font-size:9.5px;text-align:center}
+
+/* How-to (teal) */
+.card.fmt-howto .card-title{font-size:17px;text-transform:uppercase;line-height:1.15;color:#4DD0E1;margin-bottom:5%}
+.card.fmt-howto .card-title .accent{color:#00E676}
+.card.fmt-howto .item{margin-bottom:5px;font-size:12.5px;line-height:1.35}
+.card.fmt-howto .item .num{font-weight:800;color:#4DD0E1}
+.card.fmt-howto .item .kw{font-weight:800;color:#4DD0E1}
+.card.fmt-howto .closer{font-size:9.5px;text-align:center}
+
+/* Script — amber/gold, title + teaser only on card (full guion only in clipboard via Copy Card) */
+.card.fmt-script .card-title{font-size:16px;text-transform:uppercase;line-height:1.2;color:#FFB300;margin-bottom:5%;text-align:center}
+.card.fmt-script .teaser-label{font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(255,179,0,.7);text-align:center;margin-bottom:6px;text-transform:uppercase}
+.card.fmt-script .teaser{font-size:12.5px;line-height:1.5;color:#f0e6d0;font-style:italic;text-align:center}
+.card.fmt-script .closer{font-size:9.5px;text-align:center}
+
+/* 3 Points — deep orange, 3 numbered points with bold hook + body */
+.card.fmt-3points .card-title{font-size:14px;text-transform:uppercase;line-height:1.2;color:#FF7043;margin-bottom:5%;text-align:center}
+.card.fmt-3points .item{margin-bottom:8px;font-size:11px;line-height:1.4}
+.card.fmt-3points .item .num{font-weight:800;color:#FF7043}
+.card.fmt-3points .item .hook{font-weight:800;color:#FF7043}
+.card.fmt-3points .item .body{color:#e0d8d0;display:block;margin-top:3px}
+.card.fmt-3points .closer{font-size:9.5px;text-align:center}
+
+.card .card-title em.t-em{font-style:italic;font-weight:900}
+.card .card-title strong.t-strong{font-weight:900;font-style:normal}
+.bg-chip.bg-custom{background:conic-gradient(from 0deg,#FF5722,#FFC107,#4CAF50,#2196F3,#9C27B0,#FF5722);position:relative}
+.bg-chip.bg-custom::after{content:"+";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;text-shadow:0 0 3px rgba(0,0,0,0.6)}
+.bg-chip.bg-custom.active{outline:2px solid #4FC3F7;outline-offset:1px}
+
+/* ── Reel Cover layout (9:16, 1080x1920) ── */
+.card.reel-cover{width:1080px;aspect-ratio:9/16;position:relative;overflow:hidden;padding:0}
+.card.reel-cover .cover-zone{position:absolute;top:8%;left:6%;right:6%;height:55%;display:flex;align-items:center;justify-content:center;text-align:center}
+.card.reel-cover .reel-title{font-size:96px;font-weight:900;line-height:1.1;text-transform:uppercase;letter-spacing:0.02em;max-width:100%}
+.card.reel-cover .reel-title em.t-em{font-style:italic;font-weight:900}
+.card.reel-cover .reel-title strong.t-strong{font-weight:900;font-style:normal}
+.card.reel-cover .watermark-tr{position:absolute;top:3%;right:5%;font-size:18px;letter-spacing:2px;font-weight:600}
+/* Gallery scale-down preview of cover */
+.card.reel-cover-thumb{width:300px;aspect-ratio:9/16}
+.card.reel-cover-thumb .reel-title{font-size:28px}
+.card.reel-cover-thumb .watermark-tr{font-size:8px}
+
+/* Prompt — text content meant for image generation, also usable as standalone card.
+   Layout mirrors the generated image: center-aligned, ~8% lateral margin, comfortable text size. */
+.card.fmt-prompt{padding:0}  /* v1.9.5: zone positions handle spacing */
+.card.fmt-prompt .card-title{font-size:13px;text-transform:uppercase;line-height:1.2;color:#D9A441;margin-bottom:6%;text-align:center;font-weight:800;letter-spacing:0.5px}
+.card.fmt-prompt .prompt-body{font-size:11px;line-height:1.45;color:#ece6da;text-align:center}
+.card.fmt-prompt .prompt-body .pb-line{margin-bottom:6px}
+.card.fmt-prompt .prompt-body .pb-line:last-child{margin-bottom:0}
+.card.fmt-prompt .prompt-body .pb-num{display:inline-block;color:#D9A441;font-weight:800;margin-right:4px}
+.card.fmt-prompt .prompt-body strong{color:#D9A441;font-weight:700}
+.card.fmt-prompt .prompt-body em{color:#C2410C;font-style:normal;font-weight:600}
+.card.fmt-prompt .closer{font-size:9.5px;text-align:center}
+
+/* ── Overlay: centered modal with two-column layout (controls left, preview right) ── */
+.overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);padding:16px;box-sizing:border-box}
+.overlay.active{display:flex;align-items:center;justify-content:center}
+.overlay-inner{width:100%;max-width:1100px;height:100%;max-height:calc(100vh - 32px);display:flex;flex-direction:row;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.overlay .ov-controls{width:320px;flex-shrink:0;background:#121212;border-right:1px solid #2a2a2a;overflow-y:auto;padding:14px 14px 24px;display:flex;flex-direction:column;gap:10px;color:#ddd;font-size:12px;box-sizing:border-box}
+.overlay .ov-preview{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto;background:#0a0a0a;min-width:0}
+.overlay .ov-close-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.overlay .ov-close-bar .idx{color:#888;font-size:12px}
+.overlay .ov-controls button{background:#2a2a2a;color:#fff;border:1px solid #3a3a3a;padding:6px 10px;border-radius:4px;cursor:pointer;font-size:12px}
+.overlay .ov-controls button:hover{background:#3a3a3a}
+.overlay .ov-controls button.close-btn{background:#5a1e1e;border-color:#8b3030;padding:4px 10px;font-size:11px}
+.overlay .ov-controls .nav-row{display:flex;gap:6px;align-items:center;justify-content:space-between}
+.overlay .ov-controls .nav-row button{flex:1}
+.overlay .ov-controls .ctl-group{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:5px;padding:8px 10px;display:flex;flex-direction:column;gap:6px}
+.overlay .ov-controls .ctl-group .lbl{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.overlay .ov-controls .ctl-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.overlay .ov-controls select{background:#0d0d0d;color:#ddd;border:1px solid #333;border-radius:3px;padding:4px 6px;font-size:12px;width:100%}
+.overlay .ov-controls input[type=range]{flex:1;min-width:0;accent-color:#1976d2}
+.overlay .ov-controls input[type=color]{width:34px;height:28px;border:1px solid #333;border-radius:3px;background:#0d0d0d;cursor:pointer;padding:0}
+.overlay .ov-controls input[type=text]{background:#0d0d0d;color:#ddd;border:1px solid #333;border-radius:3px;padding:4px 6px;font-size:11px;width:80px;font-family:'SF Mono','Consolas',monospace}
+.overlay .ov-controls .seg{display:flex;gap:0;border:1px solid #333;border-radius:3px;overflow:hidden}
+.overlay .ov-controls .seg button{flex:1;background:#0d0d0d;border:none;border-radius:0;padding:5px 8px;font-size:11px;color:#888}
+.overlay .ov-controls .seg button.active{background:#1976d2;color:#fff}
+.overlay .ov-controls .bg-chip-row{display:flex;flex-wrap:wrap;gap:4px}
+.overlay .ov-controls .export-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.overlay .ov-controls .export-row button{font-size:11px;padding:7px 6px}
+.overlay .ov-controls .export-row button.primary{background:#1976d2;border-color:#1976d2}
+.overlay .ov-controls .scale-disp{color:#bbb;font-size:11px;min-width:42px;text-align:right;font-variant-numeric:tabular-nums}
+.overlay .ov-controls .reset-link{background:none;border:none;color:#82b1ff;text-decoration:underline;cursor:pointer;font-size:10px;padding:0;text-align:left}
+.overlay .ov-preview .card-wrap-outer{position:relative}
+.overlay .ov-preview .card-wrap-inner{position:absolute;top:0;left:0;transform-origin:top left}
+.overlay .ov-controls .grad-row{display:flex;flex-direction:column;gap:6px}
+.overlay .ov-controls .grad-warn{font-size:10px;color:#FFA726;line-height:1.3;background:#2a1e0a;border:1px solid #5a3e1a;border-radius:3px;padding:5px 7px;margin-top:2px}
+/* Full-size card in overlay (the .card itself is always rendered at 1080px wide) */
+.overlay .card{width:1080px;padding:10% 13%}
+.overlay .card .watermark{font-size:18px;bottom:3%}
+.overlay .card.fmt-list .card-title{font-size:56px;margin-bottom:5%}
+.overlay .card.fmt-list .item{margin-bottom:20px;font-size:34px;line-height:1.4}
+.overlay .card.fmt-list .closer{padding-top:28px;font-size:24px}
+.overlay .card.fmt-identity .card-title{font-size:50px;margin-bottom:5%}
+.overlay .card.fmt-identity .item{margin-bottom:16px;font-size:32px;line-height:1.35}
+.overlay .card.fmt-identity .closer{padding-top:24px;font-size:22px}
+.overlay .card.fmt-question .card-title{font-size:58px;margin-bottom:6%}
+.overlay .card.fmt-question .sub{font-size:32px}
+.overlay .card.fmt-question .closer{padding-top:28px;font-size:24px}
+.overlay .card.fmt-howto .card-title{font-size:52px;margin-bottom:5%}
+.overlay .card.fmt-howto .item{margin-bottom:18px;font-size:33px;line-height:1.4}
+.overlay .card.fmt-howto .closer{padding-top:26px;font-size:23px}
+.overlay .card.fmt-script .card-title{font-size:48px;margin-bottom:5%}
+.overlay .card.fmt-script .teaser-label{font-size:18px;margin-bottom:18px}
+.overlay .card.fmt-script .teaser{font-size:34px;line-height:1.55}
+.overlay .card.fmt-script .closer{padding-top:28px;font-size:24px}
+.overlay .card.fmt-3points .card-title{font-size:52px;margin-bottom:5%}
+.overlay .card.fmt-3points .item{margin-bottom:22px;font-size:24px;line-height:1.45}
+.overlay .card.fmt-3points .item .hook{font-size:28px;display:inline}
+.overlay .card.fmt-3points .item .body{display:block;margin-top:6px}
+.overlay .card.fmt-3points .closer{padding-top:24px;font-size:22px}
+.overlay .card.fmt-prompt{padding:0}
+.overlay .card.fmt-prompt .card-title{font-size:42px;margin-bottom:6%}
+.overlay .card.fmt-prompt .prompt-body{font-size:26px;line-height:1.45;text-align:center}
+.overlay .card.fmt-prompt .prompt-body .pb-line{margin-bottom:14px}
+.overlay .card.fmt-prompt .closer{padding-top:24px;font-size:22px}
+/* Text gradient: applied via inline style on a wrapper. Background-clip text trick. */
+.tx-grad{-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+
+/* ── Mobile (≤768px): column layout, preview sticky at top, controls scroll below ── */
+@media (max-width: 768px){
+  .overlay{padding:0}
+  .overlay-inner{flex-direction:column;max-width:100%;max-height:100vh;height:100vh;border-radius:0;border:none;overflow-y:auto}
+  .overlay .ov-preview{flex:0 0 auto;height:42vh;padding:10px;border-bottom:1px solid #2a2a2a;border-right:none;position:sticky;top:0;z-index:10;background:#0a0a0a;order:-1}
+  .overlay .ov-controls{width:100%;border-right:none;padding:12px 12px 32px;overflow-y:visible;order:0}
+  .overlay .ov-controls .export-row button{font-size:12px;padding:9px 6px}
+}
+
+.export-stage{position:absolute;left:-9999px;top:0}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 20px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none}
+.toast.show{opacity:1}
+
+/* Import modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-backdrop.show{display:flex}
+.modal{background:#1a1a1a;border:1px solid #444;border-radius:8px;max-width:900px;width:100%;max-height:90vh;overflow-y:auto;padding:24px;box-sizing:border-box}
+.modal h2{margin:0 0 16px;font-size:18px;color:#eee}
+.modal .row{margin-bottom:14px}
+.modal label{display:block;margin-bottom:6px;font-size:12px;color:#aaa}
+.modal textarea{width:100%;background:#0d0d0d;color:#ddd;border:1px solid #444;border-radius:4px;padding:10px;font-family:'SF Mono','Consolas',monospace;font-size:12px;line-height:1.5;box-sizing:border-box;min-height:280px;resize:vertical}
+.modal .modal-buttons{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;padding-top:16px;border-top:1px solid #333}
+.modal button{background:#333;color:#fff;border:1px solid #555;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:13px}
+.modal button:hover{background:#444}
+.modal button.primary{background:#1976d2;border-color:#1976d2}
+.modal button.primary:hover{background:#1e88e5}
+.modal button.danger{background:#c62828;border-color:#c62828}
+.modal button.danger:hover{background:#d32f2f}
+.modal .parse-result{background:#0d0d0d;border:1px solid #333;border-radius:4px;padding:12px;margin-top:12px;font-size:12px;max-height:200px;overflow-y:auto}
+.modal .parse-result .ok{color:#69f0ae}
+.modal .parse-result .err{color:#ff5252;margin-top:6px}
+.modal .syntax-help{background:#0d0d0d;border:1px solid #333;border-radius:4px;padding:10px;font-family:'SF Mono','Consolas',monospace;font-size:11px;color:#888;white-space:pre-wrap;max-height:160px;overflow-y:auto;display:none}
+.modal .syntax-help.show{display:block}
+.modal .help-toggle{font-size:11px;color:#82b1ff;cursor:pointer;text-decoration:underline;display:inline-block;margin-top:4px}
+
+/* Delete import button (only visible on imported cards in Imports view) */
+.card-actions .delete-import{background:#5a1e1e;border-color:#8b3030;color:#ffcdcd}
+.card-actions .delete-import:hover{background:#7a2828}
+
+/* Import tag in card-number area */
+.import-tag{display:inline-block;background:#1976d2;color:#fff;font-size:9px;padding:1px 5px;border-radius:3px;margin-left:6px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="topbar-bg">
+<div class="topbar">
+  <h1>ENGINE LAYOUT</h1>
+  <input id="searchInput" type="search" placeholder="Search title or text..." oninput="buildGallery()">
+  <select id="filterType" onchange="buildGallery()">
+    <option value="all">All</option>
+    <option value="question">Questions</option>
+    <option value="howto">How-to</option>
+    <option value="list">Lists</option>
+    <option value="identity">Identity</option>
+    <option value="script">Script</option>
+    <option value="3points">3 Points</option>
+    <option value="prompt">Prompts</option>
+  </select>
+  <input id="jumpInput" type="number" min="1" max="999" placeholder="#" style="width:55px">
+  <button onclick="jumpTo()">Go</button>
+  <span class="counter" id="counter"></span>
+  <span style="flex:1"></span>
+  <button onclick="openImportModal()" style="background:#1976d2;border-color:#1976d2">Import</button>
+  <select id="viewMode" onchange="onViewModeChange()" title="Switch between library and your imports">
+    <option value="library">Viewing: Library</option>
+    <option value="imports">Viewing: Imports</option>
+    <option value="both">Viewing: Both</option>
+  </select>
+</div>
+</div>
+
+<!-- Import Modal -->
+<div class="modal-backdrop" id="importModal">
+  <div class="modal">
+    <h2>Import cards from plain text</h2>
+    <div class="row">
+      <label>Paste raw text (or upload a file below):</label>
+      <textarea id="importText" placeholder="Paste your cards here using the ::: syntax. Click 'Format Help' for the spec."></textarea>
+    </div>
+    <div class="row">
+      <input type="file" id="importFile" accept=".txt,.md" onchange="onImportFileSelect(event)" style="font-size:12px">
+      <span class="help-toggle" onclick="document.getElementById('syntaxHelp').classList.toggle('show')">Toggle Format Help</span>
+      <div class="syntax-help" id="syntaxHelp">::: identity
+title: Your title with *highlighted* words
+Ene | First row content
+Feb | Second row content
+... (must be exactly 12 rows, Ene to Dic, in order)
+closer: auto
+:::
+
+::: list
+title: 7 SEÑALES DE QUE *ALGO*
+Item title | Item description.
+Item title | Item description.
+... (5-8 items)
+closer: auto
+:::
+
+::: question
+title: ¿Cuál es la *pregunta* aquí?
+sub: Subtítulo breve.
+closer: auto
+:::
+
+::: howto
+title: CÓMO HACER *ALGO*
+Action step | Brief description.
+Action step | Brief description.
+... (5 items)
+closer: auto
+:::
+
+::: script
+title: TÍTULO EN MAYÚSCULAS
+teaser: Texto del teaser que va sobre la imagen.
+guion: &lt;&lt;&lt;
+Primer párrafo del guión completo.
+
+Segundo párrafo. La línea en blanco arriba se mantiene como salto.
+
+La regla operativa es esta. Última línea.
+&gt;&gt;&gt;
+closer: auto
+:::
+
+::: 3points
+title: TÍTULO EN MAYÚSCULAS
+Hook sentence one. | Body paragraph explaining mechanism in 60-100 words.
+Hook sentence two. | Body paragraph for second point.
+Hook sentence three. | Body paragraph for third point.
+closer: auto
+:::
+
+Rules:
+- Wrap each card in ::: format ... :::
+- closer: auto rotates from the 15-closer pool
+- Use *word* for bold/highlighted text
+- For script's guion, use &lt;&lt;&lt; ... &gt;&gt;&gt; block (blank lines = paragraph breaks)
+- Items use | (pipe) as separator</div>
+    </div>
+    <div id="parseResult" class="parse-result" style="display:none"></div>
+    <div class="modal-buttons">
+      <button onclick="closeImportModal()">Cancel</button>
+      <button onclick="parseImportText()">Parse</button>
+      <button class="primary" id="importAppendBtn" onclick="commitImport()" disabled>Append to Imports</button>
+    </div>
+  </div>
+</div>
+
+<!-- Manage Imports Modal -->
+<div class="modal-backdrop" id="manageModal">
+  <div class="modal">
+    <h2>Manage Imports</h2>
+    <div id="manageInfo" style="font-size:13px;color:#aaa;margin-bottom:14px"></div>
+    <div class="modal-buttons" style="justify-content:flex-start;flex-wrap:wrap;gap:8px">
+      <button class="primary" onclick="mergeAndDownload()">Merge &amp; Download HTML</button>
+      <button onclick="downloadImportsOnly()">Download Imports Only</button>
+      <button class="danger" onclick="clearAllImports()">Clear All Imports</button>
+      <button onclick="closeManageModal()" style="margin-left:auto">Close</button>
+    </div>
+  </div>
+</div>
+<!-- Custom BG Modal -->
+<div class="modal-backdrop" id="customBgModal">
+  <div class="modal">
+    <h2>Custom Background</h2>
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <button id="bgTabSolid" class="primary" onclick="setBgType('solid')">Solid Color</button>
+      <button id="bgTabGradient" onclick="setBgType('gradient')">Gradient</button>
+      <button id="bgTabImage" onclick="setBgType('image')">Image</button>
+    </div>
+    <div id="bgSolidPanel">
+      <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        Color: <input type="color" id="bgC1Solid" value="#0a1a3a" oninput="updateBgPreview()" style="width:80px;height:34px;border:1px solid #555;border-radius:4px;background:#222;cursor:pointer">
+      </label>
+    </div>
+    <div id="bgGradientPanel" style="display:none">
+      <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        From: <input type="color" id="bgC1Grad" value="#0a1a3a" oninput="updateBgPreview()" style="width:80px;height:34px;border:1px solid #555;border-radius:4px;background:#222;cursor:pointer">
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        To: <input type="color" id="bgC2Grad" value="#001033" oninput="updateBgPreview()" style="width:80px;height:34px;border:1px solid #555;border-radius:4px;background:#222;cursor:pointer">
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px">
+        Angle: <input type="range" id="bgAngle" min="0" max="360" value="180" oninput="updateBgPreview()" style="flex:1">
+        <span id="bgAngleDisp" style="color:#aaa;min-width:36px">180°</span>
+      </label>
+    </div>
+    <div id="bgImagePanel" style="display:none">
+      <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;flex-wrap:wrap">
+        <span>File:</span>
+        <input type="file" id="bgImageFile" accept="image/*" onchange="onBgImageFile(this)" style="flex:1;min-width:160px;color:#ccc;font-size:12px">
+        <button type="button" onclick="clearBgImage()" style="font-size:12px;padding:4px 8px" title="Remove image">✕ Clear</button>
+      </label>
+      <div id="bgImageStatus" style="font-size:11px;color:#888;margin-bottom:10px">No image loaded. Pick a file above (max 1200px, JPEG ~0.85).</div>
+      <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px">
+        Fit:
+        <select id="bgImageFit" onchange="updateBgPreview()" style="background:#222;color:#ccc;border:1px solid #555;border-radius:4px;padding:4px 6px">
+          <option value="cover">Cover (fill, crop edges)</option>
+          <option value="contain">Contain (fit all, may letterbox)</option>
+        </select>
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px">
+        Overlay: <input type="range" id="bgImageOverlay" min="0" max="100" value="40" oninput="updateBgPreview()" style="flex:1">
+        <span id="bgImageOverlayDisp" style="color:#aaa;min-width:42px">40%</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px">
+        <span>Text on top is:</span>
+        <select id="bgImageIsLight" onchange="updateBgPreview()" style="background:#222;color:#ccc;border:1px solid #555;border-radius:4px;padding:4px 6px">
+          <option value="false">Dark image → light text</option>
+          <option value="true">Light image → dark text</option>
+        </select>
+      </label>
+    </div>
+    <div style="font-size:12px;color:#888;margin-bottom:6px">Preview (text colors auto-adapt):</div>
+    <div id="bgPreview" style="height:90px;border-radius:8px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px"></div>
+    <div class="modal-buttons" style="gap:8px">
+      <button class="primary" onclick="applyCustomBG()">Apply</button>
+      <button onclick="resetCustomBG()" class="danger">Reset to Preset</button>
+      <button onclick="closeCustomBGModal()" style="margin-left:auto">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="gallery" id="gallery"></div>
+<div class="overlay" id="overlay">
+  <div class="overlay-inner">
+  <div class="ov-controls" id="ovControls">
+    <div class="ov-close-bar">
+      <span class="idx" id="overlayIdx"></span>
+      <button class="close-btn" onclick="closeOverlay()">✕ Close</button>
+    </div>
+    <div class="nav-row">
+      <button onclick="navPost(-1)">← Prev</button>
+      <button onclick="navPost(1)">Next →</button>
+    </div>
+
+    <div class="nav-row">
+      <button onclick="undo()" title="Undo last change (Ctrl/Cmd+Z)">↶ Undo</button>
+      <button onclick="redo()" title="Redo (Ctrl/Cmd+Shift+Z)">↷ Redo</button>
+    </div>
+
+    <div class="ctl-group">
+      <span class="lbl">Aspect ratio</span>
+      <select id="ovAspect" onchange="onOvAspectChange(this.value)" title="Live preview updates with this"></select>
+    </div>
+
+    <!-- v1.9.5: Body alignment toggle (global, Top vs Center composition) -->
+    <div class="ctl-group">
+      <span class="lbl">Body alignment <span style="float:right;color:#888;font-size:10px">v1.9.5</span></span>
+      <div class="seg" style="display:flex;gap:0">
+        <button data-bodyalign="top" onclick="setBodyAlign('top')" style="flex:1">Top</button>
+        <button data-bodyalign="center" onclick="setBodyAlign('center')" style="flex:1" class="active">Center</button>
+      </div>
+    </div>
+
+    <!-- TITLE typography -->
+    <div class="ctl-group typo-group" data-grp="title">
+      <span class="lbl">Title — size <span class="scale-disp" id="ovTitleScaleDisp" style="float:right">100%</span></span>
+      <input type="range" id="ovTitleScale" min="50" max="200" value="100" oninput="onOvScale('title',this.value)">
+      <span class="lbl" style="margin-top:4px">Title — color</span>
+      <div class="seg">
+        <button onclick="onOvFgType('title','auto')" data-grp="title" data-mode="auto">Auto</button>
+        <button onclick="onOvFgType('title','solid')" data-grp="title" data-mode="solid">Solid</button>
+        <button onclick="onOvFgType('title','gradient')" data-grp="title" data-mode="gradient">Gradient</button>
+      </div>
+      <div class="ctl-row solid-row" data-grp="title" style="display:none">
+        <input type="color" oninput="onOvFgColor('title')">
+        <input type="text" oninput="onOvFgHex('title',this.value)" placeholder="#ffffff">
+      </div>
+      <div class="grad-row" data-grp="title" style="display:none">
+        <div class="ctl-row"><input type="color" oninput="onOvFgColor('title')"><input type="color" oninput="onOvFgColor('title')"></div>
+        <div class="ctl-row"><input type="range" min="0" max="360" value="180" oninput="onOvFgColor('title');this.parentElement.lastElementChild.textContent=this.value+'°'"><span class="scale-disp">180°</span></div>
+        <div class="grad-warn">⚠ Exports as solid (top color). html2canvas can't render text gradients.</div>
+      </div>
+      <span class="lbl" style="margin-top:4px">Title — accent <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#666">(for *highlighted*)</span></span>
+      <div class="seg">
+        <button onclick="onOvAccType('title','auto')" data-grp="title" data-accmode="auto">Auto</button>
+        <button onclick="onOvAccType('title','solid')" data-grp="title" data-accmode="solid">Solid</button>
+      </div>
+      <div class="ctl-row acc-row" data-grp="title" style="display:none">
+        <input type="color" oninput="onOvAccColor('title')">
+        <input type="text" oninput="onOvAccHex('title',this.value)" placeholder="#FFD700">
+      </div>
+    </div>
+
+    <!-- BODY typography -->
+    <div class="ctl-group typo-group" data-grp="body">
+      <span class="lbl">Body — size <span class="scale-disp" id="ovBodyScaleDisp" style="float:right">100%</span></span>
+      <input type="range" id="ovBodyScale" min="50" max="200" value="100" oninput="onOvScale('body',this.value)">
+      <span class="lbl" style="margin-top:4px">Body — color</span>
+      <div class="seg">
+        <button onclick="onOvFgType('body','auto')" data-grp="body" data-mode="auto">Auto</button>
+        <button onclick="onOvFgType('body','solid')" data-grp="body" data-mode="solid">Solid</button>
+        <button onclick="onOvFgType('body','gradient')" data-grp="body" data-mode="gradient">Gradient</button>
+      </div>
+      <div class="ctl-row solid-row" data-grp="body" style="display:none">
+        <input type="color" oninput="onOvFgColor('body')">
+        <input type="text" oninput="onOvFgHex('body',this.value)" placeholder="#ffffff">
+      </div>
+      <div class="grad-row" data-grp="body" style="display:none">
+        <div class="ctl-row"><input type="color" oninput="onOvFgColor('body')"><input type="color" oninput="onOvFgColor('body')"></div>
+        <div class="ctl-row"><input type="range" min="0" max="360" value="180" oninput="onOvFgColor('body');this.parentElement.lastElementChild.textContent=this.value+'°'"><span class="scale-disp">180°</span></div>
+        <div class="grad-warn">⚠ Exports as solid (top color). html2canvas can't render text gradients.</div>
+      </div>
+      <span class="lbl" style="margin-top:4px">Body — accent <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#666">(for *highlighted*)</span></span>
+      <div class="seg">
+        <button onclick="onOvAccType('body','auto')" data-grp="body" data-accmode="auto">Auto</button>
+        <button onclick="onOvAccType('body','solid')" data-grp="body" data-accmode="solid">Solid</button>
+      </div>
+      <div class="ctl-row acc-row" data-grp="body" style="display:none">
+        <input type="color" oninput="onOvAccColor('body')">
+        <input type="text" oninput="onOvAccHex('body',this.value)" placeholder="#FFD700">
+      </div>
+    </div>
+
+    <!-- CLOSER typography -->
+    <div class="ctl-group typo-group" data-grp="closer">
+      <span class="lbl">Closer — size <span class="scale-disp" id="ovCloserScaleDisp" style="float:right">100%</span></span>
+      <input type="range" id="ovCloserScale" min="50" max="200" value="100" oninput="onOvScale('closer',this.value)">
+      <span class="lbl" style="margin-top:4px">Closer — color</span>
+      <div class="seg">
+        <button onclick="onOvFgType('closer','auto')" data-grp="closer" data-mode="auto">Auto</button>
+        <button onclick="onOvFgType('closer','solid')" data-grp="closer" data-mode="solid">Solid</button>
+      </div>
+      <div class="ctl-row solid-row" data-grp="closer" style="display:none">
+        <input type="color" oninput="onOvFgColor('closer')">
+        <input type="text" oninput="onOvFgHex('closer',this.value)" placeholder="#ffffff">
+      </div>
+    </div>
+
+    <!-- ACCENT is now per-group, configured inside Title and Body sections above -->
+
+    <div class="ctl-group">
+      <span class="lbl">Background</span>
+      <div class="bg-chip-row" id="ovBgChips"></div>
+    </div>
+
+    <div class="ctl-group">
+      <span class="lbl">Export</span>
+      <div class="export-row">
+        <button class="primary" onclick="exportPost(currentPidx)">Export PNG</button>
+        <button onclick="exportPost(currentPidx,true)" title="Transparent background">Export T</button>
+        <button onclick="exportReelCover(currentPidx)" title="9:16 Reel cover frame">Cover</button>
+        <button onclick="exportReelCover(currentPidx,true)" title="9:16 Reel cover (transparent)">Cover T</button>
+      </div>
+    </div>
+
+    <div class="ctl-group">
+      <span class="lbl">Copy to clipboard</span>
+      <div class="export-row">
+        <button onclick="copyTitleOv()">Title</button>
+        <button onclick="copyCardOv()">Card</button>
+        <button onclick="copyCaptionOv()" id="ovCopyCaptionBtn">Caption</button>
+        <button onclick="copyPromptOv()" id="ovCopyPromptBtn" style="display:none">Prompt</button>
+      </div>
+    </div>
+
+    <button class="reset-link" onclick="resetOvCustomText()" style="margin-top:2px">↺ Reset all text customizations</button>
+  </div>
+  <div class="ov-preview" id="ovPreview">
+    <div class="card-wrap-outer" id="cardWrapOuter">
+      <div class="card-wrap-inner" id="cardWrapInner"><div id="overlayCard"></div></div>
+    </div>
+  </div>
+  </div>
+</div>
+<div class="export-stage" id="exportStage"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// ENGINE LAYOUT — Version History
+// ============================================================
+// Update this block whenever the engine gains a meaningful feature or fix.
+// Newest version on top. Patch-level fixes can be folded into the parent version.
+//
+// v1.9.5 (2026-06-20) — CURRENT — feature
+//   • LAYOUT REWRITE: replaced single safe-zone (with uniform fitFactor shrink) with
+//     FOUR absolute-positioned zones — title (8-25%), body (25-87%), closer (87-92%),
+//     watermark (92-95%). Each zone clips its content and runs an INDEPENDENT auto-fit:
+//     title shrinks only if title overflows title zone; body shrinks only if body
+//     overflows body zone; closer same. This fixes the v1.9.4 bug where a long body
+//     would drag the title down with it because both shared one shrink factor.
+//   • NEW Body Alignment control (Top / Center) in the overlay panel. Top mode keeps
+//     each zone at its fixed position. Center mode measures actual content heights
+//     after fit, then repositions zones so title+body+closer COMPOSITION is centered
+//     vertically in the space above the watermark (which stays anchored at 92%).
+//     When body has only 3 short items, the whole stack now floats to vertical center
+//     instead of gluing to the top of the card. Stored globally per FILE_ID.
+//   • Tightened default FONT_SPEC item-margins and line-heights ~35% across all
+//     formats. Previously items had 20px gaps + 1.4 line-height which read too loose
+//     at 4:5; new defaults are 12px / 1.3 for list, proportional for other formats.
+//   • Gallery thumbnails: auto-fit deprecated to a no-op — thumbnails use static CSS
+//     sizes; if content overflows a zone it clips via overflow:hidden. For full-
+//     fidelity preview, click into the overlay (which uses the same fit math as export).
+//
+// v1.9.4 (2026-06-19) — feature
+//   • Custom BG now supports IMAGE backgrounds (third tab next to Solid + Gradient). User
+//     picks any image file via file picker; image is downscaled to max 1200px and re-encoded
+//     as JPEG 0.85 to keep DataURL size manageable for localStorage (typical < 200 KB).
+//     Image render uses two CSS layers: a tinted overlay (rgba black or white, adjustable
+//     0–100%) plus url(dataurl) center/cover|contain no-repeat. The overlay slider lets the
+//     user darken or lighten the image for text legibility, and a manual Light/Dark selector
+//     decides which text palette (customBGPalette) the engine uses on top (we can't compute
+//     average luminance of an arbitrary image reliably). resolveBG and updateBgPreview both
+//     route through a new bgSpecToCSS() helper so solid/gradient/image render paths stay in
+//     sync. applyCustomBG now catches storage failures and toasts a message instead of
+//     silently failing — important for image specs which can exceed quota with many cards.
+//
+// v1.9.3 (2026-06-18) — patch
+//   • Cover title color customization: applyCustomText now paints .reel-title (Reel cover)
+//     in addition to .card-title (normal posts). Previously, changing title color in Full View
+//     was visible in the card export but the cover stayed on PRESETS default (e.g., user picks
+//     yellow → card yellow, cover stuck on blue). Now both honor the same title FG + title
+//     accent customization. Same change applied to the title accent selector so highlighted
+//     words inside cover titles also get the user's chosen accent color.
+//
+// v1.9.2 (2026-06-18) — patch
+//   • Reel Cover title sizing: now derives from FONT_SPEC[fmt].title × ct.title.scale instead
+//     of a hardcoded 120px base. The old 120px ignored format conventions and produced
+//     bloated 4-5-line covers with mid-phrase line breaks (e.g. "DE QUE" hanging on its own).
+//     Now the cover renders the title at the same pixel size as the card's title, giving
+//     visually consistent typography between card and cover. Shrink-only autofit retained
+//     as a safety net for absurdly long titles. Per-format new bases: list 56, identity 50,
+//     question 58, howto 52, script 48, 3points 52, prompt 38 (× user's title scale).
+//
+// v1.9.1 (2026-06-17) — patch
+//   • Export scale reverted from 4 → 2. The 4x scale produced 4320×5400 PNGs (~23 MP) that
+//     slowed down image viewers and exports. Quality at 2x (2160×2700) is still well above
+//     Facebook's display size and looks crisp after their compression.
+//
+// v1.9 (2026-06-17)
+//   • UNDO / REDO: per-engine history stack (max 50 entries) covering customText + customBG +
+//     cardBG + cardAspect. Snapshots are throttled (350ms) so dragging a slider produces
+//     ONE history entry per gesture, not 50. Buttons in the controls panel + keyboard
+//     shortcuts Ctrl/Cmd+Z (undo) and Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y (redo).
+//   • HEX INPUT robustness: `parseHex()` utility accepts hex with or without leading #,
+//     accepts 3-char shorthand (#fff → #ffffff), strips whitespace, normalizes case.
+//     Previously the strict `^#[0-9a-fA-F]{6}$` regex silently rejected anything off-shape
+//     including mobile-autocorrect spaces or 3-char inputs.
+//
+// v1.8 (2026-06-17)
+//   • COVER EXPORT FIX: auto-fit now checks BOTH width and height. Previously only height was
+//     checked, so long single lines (e.g. "RESTAURANTE" or any 11+ char word) at 120px+ font
+//     could overflow the horizontal bounds and get clipped by the card's overflow:hidden.
+//     Iterative shrink (up to 12 passes) now ensures the title fits in the 9:16 cover-zone
+//     on both axes. Also added max-width:100% to .reel-title as a guard.
+//   • POST EXPORT QUALITY: html2canvas scale bumped from 2 → 4 for exportPost (Export PNG / T)
+//     producing PNGs at 4x linear (16x pixel) resolution vs the card's CSS dimensions.
+//     Result: text stays crisp after Facebook/Instagram's compression pipeline and looks sharp
+//     on 3x-density phone screens. Tradeoff: PNG file size ~3-4x larger, export ~2-3x slower.
+//   • exportReelCover STAYS at scale:2 — Reels are video frames that get downscaled during
+//     Meta's video encoding regardless, so 4x is wasted bits.
+//
+// v1.7 (2026-06-17)
+//   • BODY ACCENT now covers ALL visually emphasized body elements (not just markdown highlights):
+//     .kw, .num, .hook, .label, .pb-num, .hi, plus .t-em/.t-strong outside .card-title.
+//     This matches user expectation: "Body Accent" = "the colored/emphasized portion of body
+//     content" — i.e. the number prefix + keyword in lists, the month label in identity, the
+//     hook in 3points, the numbered marker in prompts. Previously only `*markdown*` text was
+//     covered, which made the control feel broken on list/howto/3points cards.
+//   • FAVICON added (inline SVG, no external file). Black rounded square with gold E.
+//
+// v1.6 (2026-06-17)
+//   • ACCENT COLOR is now PER-GROUP (Title accent and Body accent are independent).
+//     Title accent applies to `*highlighted*` spans inside .card-title (.t-em / .accent / .t-strong).
+//     Body accent applies to .hi (identity item descriptions) + .t-em / .t-strong outside .card-title
+//     (e.g. prompt body markdown).
+//   • The previous shared "Accent color" section is removed; accent controls now live inside the
+//     Title and Body sections respectively.
+//   • Migration: v1.4/v1.5 customText (top-level accType/accColor) is auto-migrated to BOTH
+//     title.accent and body.accent so existing setups keep their look until the user diverges them.
+//
+// v1.5.1 (2026-06-17)
+//   • MOBILE FIX: preview now renders ABOVE controls (was below). Sticky positioning
+//     only sticks to current position — doesn't reorder. Fixed via `order:-1` on .ov-preview.
+//
+// v1.5 (2026-06-17)
+//   • Full View is now a CENTERED MODAL (max-width 1100px, max-height 95vh) instead of edge-to-edge.
+//     Preview is more compact, dark backdrop shows around the modal.
+//   • MOBILE LAYOUT (≤768px): column layout — preview pinned at top via position:sticky,
+//     controls scroll below. The preview stays visible while you scroll through controls.
+//   • Escape key now closes Full View.
+//
+// v1.4 (2026-06-17)
+//   • LAYOUT FIX: Full View preview now centers correctly. Bug was that openOverlay() rendered
+//     before the overlay became visible (display:none → clientWidth=0 → scale=0). Fixed by
+//     adding the .active class first, then deferring render to requestAnimationFrame.
+//   • Wrapper restructured: outer wrap takes scaled dimensions for proper flex centering,
+//     inner wrap is full 1080×H with transform: scale(s) anchored top-left.
+//   • PER-ELEMENT TYPOGRAPHY: separate Size slider + Text Color picker for Title, Body, Closer.
+//     Each group can be Auto / Solid / Gradient (closer: Auto / Solid only).
+//   • Migration: existing v1.2/v1.3 customText state (flat shape) is auto-migrated to per-group.
+//   • EXPORT FIX: gradient text falls back to solid c1 at export time. html2canvas can't render
+//     `background-clip:text`, which was causing exports to show solid white blocks instead of text
+//     when gradient was active. Warning shown under Gradient toggle in the UI.
+//   • applyExportFonts and applyFontsWithFit now accept {title,body,closer} scales object.
+//     Auto-fit on overflow shrinks all three groups proportionally.
+//   • Accent color (for *highlighted* spans) still applies across all groups uniformly.
+//
+// v1.3 (2026-06-17)
+//   • Custom BG palette is now 2-tone (matches preset variety):
+//     – DARK BG: warm gold #FFB300 (title/kw/num/label/hook/accent) + warm off-white #f0e6d0 (desc/body)
+//     – LIGHT BG: deep warm brown #5a3500 + dark warm gray #1a1a1a
+//   • Previously every text role mapped to the same color (white-on-dark, navy-on-light) which
+//     flattened the visual hierarchy. Now custom BGs look like preset BGs.
+//   • Existing custom BGs in localStorage update automatically on next render.
+//   • Per-card text/accent overrides (from v1.2) still take precedence if set.
+//
+// v1.2 (2026-06-17)
+//   • Full View redesigned as two-column: controls panel left (320px), live preview right
+//   • Aspect ratio dropdown now triggers LIVE preview re-render (was export-only before — bug fix)
+//   • Per-card text customizations, persisted in localStorage per FILE_ID:
+//       – Font size slider (50%–180%)
+//       – Text color: Auto / Solid hex / 2-color Gradient with angle slider
+//       – Accent color (for *highlighted* spans): Auto / Solid hex
+//   • Overrides apply to ALL exports (PNG, T, Cover, Cover T) — preview matches export
+//   • Shared font-fit pipeline: overlay preview and export use the same applyFontsWithFit()
+//   • "Reset all text customizations" button per card
+//   • Caption + Prompt copy buttons added to full view
+//   • NOTE: html2canvas has partial support for text gradients; if exports show transparent
+//     text, fall back to Solid mode (gradients still render correctly in the preview)
+//
+// v1.1 (2026-06-17)
+//   • Closer language auto-detection: `closer: auto` now picks from CLOSERS (Spanish) or
+//     CLOSERS_EN (English) based on detected language of the imported card content
+//   • New CLOSERS_EN pool with 5 English closer variants
+//   • detectCardLang() heuristic: ñ/accented vowels → es; otherwise stopword count compare
+//   • NOTE: existing imports already in localStorage keep their baked-in closer.
+//     To refresh: Manage → Clear All Imports, then re-import.
+//
+// v1.0 (2026-06-17)
+//   • Renamed engine to "Engine Layout" (was "Psicología Conocida — Posts v2")
+//   • Identity parser accepts English month abbreviations (Jan–Dec) alongside Spanish (Ene–Dic);
+//     mixing languages within one card is rejected with a clear error
+//   • Reel cover watermark removed (cover exports are now title-only)
+//
+// v0.9 — Reel cover mode
+//   • New "Cover" and "Cover T" buttons on every card (gallery + overlay)
+//   • 9:16 export (1080×1920), title-only, upper 55% safe zone, bottom 40% reserved for Reel UI
+//   • Title auto-shrinks if it overflows; baseline size 120px for at-glance readability
+//   • Empty-title prompt fallback: uses first sentence of body
+//
+// v0.8 — Captions system
+//   • New `caption` field on non-script formats (multi-line `caption: <<< ... >>>` import block)
+//   • Copy Caption button distinct from Copy Card
+//   • Script format: `guion` IS the caption — Copy Card now excludes guion (no overlap)
+//   • Download Imports Only added to Manage modal
+//
+// v0.7 — Custom BG picker
+//   • Solid color OR 2-color gradient with 0–360° angle slider
+//   • Auto text-color adaptation by perceived luminance (0.299R+0.587G+0.114B threshold 140)
+//   • Custom BG persists in localStorage per FILE_ID
+//   • Rainbow "+" chip appended after preset chips on every card
+//
+// v0.6 — Title markdown + parser hardening
+//   • `*italic*` and `**bold**` markdown highlighting in titles (all formats)
+//   • Fixed title parser regex — was eating across newlines, captured "body: <<<" as title
+//   • Empty title now allowed for prompt format only
+//   • Full-view overlay scales to fit BOTH viewport dimensions (not just width)
+//
+// v0.5 — Prompts category
+//   • New Prompts format: title (optional) + body (markdown) + prompt (image-gen instruction) + closer
+//   • 8 BG presets (5 bucket colors from Layout 1: Black/Dark Blue/Dark Green/Cream/Light Gray + 3 standard)
+//   • Copy Prompt button (image-gen text), hidden from card visual
+//   • Card render mirrors generated image: center-aligned, ~8% lateral padding
+//
+// v0.4 — Layout polish
+//   • Centered topbar and gallery (max-width 1600px) — no more edge-to-edge on ultra-wide
+//   • Gallery card auto-fit via CSS `zoom` (content overflow shrinks proportionally)
+//
+// v0.3 — Import + storage
+//   • Bulk import via `:::` syntax (textarea paste OR .txt file upload)
+//   • Transparent export (Export T) — strips card background for video overlay workflow
+//   • View modes: Library / Imports / Both
+//   • localStorage persistence keyed by FILE_ID (isolates per file)
+//   • Merge & Download — writes new HTML with library + imports baked in
+//
+// v0.2 — Added categories
+//   • Script format (title + teaser line + multi-line guion + closer)
+//   • 3 Points format (exactly 3 hook + body items)
+//
+// v0.1 — Initial Layout 2 engine
+//   • Four formats: Identity (12 month rows), List (5–8 numbered items), Question, How-to
+//   • Per-card BG presets, aspect-ratio export, search + filter, full-view overlay
+// ============================================================
+
+const ENGINE_VERSION = "1.9.5";
+const LIBRARY_POSTS=[];
+const CLOSERS=["Sigue a Psicología Conocida para más análisis como este.", "Compártelo si te hizo pensar. Síguenos para más.", "¿Te identificaste? Síguenos para entender más.", "Guarda este post. Síguenos: Psicología Conocida.", "Síguenos si quieres ver el mundo con más claridad."];
+// English closer pool — used when imported card content reads as English
+const CLOSERS_EN=[
+  "Follow for more analysis like this.",
+  "Share it if it made you think. Follow for more.",
+  "Did you see yourself in this? Follow to understand more.",
+  "Save this post. Follow for more.",
+  "Follow if you want to see the world more clearly.",
+];
+// Detect language from card content (title + body + items) — returns 'es' or 'en'.
+// Defaults to 'es' (the original brand) if neither signal is dominant.
+function detectCardLang(card){
+  const parts=[card.title||'', card.body||'', card.teaser||'', card.guion||'', card.sub||''];
+  if(card.items){card.items.forEach(it=>{parts.push(it.kw||it.label||it.hook||'');parts.push(it.desc||it.body||'');});}
+  const text=parts.join(' ').toLowerCase();
+  // Strong Spanish signal: ñ or accented vowels or Spanish inverted punctuation
+  if(/[ñáéíóúü¿¡]/.test(text))return 'es';
+  // Count common stopwords
+  const esWords=(text.match(/\b(que|los|las|una|para|como|mas|tu|sus|este|esta|esto|estos|por|con|sin|sobre|cuando|donde|porque)\b/g)||[]).length;
+  const enWords=(text.match(/\b(the|you|your|what|and|that|this|with|from|have|been|when|where|why|because|about)\b/g)||[]).length;
+  if(enWords>esWords)return 'en';
+  return 'es';
+}
+function pickAutoCloser(card,idx){
+  const lang=detectCardLang(card);
+  const pool=lang==='en'?CLOSERS_EN:CLOSERS;
+  return pool[idx%pool.length];
+}
+const FILE_ID="engine-layout"; // injected per-file at build time
+
+// Load any saved imports from localStorage
+let IMPORTED_POSTS=[];
+try{
+  const raw=localStorage.getItem(`pc-layout-2-imports-${FILE_ID}`);
+  if(raw){IMPORTED_POSTS=JSON.parse(raw).map(p=>({...p,imported:true}));}
+}catch(e){console.warn('Could not load imports:',e);}
+
+let POSTS=[...LIBRARY_POSTS]; // POSTS = currently visible set, rebuilt by applyViewMode()
+let viewMode='library'; // 'library' | 'imports' | 'both'
+
+function saveImports(){
+  try{
+    localStorage.setItem(`pc-layout-2-imports-${FILE_ID}`, JSON.stringify(IMPORTED_POSTS.map(p=>{const{imported,...rest}=p;return rest;})));
+  }catch(e){alert('Could not save imports to localStorage. Browser may have storage disabled for local files.');}
+}
+
+function applyViewMode(){
+  if(viewMode==='library') POSTS=[...LIBRARY_POSTS];
+  else if(viewMode==='imports') POSTS=[...IMPORTED_POSTS];
+  else POSTS=[...LIBRARY_POSTS, ...IMPORTED_POSTS];
+  // Reset per-card state (BG selection + aspect) for the new set
+  cardBG={};cardAspect={};
+  buildGallery();
+}
+
+function onViewModeChange(){
+  viewMode=document.getElementById('viewMode').value;
+  applyViewMode();
+}
+
+// ── 5 BG presets per type: dark, light, neutral, dark-grad, light-grad ──
+const PRESETS={
+  list:[
+    {name:"Dark",chip:"#000",bg:"#000",title:"#3EA6FF",kw:"#3EA6FF",num:"#3EA6FF",desc:"#e8e8e8",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.55)"},
+    {name:"Light",chip:"#F0EBE0",bg:"#F0EBE0",title:"#1255A0",kw:"#1255A0",num:"#1255A0",desc:"#222",closer:"rgba(0,0,0,.75)",wm:"rgba(0,0,0,.45)"},
+    {name:"Neutral",chip:"#1e2530",bg:"#1e2530",title:"#64B5F6",kw:"#64B5F6",num:"#64B5F6",desc:"#c8cdd4",closer:"rgba(255,255,255,.8)",wm:"rgba(255,255,255,.5)"},
+    {name:"Dark Grad",chip:"#0a0f2a",bg:"linear-gradient(180deg,#000 0%,#0a0f2a 60%,#0d1540 100%)",title:"#5BB8FF",kw:"#5BB8FF",num:"#5BB8FF",desc:"#d0d8e8",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sunset",chip:"#FB8C00",bg:"linear-gradient(180deg,#FFE082 0%,#FFB74D 50%,#FB8C00 100%)",title:"#3E2723",kw:"#3E2723",num:"#3E2723",desc:"#2a1810",closer:"rgba(40,20,0,.85)",wm:"rgba(40,20,0,.55)"},
+    {name:"Red",chip:"#2a0a00",bg:"linear-gradient(135deg,#1a0000 0%,#2a0a00 40%,#3a1000 100%)",title:"#D4A017",kw:"#D4A017",num:"#D4A017",desc:"#e0d0c0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Blue",chip:"#001a3a",bg:"linear-gradient(180deg,#000510 0%,#001a3a 50%,#002050 100%)",title:"#82B1FF",kw:"#82B1FF",num:"#82B1FF",desc:"#c8d8f0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sky",chip:"#4FC3F7",bg:"linear-gradient(180deg,#E1F5FE 0%,#4FC3F7 50%,#0288D1 100%)",title:"#0D47A1",kw:"#0D47A1",num:"#0D47A1",desc:"#0a1a2e",closer:"rgba(10,30,60,.85)",wm:"rgba(10,30,60,.5)"},
+  ],
+  identity:[
+    {name:"Dark",chip:"#000",bg:"#000",titleC:"#fff",accent:"#FF4444",label:"#FF6B35",desc:"#e0e0e0",hi:"#FF4444",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.55)"},
+    {name:"Light",chip:"#F0E8DF",bg:"#F0E8DF",titleC:"#1a1a1a",accent:"#B71C1C",label:"#BF360C",desc:"#2a2a2a",hi:"#B71C1C",closer:"rgba(0,0,0,.75)",wm:"rgba(0,0,0,.45)"},
+    {name:"Neutral",chip:"#22201e",bg:"#22201e",titleC:"#f0e6da",accent:"#FF6659",label:"#FF8A65",desc:"#d8d0c8",hi:"#FF6659",closer:"rgba(255,255,255,.8)",wm:"rgba(255,255,255,.5)"},
+    {name:"Dark Grad",chip:"#1a0505",bg:"linear-gradient(180deg,#000 0%,#1a0505 60%,#2a0a0a 100%)",titleC:"#f8e8e0",accent:"#FF5252",label:"#FF7043",desc:"#e0d0c8",hi:"#FF5252",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sunset",chip:"#FB8C00",bg:"linear-gradient(180deg,#FFE082 0%,#FFB74D 50%,#FB8C00 100%)",titleC:"#3E2723",accent:"#B71C1C",label:"#BF360C",desc:"#2a1810",hi:"#B71C1C",closer:"rgba(40,20,0,.85)",wm:"rgba(40,20,0,.55)"},
+    {name:"Red",chip:"#2a0a00",bg:"linear-gradient(135deg,#1a0000 0%,#2a0a00 40%,#3a1000 100%)",titleC:"#f0d8a0",accent:"#FFB300",label:"#E8A020",desc:"#e0d0c0",hi:"#FFB300",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Blue",chip:"#001a3a",bg:"linear-gradient(180deg,#000510 0%,#001a3a 50%,#002050 100%)",titleC:"#d0e0ff",accent:"#82B1FF",label:"#64B5F6",desc:"#c0d0e8",hi:"#82B1FF",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sky",chip:"#4FC3F7",bg:"linear-gradient(180deg,#E1F5FE 0%,#4FC3F7 50%,#0288D1 100%)",titleC:"#0a1a2e",accent:"#B71C1C",label:"#BF360C",desc:"#0a1a2e",hi:"#B71C1C",closer:"rgba(10,30,60,.85)",wm:"rgba(10,30,60,.5)"},
+  ],
+  question:[
+    {name:"Dark",chip:"#000",bg:"#000",titleC:"#fff",accent:"#B388FF",sub:"rgba(255,255,255,.9)",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.55)"},
+    {name:"Light",chip:"#EDE7F6",bg:"#EDE7F6",titleC:"#1a1a1a",accent:"#6A1B9A",sub:"rgba(0,0,0,.85)",closer:"rgba(0,0,0,.75)",wm:"rgba(0,0,0,.45)"},
+    {name:"Neutral",chip:"#1e1a28",bg:"#1e1a28",titleC:"#e8e0f0",accent:"#CE93D8",sub:"rgba(255,255,255,.85)",closer:"rgba(255,255,255,.8)",wm:"rgba(255,255,255,.5)"},
+    {name:"Dark Grad",chip:"#0a0520",bg:"linear-gradient(180deg,#000 0%,#0a0520 60%,#150a30 100%)",titleC:"#f0e8ff",accent:"#D1C4E9",sub:"rgba(255,255,255,.9)",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sunset",chip:"#FB8C00",bg:"linear-gradient(180deg,#FFE082 0%,#FFB74D 50%,#FB8C00 100%)",titleC:"#3E2723",accent:"#6A1B9A",sub:"rgba(40,20,0,.85)",closer:"rgba(40,20,0,.85)",wm:"rgba(40,20,0,.55)"},
+    {name:"Red",chip:"#2a0a00",bg:"linear-gradient(135deg,#1a0000 0%,#2a0a00 40%,#3a1000 100%)",titleC:"#f0d8a0",accent:"#FFB300",sub:"rgba(255,255,255,.9)",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Blue",chip:"#001a3a",bg:"linear-gradient(180deg,#000510 0%,#001a3a 50%,#002050 100%)",titleC:"#d0e0ff",accent:"#82B1FF",sub:"rgba(220,230,255,.9)",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sky",chip:"#4FC3F7",bg:"linear-gradient(180deg,#E1F5FE 0%,#4FC3F7 50%,#0288D1 100%)",titleC:"#0a1a2e",accent:"#4A148C",sub:"rgba(10,30,60,.85)",closer:"rgba(10,30,60,.85)",wm:"rgba(10,30,60,.5)"},
+  ],
+  howto:[
+    {name:"Dark",chip:"#000",bg:"#000",title:"#4DD0E1",kw:"#4DD0E1",num:"#4DD0E1",accent:"#00E676",desc:"#e0e8e8",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.55)"},
+    {name:"Light",chip:"#E0F2F1",bg:"#E0F2F1",title:"#00695C",kw:"#00695C",num:"#00695C",accent:"#2E7D32",desc:"#1a2a2a",closer:"rgba(0,0,0,.75)",wm:"rgba(0,0,0,.45)"},
+    {name:"Neutral",chip:"#1a2220",bg:"#1a2220",title:"#80CBC4",kw:"#80CBC4",num:"#80CBC4",accent:"#69F0AE",desc:"#c8d8d4",closer:"rgba(255,255,255,.8)",wm:"rgba(255,255,255,.5)"},
+    {name:"Dark Grad",chip:"#05151a",bg:"linear-gradient(180deg,#000 0%,#05151a 60%,#0a2028 100%)",title:"#80DEEA",kw:"#80DEEA",num:"#80DEEA",accent:"#69F0AE",desc:"#c8e0e0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sunset",chip:"#FB8C00",bg:"linear-gradient(180deg,#FFE082 0%,#FFB74D 50%,#FB8C00 100%)",title:"#1B5E20",kw:"#1B5E20",num:"#1B5E20",accent:"#3E2723",desc:"#1a2a10",closer:"rgba(40,20,0,.85)",wm:"rgba(40,20,0,.55)"},
+    {name:"Red",chip:"#2a0a00",bg:"linear-gradient(135deg,#1a0000 0%,#2a0a00 40%,#3a1000 100%)",title:"#D4A017",kw:"#D4A017",num:"#D4A017",accent:"#FFB300",desc:"#e0d0c0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Blue",chip:"#001a3a",bg:"linear-gradient(180deg,#000510 0%,#001a3a 50%,#002050 100%)",title:"#82B1FF",kw:"#82B1FF",num:"#82B1FF",accent:"#69F0AE",desc:"#c8d8f0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sky",chip:"#4FC3F7",bg:"linear-gradient(180deg,#E1F5FE 0%,#4FC3F7 50%,#0288D1 100%)",title:"#1B5E20",kw:"#1B5E20",num:"#1B5E20",accent:"#BF360C",desc:"#0a1a2e",closer:"rgba(10,30,60,.85)",wm:"rgba(10,30,60,.5)"},
+  ],
+  script:[
+    {name:"Dark",chip:"#000",bg:"#000",title:"#FFB300",label:"rgba(255,179,0,.7)",teaser:"#f0e6d0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.55)"},
+    {name:"Light",chip:"#F5EFE0",bg:"#F5EFE0",title:"#8B5A00",label:"rgba(139,90,0,.7)",teaser:"#2a1f0a",closer:"rgba(0,0,0,.75)",wm:"rgba(0,0,0,.45)"},
+    {name:"Neutral",chip:"#252018",bg:"#252018",title:"#FFC857",label:"rgba(255,200,87,.7)",teaser:"#e8dcc4",closer:"rgba(255,255,255,.8)",wm:"rgba(255,255,255,.5)"},
+    {name:"Dark Grad",chip:"#1a1408",bg:"linear-gradient(180deg,#000 0%,#1a1408 60%,#2a1f0a 100%)",title:"#FFB300",label:"rgba(255,179,0,.7)",teaser:"#f0e6d0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sunset",chip:"#FB8C00",bg:"linear-gradient(180deg,#FFE082 0%,#FFB74D 50%,#FB8C00 100%)",title:"#3E2723",label:"rgba(62,39,35,.7)",teaser:"#2a1810",closer:"rgba(40,20,0,.85)",wm:"rgba(40,20,0,.55)"},
+    {name:"Red",chip:"#2a0a00",bg:"linear-gradient(135deg,#1a0000 0%,#2a0a00 40%,#3a1000 100%)",title:"#FFB300",label:"rgba(255,179,0,.7)",teaser:"#f0e0c0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Blue",chip:"#001a3a",bg:"linear-gradient(180deg,#000510 0%,#001a3a 50%,#002050 100%)",title:"#FFC857",label:"rgba(255,200,87,.7)",teaser:"#e8dcc4",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sky",chip:"#4FC3F7",bg:"linear-gradient(180deg,#E1F5FE 0%,#4FC3F7 50%,#0288D1 100%)",title:"#3E2723",label:"rgba(62,39,35,.7)",teaser:"#1a0a05",closer:"rgba(10,30,60,.85)",wm:"rgba(10,30,60,.5)"},
+  ],
+  "3points":[
+    {name:"Dark",chip:"#000",bg:"#000",title:"#FF7043",num:"#FF7043",hook:"#FF7043",body:"#e0d8d0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.55)"},
+    {name:"Light",chip:"#FBE9E1",bg:"#FBE9E1",title:"#BF360C",num:"#BF360C",hook:"#BF360C",body:"#2a1810",closer:"rgba(0,0,0,.75)",wm:"rgba(0,0,0,.45)"},
+    {name:"Neutral",chip:"#241c18",bg:"#241c18",title:"#FF8A65",num:"#FF8A65",hook:"#FF8A65",body:"#d8d0c8",closer:"rgba(255,255,255,.8)",wm:"rgba(255,255,255,.5)"},
+    {name:"Dark Grad",chip:"#1a0a05",bg:"linear-gradient(180deg,#000 0%,#1a0a05 60%,#2a1408 100%)",title:"#FF7043",num:"#FF7043",hook:"#FF7043",body:"#e0d0c0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sunset",chip:"#FB8C00",bg:"linear-gradient(180deg,#FFE082 0%,#FFB74D 50%,#FB8C00 100%)",title:"#3E2723",num:"#3E2723",hook:"#3E2723",body:"#2a1810",closer:"rgba(40,20,0,.85)",wm:"rgba(40,20,0,.55)"},
+    {name:"Red",chip:"#2a0a00",bg:"linear-gradient(135deg,#1a0000 0%,#2a0a00 40%,#3a1000 100%)",title:"#FFB300",num:"#FFB300",hook:"#FFB300",body:"#e0d0c0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Blue",chip:"#001a3a",bg:"linear-gradient(180deg,#000510 0%,#001a3a 50%,#002050 100%)",title:"#FF8A65",num:"#FF8A65",hook:"#FF8A65",body:"#c8d8f0",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sky",chip:"#4FC3F7",bg:"linear-gradient(180deg,#E1F5FE 0%,#4FC3F7 50%,#0288D1 100%)",title:"#BF360C",num:"#BF360C",hook:"#BF360C",body:"#0a1a2e",closer:"rgba(10,30,60,.85)",wm:"rgba(10,30,60,.5)"},
+  ],
+  prompt:[
+    {name:"Black",chip:"#000",bg:"#000",title:"#D9A441",body:"#ece6da",num:"#D9A441",strong:"#D9A441",em:"#F4A340",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.55)"},
+    {name:"Dark Blue",chip:"#0a1a3a",bg:"#0a1a3a",title:"#FFD180",body:"#e8edf5",num:"#FFD180",strong:"#FFD180",em:"#FFAB40",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Dark Green",chip:"#0c2a1c",bg:"#0c2a1c",title:"#FFD180",body:"#e5ecdf",num:"#FFD180",strong:"#FFD180",em:"#FFAB40",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Cream",chip:"#F5EFE0",bg:"#F5EFE0",title:"#8B5A00",body:"#2a1f0a",num:"#8B5A00",strong:"#8B5A00",em:"#C2410C",closer:"rgba(0,0,0,.75)",wm:"rgba(0,0,0,.45)"},
+    {name:"Light Gray",chip:"#dadada",bg:"#dadada",title:"#5a3500",body:"#1a1a1a",num:"#5a3500",strong:"#5a3500",em:"#C2410C",closer:"rgba(0,0,0,.75)",wm:"rgba(0,0,0,.45)"},
+    {name:"Sunset",chip:"#FB8C00",bg:"linear-gradient(180deg,#FFE082 0%,#FFB74D 50%,#FB8C00 100%)",title:"#3E2723",body:"#2a1810",num:"#3E2723",strong:"#3E2723",em:"#7B1F02",closer:"rgba(40,20,0,.85)",wm:"rgba(40,20,0,.55)"},
+    {name:"Red",chip:"#2a0a00",bg:"linear-gradient(135deg,#1a0000 0%,#2a0a00 40%,#3a1000 100%)",title:"#FFB300",body:"#e8dcc4",num:"#FFB300",strong:"#FFB300",em:"#FF6E40",closer:"rgba(255,255,255,.85)",wm:"rgba(255,255,255,.5)"},
+    {name:"Sky",chip:"#4FC3F7",bg:"linear-gradient(180deg,#E1F5FE 0%,#4FC3F7 50%,#0288D1 100%)",title:"#3E2723",body:"#0a1a2e",num:"#3E2723",strong:"#3E2723",em:"#BF360C",closer:"rgba(10,30,60,.85)",wm:"rgba(10,30,60,.5)"},
+  ]
+};
+let cardBG={}; // pidx -> bg preset index (defaults to 0)
+
+function S(p,k){return PRESETS[p.format][cardBG[POSTS.indexOf(p)]||0][k]||''}
+function SI(p,bi,k){return PRESETS[p.format][bi][k]||''}
+
+// ── Render ──
+// Per-card custom backgrounds (overrides preset). pidx → {type:'solid'|'gradient', c1, c2, angle, isLight}
+let customBG={};
+try{
+  const raw=localStorage.getItem(`pc-layout-2-customBG-${FILE_ID}`);
+  if(raw)customBG=JSON.parse(raw);
+}catch(e){console.warn('Could not load customBG:',e);}
+function saveCustomBG(){
+  try{localStorage.setItem(`pc-layout-2-customBG-${FILE_ID}`,JSON.stringify(customBG));}
+  catch(e){console.warn('Could not save customBG:',e);throw e;}
+  if(typeof pushHistoryThrottled==='function')pushHistoryThrottled();
+}
+
+// ── customText: per-card, per-element text overrides ──
+// Shape (v1.6+): customText[pidx] = {
+//   title:  {scale, fgType, fg1, fg2, fgAngle, accType, accColor},
+//   body:   {scale, fgType, fg1, fg2, fgAngle, accType, accColor},
+//   closer: {scale, fgType: 'auto'|'solid', fg1}
+// }
+// Accent is now per-group (title vs body) so headlines and body keywords can be highlighted in different colors.
+let customText={};
+try{
+  const raw=localStorage.getItem(`pc-layout-2-customText-${FILE_ID}`);
+  if(raw){
+    const loaded=JSON.parse(raw);
+    Object.keys(loaded).forEach(k=>{
+      const t=loaded[k];
+      // v1.2/v1.3 flat shape (no title key) → migrate everything
+      if(t && !t.title && (t.scale!==undefined || t.fgType!==undefined)){
+        const old={scale:t.scale||1,fgType:t.fgType||'auto',fg1:t.fg1||'#ffffff',fg2:t.fg2||'#888888',fgAngle:t.fgAngle||180};
+        const sharedAcc={accType:t.accType||'auto',accColor:t.accColor||'#FFD700'};
+        loaded[k]={
+          title:{...old,...sharedAcc},
+          body:{...old,...sharedAcc},
+          closer:{scale:old.scale,fgType:old.fgType==='gradient'?'solid':old.fgType,fg1:old.fg1}
+        };
+      }
+      // v1.4/v1.5 shape: has title/body/closer but accent is top-level → move into title and body
+      else if(t && t.title && t.accType!==undefined){
+        const sharedAcc={accType:t.accType,accColor:t.accColor||'#FFD700'};
+        if(!t.title.accType){Object.assign(t.title, sharedAcc);}
+        if(!t.body.accType){Object.assign(t.body, sharedAcc);}
+        delete t.accType;
+        delete t.accColor;
+      }
+    });
+    customText=loaded;
+  }
+}catch(e){console.warn('Could not load customText:',e);}
+function saveCustomText(){
+  try{localStorage.setItem(`pc-layout-2-customText-${FILE_ID}`,JSON.stringify(customText));}
+  catch(e){console.warn('Could not save customText:',e);}
+  pushHistoryThrottled();
+}
+// ── UNDO/REDO history (per-engine, in-memory) ─────────────────────────────
+// Snapshots customText + customBG + cardBG + cardAspect. Throttled so dragging a slider
+// produces ONE history entry on commit, not 100. Max 50 entries.
+const HIST_MAX=50;
+const HIST=[];
+let HIST_IDX=-1;
+let _restoring=false;
+let _histTimer=null;
+function _snapshot(){
+  return JSON.stringify({
+    customText:customText,
+    customBG:customBG,
+    cardBG:typeof cardBG!=='undefined'?cardBG:{},
+    cardAspect:typeof cardAspect!=='undefined'?cardAspect:{}
+  });
+}
+function pushHistoryNow(){
+  if(_restoring)return;
+  const snap=_snapshot();
+  if(HIST.length && HIST[HIST_IDX]===snap)return; // no change
+  HIST.splice(HIST_IDX+1); // truncate redo branch
+  HIST.push(snap);
+  if(HIST.length>HIST_MAX)HIST.shift();
+  HIST_IDX=HIST.length-1;
+}
+function pushHistoryThrottled(){
+  if(_histTimer)clearTimeout(_histTimer);
+  _histTimer=setTimeout(pushHistoryNow,350);
+}
+function _restoreSnapshot(snap){
+  const s=JSON.parse(snap);
+  _restoring=true;
+  customText=s.customText||{};
+  customBG=s.customBG||{};
+  if(typeof cardBG!=='undefined')cardBG=s.cardBG||{};
+  if(typeof cardAspect!=='undefined')cardAspect=s.cardAspect||{};
+  try{localStorage.setItem(`pc-layout-2-customText-${FILE_ID}`,JSON.stringify(customText));}catch(e){}
+  try{localStorage.setItem(`pc-layout-2-customBG-${FILE_ID}`,JSON.stringify(customBG));}catch(e){}
+  _restoring=false;
+  if(document.getElementById('overlay')?.classList.contains('active'))renderOverlay();
+  if(typeof buildGallery==='function')buildGallery();
+}
+function undo(){
+  if(HIST_IDX<=0){toast('Nothing to undo');return;}
+  if(_histTimer){clearTimeout(_histTimer);pushHistoryNow();} // flush pending
+  HIST_IDX--;
+  _restoreSnapshot(HIST[HIST_IDX]);
+  toast(`Undo (${HIST_IDX+1}/${HIST.length})`);
+}
+function redo(){
+  if(HIST_IDX>=HIST.length-1){toast('Nothing to redo');return;}
+  HIST_IDX++;
+  _restoreSnapshot(HIST[HIST_IDX]);
+  toast(`Redo (${HIST_IDX+1}/${HIST.length})`);
+}
+function defaultGroup(grp){
+  if(grp==='closer')return {scale:1,fgType:'auto',fg1:'#ffffff'};
+  // title/body share the same shape: fg (auto/solid/gradient) + accent (auto/solid)
+  return {scale:1,fgType:'auto',fg1:'#ffffff',fg2:'#888888',fgAngle:180,accType:'auto',accColor:'#FFD700'};
+}
+function getCustomText(pidx){
+  const t=customText[pidx];
+  return {
+    title:t?.title  ||defaultGroup('title'),
+    body:t?.body    ||defaultGroup('body'),
+    closer:t?.closer||defaultGroup('closer')
+  };
+}
+function ensureCustomText(pidx){
+  if(!customText[pidx])customText[pidx]=getCustomText(pidx);
+  return customText[pidx];
+}
+// Returns CSS color/gradient for a group's text, or null if auto.
+// isExport=true forces gradient → solid c1 (html2canvas can't render text gradients).
+function resolveGroupFG(pidx,grp,isExport){
+  const ct=getCustomText(pidx);
+  const t=ct[grp];
+  if(!t || t.fgType==='auto')return null;
+  if(t.fgType==='solid')return t.fg1;
+  if(t.fgType==='gradient'){
+    if(isExport)return t.fg1;
+    return `linear-gradient(${t.fgAngle}deg, ${t.fg1}, ${t.fg2})`;
+  }
+  return null;
+}
+// Per-group accent color override, or null if auto
+function resolveGroupAccent(pidx,grp){
+  const ct=getCustomText(pidx);
+  const t=ct[grp];
+  if(!t || t.accType==='auto')return null;
+  return t.accColor;
+}
+
+// Compute perceived luminance of a hex color. Returns true if "light".
+function isColorLight(hex){
+  hex=hex.replace('#','');
+  if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');
+  const r=parseInt(hex.slice(0,2),16);
+  const g=parseInt(hex.slice(2,4),16);
+  const b=parseInt(hex.slice(4,6),16);
+  return (0.299*r+0.587*g+0.114*b) > 140;
+}
+
+// Build a text-color palette for a custom BG, adapting to light/dark
+function customBGPalette(isLight){
+  // 2-tone palette designed to match preset variety: one ACCENT color for emphasis
+  // (title, numbers, keywords, labels, hooks) + one BODY color for descriptions.
+  // Mirrors the dual-tone structure of the format presets.
+  if(isLight) return {
+    // ACCENT: deep warm brown — readable on yellow, cream, light gray, pastel BGs
+    title:'#5a3500',titleC:'#5a3500',label:'#5a3500',kw:'#5a3500',hook:'#5a3500',num:'#5a3500',
+    strong:'#5a3500',accent:'#5a3500',hi:'#5a3500',
+    // BODY: dark warm gray (a tone lighter than accent, creates the visual hierarchy)
+    body:'#1a1a1a',desc:'#1a1a1a',teaser:'#1a1a1a',sub:'#2a2a2a',
+    // Secondary emphasis: deep orange (works on most light BGs)
+    em:'#C2410C',teaserL:'#5a3500',
+    closer:'rgba(0,0,0,0.78)',wm:'rgba(0,0,0,0.42)'
+  };
+  return {
+    // ACCENT: warm gold — readable on black, dark blue, dark red, dark green, near-black BGs
+    title:'#FFB300',titleC:'#FFB300',label:'#FFB300',kw:'#FFB300',hook:'#FFB300',num:'#FFB300',
+    strong:'#FFB300',accent:'#FFB300',hi:'#FFB300',
+    // BODY: warm off-white (not pure #fff, slightly creamy — easier on the eye)
+    body:'#f0e6d0',desc:'#f0e6d0',teaser:'#f0e6d0',sub:'#d8d0c0',
+    // Secondary emphasis: warm orange
+    em:'#FFAB40',teaserL:'#FFB300',
+    closer:'rgba(255,255,255,0.82)',wm:'rgba(255,255,255,0.48)'
+  };
+}
+
+function resolveBG(pidx,post){
+  // Returns {bg, P} for rendering. Custom BG overrides preset.
+  const cb=customBG[pidx];
+  if(cb){
+    const bg=bgSpecToCSS(cb);
+    const P=customBGPalette(cb.isLight);
+    // Merge format-specific keys that may be missing
+    return {bg,P:{...PRESETS[post.format][0],...P}};
+  }
+  const bi=cardBG[pidx]??0;
+  const P=PRESETS[post.format][bi];
+  return {bg:P.bg,P};
+}
+
+function renderCard(post,bi,pidx){
+  const r=(pidx!=null)?resolveBG(pidx,post):{bg:PRESETS[post.format][bi??0].bg,P:PRESETS[post.format][bi??0]};
+  const P=r.P;
+  const bg=r.bg;
+  function mdTitle(s){
+    if(!s)return '';
+    return s.replace(/\*\*([^*]+)\*\*/g,'<strong class="t-strong">$1</strong>')
+            .replace(/\*([^*]+)\*/g,'<em class="t-em">$1</em>');
+  }
+  // v1.9.5: title and body content are built separately, then wrapped in zones.
+  let titleHTML='';
+  let bodyHTML='';
+  if(post.format==='list'){
+    const items=post.items.map((it,i)=>`<div class="item"><span class="num" style="color:${P.num}">${i+1}. </span><span class="kw" style="color:${P.kw}">${it.kw}</span> <span style="color:${P.desc}">- ${it.desc}</span></div>`).join('');
+    titleHTML=`<div class="card-title" style="color:${P.title}">${mdTitle(post.title)}</div>`;
+    bodyHTML=items;
+  } else if(post.format==='identity'){
+    const t=post.title.replace(/\*([^*]+)\*/g,`<span class="accent" style="color:${P.accent}">$1</span>`);
+    const items=post.items.map(it=>{
+      const d=it.desc.replace(/\*([^*]+)\*/g,`<span class="hi" style="color:${P.hi}">$1</span>`);
+      return `<div class="item"><span class="label" style="color:${P.label}">${it.label}</span><span style="color:${P.label}"> : </span><span style="color:${P.desc}">${d}</span></div>`;
+    }).join('');
+    titleHTML=`<div class="card-title" style="color:${P.titleC}">${t}</div>`;
+    bodyHTML=items;
+  } else if(post.format==='question'){
+    const t=post.title.replace(/\*([^*]+)\*/g,`<span class="accent" style="color:${P.accent}">$1</span>`);
+    titleHTML=`<div class="card-title" style="color:${P.titleC}">${t}</div>`;
+    bodyHTML=post.sub?`<div class="sub" style="color:${P.sub}">${post.sub}</div>`:'';
+  } else if(post.format==='howto'){
+    const t=post.title.replace(/\*([^*]+)\*/g,`<span class="accent" style="color:${P.accent}">$1</span>`);
+    const items=post.items.map((it,i)=>`<div class="item"><span class="num" style="color:${P.num}">${i+1}. </span><span class="kw" style="color:${P.kw}">${it.kw}</span> <span style="color:${P.desc}">- ${it.desc}</span></div>`).join('');
+    titleHTML=`<div class="card-title" style="color:${P.title}">${t}</div>`;
+    bodyHTML=items;
+  } else if(post.format==='script'){
+    titleHTML=`<div class="card-title" style="color:${P.title}">${mdTitle(post.title)}</div>`;
+    bodyHTML=`<div class="teaser-label" style="color:${P.label}">TEASER</div><div class="teaser" style="color:${P.teaser}">${post.teaser||''}</div>`;
+  } else if(post.format==='3points'){
+    const items=post.items.map((it,i)=>`<div class="item"><span class="num" style="color:${P.num}">${i+1}. </span><span class="hook" style="color:${P.hook}">${it.hook}</span><span class="body" style="color:${P.body}">${it.body}</span></div>`).join('');
+    titleHTML=`<div class="card-title" style="color:${P.title}">${mdTitle(post.title)}</div>`;
+    bodyHTML=items;
+  } else if(post.format==='prompt'){
+    function md(s){
+      return s.replace(/\*\*([^*]+)\*\*/g,`<strong style="color:${P.strong}">$1</strong>`)
+              .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g,`<em style="color:${P.em}">$1</em>`);
+    }
+    const lines=(post.body||'').split('\n').filter(l=>l.trim());
+    const bodyContent=lines.map(line=>{
+      const t=line.trim();
+      const numM=t.match(/^(\d+)\.\s+(.*)$/);
+      if(numM){
+        return `<div class="pb-line"><span class="pb-num" style="color:${P.num}">${numM[1]}.</span> ${md(numM[2])}</div>`;
+      }
+      return `<div class="pb-line">${md(t)}</div>`;
+    }).join('');
+    titleHTML=post.title?`<div class="card-title" style="color:${P.title}">${mdTitle(post.title)}</div>`:'';
+    bodyHTML=`<div class="prompt-body" style="color:${P.body}">${bodyContent}</div>`;
+  }
+  return `<div class="card fmt-${post.format}" style="background:${bg}">`+
+    `<div class="zone-title">${titleHTML}</div>`+
+    `<div class="zone-body">${bodyHTML}</div>`+
+    `<div class="zone-closer"><div class="closer" style="color:${P.closer}">${post.closer}</div></div>`+
+    `<div class="zone-watermark"><div class="watermark" style="color:${P.wm}">PSICOLOGÍA CONOCIDA</div></div>`+
+  `</div>`;
+}
+
+// ── Reel Cover render: 9:16 minimalist title-only layout for Reel thumbnails ──
+function renderReelCover(post,bi,pidx){
+  const r=(pidx!=null)?resolveBG(pidx,post):{bg:PRESETS[post.format][bi??0].bg,P:PRESETS[post.format][bi??0]};
+  const P=r.P;
+  const bg=r.bg;
+  // Determine cover text: title, or first sentence of body for prompts with empty title
+  let coverText=post.title||'';
+  if(!coverText && post.format==='prompt' && post.body){
+    // Take first sentence (split by . ! ? or newline)
+    const m=post.body.split(/[.!?\n]/).map(s=>s.trim()).filter(Boolean);
+    coverText=m[0]||post.body.slice(0,80);
+  }
+  // Markdown highlighting (same as titles)
+  function md(s){
+    if(!s)return '';
+    return s.replace(/\*\*([^*]+)\*\*/g,'<strong class="t-strong">$1</strong>')
+            .replace(/\*([^*]+)\*/g,'<em class="t-em">$1</em>');
+  }
+  return `<div class="card reel-cover" style="background:${bg}">
+    <div class="cover-zone"><div class="reel-title" style="color:${P.title}">${md(coverText)}</div></div>
+  </div>`;
+}
+
+function bgChipsHTML(pidx,ctx){
+  const fmt=POSTS[pidx].format;
+  const isCustom=!!customBG[pidx];
+  const presetChips=PRESETS[fmt].map((p,i)=>`<span class="bg-chip${(!isCustom && i===cardBG[pidx])?' active':''}" style="background:${p.chip}" title="${p.name}" onclick="event.stopPropagation();setBG(${pidx},${i},'${ctx}')"></span>`).join('');
+  const customChip=`<span class="bg-chip bg-custom${isCustom?' active':''}" title="Custom BG" onclick="event.stopPropagation();openCustomBGModal(${pidx},'${ctx}')"></span>`;
+  return presetChips+customChip;
+}
+
+// ── Custom BG picker ──
+let customBGTarget={pidx:null,ctx:null,type:'solid',imageData:null};
+function openCustomBGModal(pidx,ctx){
+  customBGTarget={pidx,ctx,type:'solid',imageData:null};
+  const existing=customBG[pidx];
+  if(existing){
+    customBGTarget.type=existing.type;
+    if(existing.type==='solid'){
+      document.getElementById('bgC1Solid').value=existing.c1;
+    } else if(existing.type==='gradient'){
+      document.getElementById('bgC1Grad').value=existing.c1;
+      document.getElementById('bgC2Grad').value=existing.c2||'#000000';
+      document.getElementById('bgAngle').value=existing.angle||180;
+      document.getElementById('bgAngleDisp').textContent=(existing.angle||180)+'°';
+    } else if(existing.type==='image'){
+      customBGTarget.imageData=existing.data;
+      document.getElementById('bgImageOverlay').value=Math.round((existing.overlay??0.4)*100);
+      document.getElementById('bgImageOverlayDisp').textContent=Math.round((existing.overlay??0.4)*100)+'%';
+      document.getElementById('bgImageIsLight').value=existing.isLight?'true':'false';
+      document.getElementById('bgImageFit').value=existing.fit||'cover';
+      const sizeKB=existing.data?Math.round(existing.data.length*0.75/1024):0;
+      document.getElementById('bgImageStatus').textContent=`Image loaded (~${sizeKB} KB). Pick a new file to replace.`;
+      document.getElementById('bgImageStatus').style.color='#9ad';
+    }
+    // Always keep all color inputs in sync so switching tabs feels natural
+    if(existing.c1){
+      document.getElementById('bgC1Solid').value=existing.c1;
+      document.getElementById('bgC1Grad').value=existing.c1;
+    }
+  } else {
+    // Reset image panel when no existing
+    document.getElementById('bgImageStatus').textContent='No image loaded. Pick a file above (max 1200px, JPEG ~0.85).';
+    document.getElementById('bgImageStatus').style.color='#888';
+    document.getElementById('bgImageOverlay').value=40;
+    document.getElementById('bgImageOverlayDisp').textContent='40%';
+    document.getElementById('bgImageIsLight').value='false';
+    document.getElementById('bgImageFit').value='cover';
+    document.getElementById('bgImageFile').value='';
+  }
+  setBgType(customBGTarget.type);
+  document.getElementById('customBgModal').classList.add('show');
+}
+function closeCustomBGModal(){document.getElementById('customBgModal').classList.remove('show');}
+function setBgType(type){
+  customBGTarget.type=type;
+  document.getElementById('bgSolidPanel').style.display=type==='solid'?'block':'none';
+  document.getElementById('bgGradientPanel').style.display=type==='gradient'?'block':'none';
+  document.getElementById('bgImagePanel').style.display=type==='image'?'block':'none';
+  document.getElementById('bgTabSolid').className=type==='solid'?'primary':'';
+  document.getElementById('bgTabGradient').className=type==='gradient'?'primary':'';
+  document.getElementById('bgTabImage').className=type==='image'?'primary':'';
+  updateBgPreview();
+}
+function currentBgSpec(){
+  if(customBGTarget.type==='solid'){
+    const c1=document.getElementById('bgC1Solid').value;
+    return {type:'solid',c1,isLight:isColorLight(c1)};
+  }
+  if(customBGTarget.type==='image'){
+    const overlay=parseInt(document.getElementById('bgImageOverlay').value)/100;
+    const isLight=document.getElementById('bgImageIsLight').value==='true';
+    const fit=document.getElementById('bgImageFit').value;
+    return {type:'image',data:customBGTarget.imageData||'',overlay,isLight,fit};
+  }
+  const c1=document.getElementById('bgC1Grad').value;
+  const c2=document.getElementById('bgC2Grad').value;
+  const angle=parseInt(document.getElementById('bgAngle').value);
+  // Average two colors for luminance decision
+  function lum(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');return 0.299*parseInt(h.slice(0,2),16)+0.587*parseInt(h.slice(2,4),16)+0.114*parseInt(h.slice(4,6),16);}
+  const avg=(lum(c1)+lum(c2))/2;
+  return {type:'gradient',c1,c2,angle,isLight:avg>140};
+}
+// Build CSS background string from a spec — used in both preview and resolveBG
+function bgSpecToCSS(spec){
+  if(spec.type==='solid')return spec.c1;
+  if(spec.type==='gradient')return `linear-gradient(${spec.angle}deg, ${spec.c1}, ${spec.c2})`;
+  if(spec.type==='image'){
+    if(!spec.data)return '#222'; // fallback if no image yet
+    const ov=spec.overlay??0.4;
+    const oc=spec.isLight?`rgba(255,255,255,${ov})`:`rgba(0,0,0,${ov})`;
+    const fit=spec.fit||'cover';
+    // Layer 1 (top): overlay tint. Layer 2: the image
+    return `linear-gradient(${oc}, ${oc}), url("${spec.data}") center/${fit} no-repeat`;
+  }
+  return '#222';
+}
+function updateBgPreview(){
+  const spec=currentBgSpec();
+  const prev=document.getElementById('bgPreview');
+  prev.style.background=bgSpecToCSS(spec);
+  prev.style.color=spec.isLight?'#000':'#fff';
+  if(spec.type==='image' && !spec.data){
+    prev.textContent='No image loaded yet';
+  } else {
+    prev.textContent=spec.isLight?'Light BG → dark text':'Dark BG → light text';
+  }
+  if(spec.type==='gradient')document.getElementById('bgAngleDisp').textContent=spec.angle+'°';
+  if(spec.type==='image')document.getElementById('bgImageOverlayDisp').textContent=Math.round(spec.overlay*100)+'%';
+}
+// Image file picker handler — compresses to max 1200px, JPEG 0.85
+async function onBgImageFile(input){
+  const file=input.files && input.files[0];
+  if(!file)return;
+  const status=document.getElementById('bgImageStatus');
+  status.textContent='Loading...';
+  status.style.color='#9ad';
+  try{
+    const dataUrl=await fileToCompressedDataURL(file,1200,0.85);
+    customBGTarget.imageData=dataUrl;
+    const sizeKB=Math.round(dataUrl.length*0.75/1024);
+    status.textContent=`Image loaded (~${sizeKB} KB). Adjust overlay & text color below.`;
+    status.style.color='#9ad';
+    updateBgPreview();
+  }catch(e){
+    console.warn('Image load failed:',e);
+    status.textContent='Could not load image. Try a different file.';
+    status.style.color='#f88';
+  }
+}
+function clearBgImage(){
+  customBGTarget.imageData=null;
+  document.getElementById('bgImageFile').value='';
+  const status=document.getElementById('bgImageStatus');
+  status.textContent='No image loaded. Pick a file above (max 1200px, JPEG ~0.85).';
+  status.style.color='#888';
+  updateBgPreview();
+}
+// Compress a file to a DataURL (max dimension + JPEG quality)
+function fileToCompressedDataURL(file,maxDim,quality){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      try{
+        const scale=Math.min(1,maxDim/Math.max(img.width,img.height));
+        const w=Math.round(img.width*scale);
+        const h=Math.round(img.height*scale);
+        const canvas=document.createElement('canvas');
+        canvas.width=w;canvas.height=h;
+        const ctx=canvas.getContext('2d');
+        // White background prevents black showing through if user uploads PNG with alpha
+        ctx.fillStyle='#fff';
+        ctx.fillRect(0,0,w,h);
+        ctx.drawImage(img,0,0,w,h);
+        URL.revokeObjectURL(url);
+        resolve(canvas.toDataURL('image/jpeg',quality));
+      }catch(err){URL.revokeObjectURL(url);reject(err);}
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Image load error'));};
+    img.src=url;
+  });
+}
+function applyCustomBG(){
+  const {pidx,ctx}=customBGTarget;
+  if(pidx==null)return;
+  const spec=currentBgSpec();
+  if(spec.type==='image' && !spec.data){
+    toast('Pick an image file first');
+    return;
+  }
+  customBG[pidx]=spec;
+  try{
+    saveCustomBG();
+  }catch(e){
+    toast('Could not save — storage may be full (try clearing other custom backgrounds)');
+    return;
+  }
+  closeCustomBGModal();
+  // Re-render just the affected card (perf: avoid full gallery rebuild)
+  const el=document.getElementById('gc-'+pidx);
+  if(el)el.outerHTML=buildCC(pidx);
+  if(ctx==='overlay')renderOverlay();
+  toast('Custom background applied');
+}
+function resetCustomBG(){
+  const {pidx,ctx}=customBGTarget;
+  if(pidx==null)return;
+  delete customBG[pidx];
+  saveCustomBG();
+  closeCustomBGModal();
+  const el=document.getElementById('gc-'+pidx);
+  if(el)el.outerHTML=buildCC(pidx);
+  if(ctx==='overlay')renderOverlay();
+  toast('Reset to preset');
+}
+
+function setBG(pidx,bi,ctx){
+  cardBG[pidx]=bi;
+  // Switching to a preset clears any custom BG that was applied
+  if(customBG[pidx]){delete customBG[pidx];saveCustomBG();}
+  if(ctx==='gallery'){const el=document.getElementById('gc-'+pidx);if(el)el.innerHTML=buildCC(pidx);}
+  if(ctx==='overlay')renderOverlay();
+}
+
+// ── Gallery ──
+let filtered=[],filteredMap=[];
+const ASPECT_RATIOS=[
+  {label:'4:5',w:1080,h:1350},
+  {label:'1:1',w:1080,h:1080},
+  {label:'9:16',w:1080,h:1920},
+  {label:'3:4',w:1080,h:1440},
+];
+let cardAspect={}; // pidx -> aspect ratio index
+
+function postSearchable(p){
+  // Concatenate all searchable text
+  let parts=[p.title,p.closer||''];
+  if(p.sub) parts.push(p.sub);
+  if(p.teaser) parts.push(p.teaser);
+  if(p.guion) parts.push(p.guion);
+  if(p.body) parts.push(p.body);
+  if(p.prompt) parts.push(p.prompt);
+  if(p.caption) parts.push(p.caption);
+  if(p.items) p.items.forEach(it=>{
+    if(it.kw) parts.push(it.kw);
+    if(it.label) parts.push(it.label);
+    if(it.desc) parts.push(it.desc);
+    if(it.hook) parts.push(it.hook);
+    if(it.body) parts.push(it.body);
+  });
+  return parts.join(' ').toLowerCase();
+}
+
+function buildCC(pidx){
+  const post=POSTS[pidx];
+  const num=String(filteredMap.indexOf(pidx)+1).padStart(3,'0');
+  const total=filtered.length;
+  const aspectIdx=cardAspect[pidx]||0;
+  const aspectOpts=ASPECT_RATIOS.map((r,i)=>`<option value="${i}"${i===aspectIdx?' selected':''}>${r.label}</option>`).join('');
+  const importTag=post.imported?'<span class="import-tag">IMPORT</span>':'';
+  return `<div class="card-container" id="gc-${pidx}">
+    <div class="card-number">#${num} / ${String(total).padStart(3,'0')}${importTag}</div>
+    ${renderCard(post,cardBG[pidx],pidx)}
+    <div class="card-toolbar">
+      <button onclick="event.stopPropagation();copyTitle(${pidx})">Copy Title</button>
+      <button onclick="event.stopPropagation();copyCardText(${pidx})">Copy Card</button>
+      ${(post.format==='script'&&post.guion)||(post.format!=='script'&&post.caption)?`<button onclick="event.stopPropagation();copyCaption(${pidx})" title="Copy the FB post caption">Copy Caption</button>`:''}
+      ${post.format==='prompt'?`<button onclick="event.stopPropagation();copyPromptText(${pidx})" title="Copy the image-generation prompt">Copy Prompt</button>`:''}
+      <span class="tb-sep"></span>
+      <span class="tb-lbl">BG</span>${bgChipsHTML(pidx,'gallery')}
+      <span class="tb-sep"></span>
+      <select onclick="event.stopPropagation()" onchange="event.stopPropagation();cardAspect[${pidx}]=parseInt(this.value)" title="Aspect ratio">${aspectOpts}</select>
+      <button onclick="event.stopPropagation();exportPost(${pidx})">Export</button>
+      <button onclick="event.stopPropagation();exportPost(${pidx},true)" title="Export with transparent background">Export T</button>
+      <button onclick="event.stopPropagation();exportReelCover(${pidx})" title="Export 9:16 Reel cover frame (title only, upper 60%, bottom safe-zone for Reel UI)">Cover</button>
+      <button onclick="event.stopPropagation();exportReelCover(${pidx},true)" title="Export 9:16 Reel cover with transparent background">Cover T</button>
+      <button onclick="event.stopPropagation();openOverlay(${pidx})">Full View</button>
+      ${post.imported?`<button class="delete-import" onclick="event.stopPropagation();deleteImport(${pidx})" title="Delete this imported card">✕</button>`:''}
+    </div>
+  </div>`;
+}
+function buildGallery(){
+  const type=document.getElementById('filterType').value;
+  const query=(document.getElementById('searchInput').value||'').toLowerCase().trim();
+  filtered=[];filteredMap=[];
+  POSTS.forEach((p,i)=>{
+    const typeOk=(type==='all'||p.format===type);
+    const searchOk=(!query||postSearchable(p).includes(query));
+    if(typeOk&&searchOk){filtered.push(p);filteredMap.push(i);}
+  });
+  document.getElementById('counter').textContent=`${filtered.length} / ${POSTS.length}`;
+  document.getElementById('gallery').innerHTML=filteredMap.map(pidx=>buildCC(pidx)).join('');
+  // Double-RAF ensures layout has settled before we measure
+  requestAnimationFrame(()=>requestAnimationFrame(autoFitGalleryCards));
+}
+
+// v1.9.5: gallery thumbnails now use zone-based layout with overflow:hidden.
+// Auto-fit is no longer needed in gallery — content that exceeds a zone is clipped.
+// For full-fidelity preview, click the card to open the overlay (which runs per-zone fit).
+function autoFitGalleryCards(){
+  // intentional no-op — kept for compatibility with existing call sites
+}
+
+// Re-fit on window resize so dynamic column count doesn't break it
+window.addEventListener('resize',()=>{clearTimeout(window._fitT);window._fitT=setTimeout(autoFitGalleryCards,150);});
+document.getElementById('filterType').onchange=buildGallery;
+
+// ── Overlay (two-column: controls left, preview right) ──
+let currentPidx=0;
+function openOverlay(pidx){
+  currentPidx=pidx;
+  document.getElementById('overlay').classList.add('active');
+  // Defer to next frame so the overlay has actual dimensions before we measure
+  requestAnimationFrame(()=>renderOverlay());
+}
+function closeOverlay(){document.getElementById('overlay').classList.remove('active');}
+function navPost(d){let fi=filteredMap.indexOf(currentPidx);fi=(fi+d+filteredMap.length)%filteredMap.length;currentPidx=filteredMap[fi];renderOverlay();}
+
+// Apply per-card text overrides scoped per element group.
+// isExport=true makes gradient mode fall back to solid c1 (html2canvas limitation).
+function applyCustomText(cardEl, pidx, isExport){
+  const fgTitle = resolveGroupFG(pidx,'title',isExport);
+  const fgBody  = resolveGroupFG(pidx,'body',isExport);
+  const fgCloser= resolveGroupFG(pidx,'closer',isExport);
+  const accentClasses=['t-em','accent','hi','t-strong'];
+  const isAccent=el=>accentClasses.some(c=>el.classList.contains(c));
+  function paint(el, color){
+    if(!color){
+      // Clear any prior gradient/transparent styles so renderCard's inline color wins
+      el.style.backgroundImage='';
+      el.style.webkitBackgroundClip='';
+      el.style.backgroundClip='';
+      el.style.webkitTextFillColor='';
+      return;
+    }
+    if(color.includes && color.includes('gradient')){
+      el.style.backgroundImage=color;
+      el.style.webkitBackgroundClip='text';
+      el.style.backgroundClip='text';
+      el.style.webkitTextFillColor='transparent';
+      el.style.color='transparent';
+    } else {
+      el.style.color=color;
+      el.style.backgroundImage='';
+      el.style.webkitBackgroundClip='';
+      el.style.backgroundClip='';
+      el.style.webkitTextFillColor='';
+    }
+  }
+  // TITLE group: .card-title (normal posts) AND .reel-title (cover) + any non-accent text-bearing child
+  // v1.9.3: cover title now honors user's title color override (was previously stuck on PRESETS default)
+  if(fgTitle){
+    cardEl.querySelectorAll('.card-title, .reel-title').forEach(titleEl=>{
+      paint(titleEl, fgTitle);
+      titleEl.querySelectorAll('[style*="color"]').forEach(el=>{if(!isAccent(el))paint(el, fgTitle);});
+    });
+  }
+  // BODY group: items, sub, teaser, teaser-label, prompt-body (and their child non-accent spans)
+  if(fgBody){
+    const bodySelectors='.item, .sub, .teaser, .teaser-label, .prompt-body, .prompt-body .pb-line';
+    cardEl.querySelectorAll(bodySelectors).forEach(el=>{
+      if(isAccent(el))return;
+      paint(el, fgBody);
+      el.querySelectorAll('[style*="color"]').forEach(child=>{if(!isAccent(child))paint(child, fgBody);});
+    });
+  }
+  // CLOSER group: .closer only
+  if(fgCloser){
+    const c=cardEl.querySelector('.closer');
+    if(c)paint(c, fgCloser);
+  }
+  // TITLE ACCENT — overrides accent spans INSIDE .card-title OR .reel-title (cover)
+  const accTitle = resolveGroupAccent(pidx, 'title');
+  if(accTitle){
+    cardEl.querySelectorAll('.card-title .t-em, .card-title .t-strong, .card-title .accent, .reel-title .t-em, .reel-title .t-strong, .reel-title .accent').forEach(el=>{
+      el.style.color=accTitle;
+      el.style.backgroundImage='';
+      el.style.webkitBackgroundClip='';
+      el.style.backgroundClip='';
+      el.style.webkitTextFillColor='';
+    });
+  }
+  // BODY ACCENT — applies to all VISUALLY EMPHASIZED body elements:
+  //   .hi (identity desc highlights), .kw (list/howto keywords), .num (list/howto/3points numbers),
+  //   .hook (3points hooks), .label (identity month labels), .pb-num (prompt body numbers),
+  //   .t-em/.t-strong outside .card-title (e.g. prompt body markdown).
+  const accBody = resolveGroupAccent(pidx, 'body');
+  if(accBody){
+    cardEl.querySelectorAll('.hi, .kw, .num, .hook, .label, .pb-num').forEach(el=>{
+      el.style.color=accBody;
+      el.style.backgroundImage='';
+      el.style.webkitBackgroundClip='';
+      el.style.backgroundClip='';
+      el.style.webkitTextFillColor='';
+    });
+    cardEl.querySelectorAll('.t-em, .t-strong').forEach(el=>{
+      if(el.closest('.card-title'))return; // title-scoped accents handled above
+      el.style.color=accBody;
+      el.style.backgroundImage='';
+      el.style.webkitBackgroundClip='';
+      el.style.backgroundClip='';
+      el.style.webkitTextFillColor='';
+    });
+  }
+}
+
+// v1.9.5: PER-ZONE fit. Each zone (title, body, closer) is measured INDEPENDENTLY and
+// shrunk only as much as needed to fit its own content. Title scale no longer drops because
+// the body is long. Used by BOTH overlay preview and export so they always match.
+// Returns {title, body, closer, worst}. `worst` is the smallest scale across zones.
+// In CENTER mode, after fit, zones are repositioned so the title+body+closer composition
+// is centered vertically in the space above the watermark (watermark stays anchored).
+function applyFontsWithFit(card, fmt, userScales, aspect){
+  // Step 1: apply user scales to all elements
+  applyExportFonts(card, fmt, userScales);
+
+  // Step 2: measure each zone's overflow and compute per-zone shrink
+  const titleZone = card.querySelector('.zone-title');
+  const bodyZone  = card.querySelector('.zone-body');
+  const closerZone= card.querySelector('.zone-closer');
+  void (titleZone && titleZone.offsetHeight);
+
+  function shrinkOf(zone){
+    if(!zone) return 1;
+    const ch = zone.clientHeight, sh = zone.scrollHeight;
+    return (sh > ch) ? (ch / sh) * 0.98 : 1;
+  }
+  const tShrink = shrinkOf(titleZone);
+  const bShrink = shrinkOf(bodyZone);
+  const cShrink = shrinkOf(closerZone);
+
+  // Step 3: re-apply with per-zone shrunk scales if any zone overflowed
+  if(tShrink < 1 || bShrink < 1 || cShrink < 1){
+    const shrunk = {
+      title:  userScales.title  * tShrink,
+      body:   userScales.body   * bShrink,
+      closer: userScales.closer * cShrink
+    };
+    applyExportFonts(card, fmt, shrunk);
+  }
+
+  // Step 4: if Center mode is active, reposition zones so composition centers vertically
+  if(currentBodyAlign() === 'center'){
+    repositionZonesCenter(card, aspect);
+  }
+  // (Top mode = CSS defaults, no inline overrides needed)
+
+  const worst = Math.min(tShrink, bShrink, cShrink);
+  return { title: tShrink, body: bShrink, closer: cShrink, worst: worst };
+}
+
+// v1.9.5: Center mode — measure actual content heights after fit, then reposition
+// title/body/closer zones so the composition is centered vertically above the watermark.
+function repositionZonesCenter(card, aspect){
+  const titleEl  = card.querySelector('.card-title');
+  const closerEl = card.querySelector('.closer');
+  const titleZone = card.querySelector('.zone-title');
+  const bodyZone  = card.querySelector('.zone-body');
+  const closerZone= card.querySelector('.zone-closer');
+  if(!titleZone || !bodyZone || !closerZone) return;
+
+  const cardH = aspect.h;
+  const compH = cardH * 0.92; // composition area (above watermark at 92%)
+
+  const titleH  = titleEl  ? titleEl.offsetHeight  : 0;
+  const closerH = closerEl ? closerEl.offsetHeight : 0;
+  const bodyH   = Math.min(bodyZone.scrollHeight, bodyZone.clientHeight);
+
+  const gap = 24; // px gap between sections
+  const totalH = titleH + bodyH + closerH + 2 * gap;
+  const topPad = Math.max(0, (compH - totalH) / 2);
+
+  const titleTop  = topPad;
+  const bodyTop   = titleTop + titleH + gap;
+  const closerTop = bodyTop  + bodyH  + gap;
+  const pct = px => (px / cardH * 100) + '%';
+
+  titleZone.style.top    = pct(titleTop);
+  titleZone.style.height = pct(titleH);
+  bodyZone.style.top     = pct(bodyTop);
+  bodyZone.style.height  = pct(bodyH);
+  closerZone.style.top   = pct(closerTop);
+  closerZone.style.height= pct(closerH);
+}
+
+// v1.9.5: Body alignment is a global setting per FILE_ID (Top | Center).
+let _bodyAlign = null;
+function currentBodyAlign(){
+  if(_bodyAlign !== null) return _bodyAlign;
+  try {
+    const v = localStorage.getItem(`pc-layout-2-body-align-${FILE_ID}`);
+    _bodyAlign = (v === 'top') ? 'top' : 'center'; // default center
+  } catch(e) { _bodyAlign = 'center'; }
+  return _bodyAlign;
+}
+function setBodyAlign(v){
+  _bodyAlign = (v === 'top') ? 'top' : 'center';
+  try { localStorage.setItem(`pc-layout-2-body-align-${FILE_ID}`, _bodyAlign); } catch(e){}
+  document.querySelectorAll('[data-bodyalign]').forEach(b => b.classList.toggle('active', b.dataset.bodyalign === _bodyAlign));
+  if(document.getElementById('overlay').classList.contains('active')){
+    rerenderOvPreviewOnly();
+  }
+}
+
+function renderOverlay(){
+  const fi=filteredMap.indexOf(currentPidx);
+  document.getElementById('overlayIdx').textContent=`#${String(fi+1).padStart(3,'0')} / ${String(filtered.length).padStart(3,'0')}`;
+  rerenderOvPreviewOnly();
+  populateOvControls();
+}
+// Re-render JUST the preview card. Called whenever any styling control changes.
+function rerenderOvPreviewOnly(){
+  const post=POSTS[currentPidx];
+  document.getElementById('overlayCard').innerHTML=renderCard(post,cardBG[currentPidx],currentPidx);
+  const aspect=ASPECT_RATIOS[cardAspect[currentPidx]||0];
+  const card=document.querySelector('#overlayCard .card');
+  if(!card)return;
+  card.style.width=aspect.w+'px';
+  card.style.height=aspect.h+'px';
+  card.style.aspectRatio='auto';
+  card.style.padding='8% 10% 12% 10%';
+  card.querySelectorAll('.card-number').forEach(el=>el.remove());
+  // isExport=false so gradients render in preview (WYSIWYG with caveat: exports fall back to solid)
+  applyCustomText(card, currentPidx, false);
+  const ct=getCustomText(currentPidx);
+  applyFontsWithFit(card, post.format, {title:ct.title.scale,body:ct.body.scale,closer:ct.closer.scale}, aspect);
+  fitOverlayCard();
+}
+function fitOverlayCard(){
+  const aspect=ASPECT_RATIOS[cardAspect[currentPidx]||0];
+  const preview=document.getElementById('ovPreview');
+  if(!preview)return;
+  const availW=preview.clientWidth-32;
+  const availH=preview.clientHeight-32;
+  // If overlay just appeared and layout isn't ready, defer
+  if(availW<=10||availH<=10){
+    requestAnimationFrame(fitOverlayCard);
+    return;
+  }
+  const scale=Math.min(1, availW/aspect.w, availH/aspect.h);
+  const outer=document.getElementById('cardWrapOuter');
+  const inner=document.getElementById('cardWrapInner');
+  outer.style.width=(aspect.w*scale)+'px';
+  outer.style.height=(aspect.h*scale)+'px';
+  inner.style.width=aspect.w+'px';
+  inner.style.height=aspect.h+'px';
+  inner.style.transform=`scale(${scale})`;
+}
+function populateOvControls(){
+  const pidx=currentPidx;
+  const ct=getCustomText(pidx);
+  const post=POSTS[pidx];
+  // Aspect dropdown
+  document.getElementById('ovAspect').innerHTML=ASPECT_RATIOS.map((r,i)=>`<option value="${i}"${i===(cardAspect[pidx]||0)?' selected':''}>${r.label}  (${r.w}×${r.h})</option>`).join('');
+  // v1.9.5: sync Body Alignment toggle
+  const ba = currentBodyAlign();
+  document.querySelectorAll('[data-bodyalign]').forEach(b => b.classList.toggle('active', b.dataset.bodyalign === ba));
+  // Per-element typography controls (title/body/closer) — fg + accent (title/body only)
+  ['title','body','closer'].forEach(grp=>{
+    const g=ct[grp];
+    // Scale slider + disp
+    const pct=Math.round(g.scale*100);
+    const slider=document.getElementById('ov'+grp[0].toUpperCase()+grp.slice(1)+'Scale');
+    if(slider)slider.value=pct;
+    const disp=document.getElementById('ov'+grp[0].toUpperCase()+grp.slice(1)+'ScaleDisp');
+    if(disp)disp.textContent=pct+'%';
+    // FG seg buttons
+    document.querySelectorAll(`.seg button[data-grp="${grp}"][data-mode]`).forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.mode===g.fgType);
+    });
+    // Solid row + values
+    const solidRow=document.querySelector(`.solid-row[data-grp="${grp}"]`);
+    if(solidRow){
+      solidRow.style.display=g.fgType==='solid'?'flex':'none';
+      const colorIn=solidRow.querySelector('input[type=color]');
+      const hexIn=solidRow.querySelector('input[type=text]');
+      if(colorIn)colorIn.value=g.fg1;
+      if(hexIn)hexIn.value=g.fg1;
+    }
+    // Gradient row + values (title/body only)
+    const gradRow=document.querySelector(`.grad-row[data-grp="${grp}"]`);
+    if(gradRow){
+      gradRow.style.display=g.fgType==='gradient'?'flex':'none';
+      const colorIns=gradRow.querySelectorAll('input[type=color]');
+      if(colorIns[0])colorIns[0].value=g.fg1;
+      if(colorIns[1])colorIns[1].value=g.fg2;
+      const angleIn=gradRow.querySelector('input[type=range]');
+      if(angleIn){angleIn.value=g.fgAngle;angleIn.nextElementSibling.textContent=g.fgAngle+'°';}
+    }
+    // Accent seg + row (title/body only — closer has no accent control)
+    if(grp!=='closer'){
+      document.querySelectorAll(`.seg button[data-grp="${grp}"][data-accmode]`).forEach(btn=>{
+        btn.classList.toggle('active', btn.dataset.accmode===g.accType);
+      });
+      const accRow=document.querySelector(`.acc-row[data-grp="${grp}"]`);
+      if(accRow){
+        accRow.style.display=g.accType==='solid'?'flex':'none';
+        const colorIn=accRow.querySelector('input[type=color]');
+        const hexIn=accRow.querySelector('input[type=text]');
+        if(colorIn)colorIn.value=g.accColor;
+        if(hexIn)hexIn.value=g.accColor;
+      }
+    }
+  });
+  // BG chips
+  document.getElementById('ovBgChips').innerHTML=bgChipsHTML(pidx,'overlay');
+  // Conditional copy buttons
+  document.getElementById('ovCopyPromptBtn').style.display=(post.format==='prompt')?'':'none';
+  const capBtn=document.getElementById('ovCopyCaptionBtn');
+  const hasCap=(post.format==='script'&&post.guion)||(post.format!=='script'&&post.caption);
+  capBtn.style.display=hasCap?'':'none';
+}
+
+// ── Overlay control handlers ──
+function onOvAspectChange(v){
+  cardAspect[currentPidx]=parseInt(v);
+  rerenderOvPreviewOnly();
+}
+function onOvScale(grp, v){
+  const ct=ensureCustomText(currentPidx);
+  ct[grp]=ct[grp]||defaultGroup(grp);
+  ct[grp].scale=v/100;
+  saveCustomText();
+  document.getElementById('ov'+grp[0].toUpperCase()+grp.slice(1)+'ScaleDisp').textContent=v+'%';
+  rerenderOvPreviewOnly();
+}
+function onOvFgType(grp, type){
+  const ct=ensureCustomText(currentPidx);
+  ct[grp]=ct[grp]||defaultGroup(grp);
+  ct[grp].fgType=type;
+  saveCustomText();
+  populateOvControls();
+  rerenderOvPreviewOnly();
+}
+function onOvFgColor(grp){
+  const ct=ensureCustomText(currentPidx);
+  ct[grp]=ct[grp]||defaultGroup(grp);
+  if(ct[grp].fgType==='solid'){
+    const solidRow=document.querySelector(`.solid-row[data-grp="${grp}"]`);
+    ct[grp].fg1=solidRow.querySelector('input[type=color]').value;
+    solidRow.querySelector('input[type=text]').value=ct[grp].fg1;
+  } else if(ct[grp].fgType==='gradient'){
+    const gradRow=document.querySelector(`.grad-row[data-grp="${grp}"]`);
+    const colors=gradRow.querySelectorAll('input[type=color]');
+    ct[grp].fg1=colors[0].value;
+    ct[grp].fg2=colors[1].value;
+    ct[grp].fgAngle=parseInt(gradRow.querySelector('input[type=range]').value);
+  }
+  saveCustomText();
+  rerenderOvPreviewOnly();
+}
+// Tolerant hex parser: accepts with/without #, 3 or 6 hex chars, whitespace, any case.
+// Returns normalized "#rrggbb" or null if unparseable.
+function parseHex(v){
+  if(!v)return null;
+  let s=String(v).trim().toLowerCase().replace(/\s+/g,'').replace(/^#/,'');
+  if(/^[0-9a-f]{3}$/.test(s))return '#'+s.split('').map(c=>c+c).join('');
+  if(/^[0-9a-f]{6}$/.test(s))return '#'+s;
+  return null;
+}
+
+function onOvFgHex(grp, v){
+  const hex=parseHex(v);
+  if(!hex)return;
+  const ct=ensureCustomText(currentPidx);
+  ct[grp]=ct[grp]||defaultGroup(grp);
+  ct[grp].fg1=hex;
+  saveCustomText();
+  const solidRow=document.querySelector(`.solid-row[data-grp="${grp}"]`);
+  if(solidRow){
+    solidRow.querySelector('input[type=color]').value=hex;
+    solidRow.querySelector('input[type=text]').value=hex;
+  }
+  rerenderOvPreviewOnly();
+}
+function onOvAccType(grp, type){
+  const ct=ensureCustomText(currentPidx);
+  ct[grp]=ct[grp]||defaultGroup(grp);
+  ct[grp].accType=type;
+  saveCustomText();
+  populateOvControls();
+  rerenderOvPreviewOnly();
+}
+function onOvAccColor(grp){
+  const ct=ensureCustomText(currentPidx);
+  ct[grp]=ct[grp]||defaultGroup(grp);
+  const accRow=document.querySelector(`.acc-row[data-grp="${grp}"]`);
+  if(!accRow)return;
+  ct[grp].accColor=accRow.querySelector('input[type=color]').value;
+  accRow.querySelector('input[type=text]').value=ct[grp].accColor;
+  saveCustomText();
+  rerenderOvPreviewOnly();
+}
+function onOvAccHex(grp, v){
+  const hex=parseHex(v);
+  if(!hex)return;
+  const ct=ensureCustomText(currentPidx);
+  ct[grp]=ct[grp]||defaultGroup(grp);
+  ct[grp].accColor=hex;
+  saveCustomText();
+  const accRow=document.querySelector(`.acc-row[data-grp="${grp}"]`);
+  if(accRow){
+    accRow.querySelector('input[type=color]').value=hex;
+    accRow.querySelector('input[type=text]').value=hex;
+  }
+  rerenderOvPreviewOnly();
+}
+function resetOvCustomText(){
+  delete customText[currentPidx];
+  saveCustomText();
+  renderOverlay();
+  toast('Text customizations cleared');
+}
+
+function jumpTo(){const v=parseInt(document.getElementById('jumpInput').value);if(v>=1&&v<=filteredMap.length)openOverlay(filteredMap[v-1]);}
+window.addEventListener('resize',()=>{if(document.getElementById('overlay').classList.contains('active'))fitOverlayCard();});
+window.addEventListener('keydown',(e)=>{
+  if(e.key==='Escape'&&document.getElementById('overlay').classList.contains('active')){closeOverlay();return;}
+  // Undo / Redo (only when overlay is open, to not interfere with form inputs in modals etc)
+  if(!document.getElementById('overlay').classList.contains('active'))return;
+  // Don't trigger when typing in text inputs
+  const tag=(e.target&&e.target.tagName)||'';
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+  const cmd=e.ctrlKey||e.metaKey;
+  if(cmd && e.key.toLowerCase()==='z' && !e.shiftKey){e.preventDefault();undo();}
+  else if(cmd && ((e.key.toLowerCase()==='z' && e.shiftKey)||e.key.toLowerCase()==='y')){e.preventDefault();redo();}
+});
+
+// ── Export: baseline fonts, then shrink ONLY if content overflows ──
+// v1.9.5: tightened itemMargin / lineHeight ~35% from v1.9.4 (was reading too loose at 4:5)
+const FONT_SPEC={
+  list:{title:56,item:34,itemMargin:12,closer:24,watermark:18,lineHeight:1.3,titleLH:1.15},
+  identity:{title:50,item:32,itemMargin:10,closer:22,watermark:18,lineHeight:1.25,titleLH:1.2},
+  question:{title:58,sub:32,closer:24,watermark:18,titleLH:1.25,subLH:1.4},
+  howto:{title:52,item:33,itemMargin:11,closer:23,watermark:18,lineHeight:1.3,titleLH:1.15},
+  script:{title:48,teaserLabel:20,teaserLabelMargin:14,teaser:34,closer:24,watermark:18,titleLH:1.2,teaserLH:1.45},
+  "3points":{title:52,item:24,itemMargin:14,hook:28,closer:22,watermark:18,lineHeight:1.35,titleLH:1.2},
+  prompt:{title:38,bodyLine:26,bodyLineMargin:9,closer:22,watermark:18,bodyLH:1.35,titleLH:1.2}
+};
+
+function applyExportFonts(card, fmt, scales){
+  // scales: number (uniform) OR object {title, body, closer}
+  const s=(typeof scales==='number')?{title:scales,body:scales,closer:scales}:scales;
+  const spec=FONT_SPEC[fmt];
+  const titleEl=card.querySelector('.card-title');
+  if(titleEl){
+    titleEl.style.fontSize=(spec.title*s.title)+'px';
+    titleEl.style.lineHeight=spec.titleLH;
+  }
+  if(spec.item){
+    card.querySelectorAll('.item').forEach(el=>{
+      el.style.fontSize=(spec.item*s.body)+'px';
+      el.style.marginBottom=(spec.itemMargin*s.body)+'px';
+      el.style.lineHeight=spec.lineHeight;
+    });
+  }
+  if(spec.sub){
+    const sub=card.querySelector('.sub');
+    if(sub) sub.style.fontSize=(spec.sub*s.body)+'px';
+  }
+  if(spec.teaser){
+    const tl=card.querySelector('.teaser-label');
+    if(tl){tl.style.fontSize=(spec.teaserLabel*s.body)+'px';tl.style.marginBottom=(spec.teaserLabel*s.body*0.9)+'px';}
+    const ts=card.querySelector('.teaser');
+    if(ts){ts.style.fontSize=(spec.teaser*s.body)+'px';ts.style.lineHeight=spec.teaserLH;}
+  }
+  if(spec.hook){
+    card.querySelectorAll('.hook').forEach(el=>{el.style.fontSize=(spec.hook*s.body)+'px';});
+  }
+  if(spec.bodyLine){
+    card.querySelectorAll('.prompt-body .pb-line').forEach(el=>{
+      el.style.fontSize=(spec.bodyLine*s.body)+'px';
+      el.style.marginBottom=(spec.bodyLineMargin*s.body)+'px';
+      el.style.lineHeight=spec.bodyLH;
+    });
+  }
+  const closer=card.querySelector('.closer');
+  if(closer)closer.style.fontSize=(spec.closer*s.closer)+'px';
+  const wm=card.querySelector('.watermark');
+  if(wm){wm.style.fontSize=(spec.watermark)+'px';wm.style.bottom='4%';}
+}
+
+async function exportPost(pidx, transparent){
+  const post=POSTS[pidx];
+  const stage=document.getElementById('exportStage');
+  const aspect=ASPECT_RATIOS[cardAspect[pidx]||0];
+  stage.innerHTML=renderCard(post,cardBG[pidx],pidx);
+  const card=stage.querySelector('.card');
+
+  card.style.width=aspect.w+'px';
+  card.style.height=aspect.h+'px';
+  card.style.aspectRatio='auto';
+  card.style.position='relative';
+  card.style.padding='8% 10% 12% 10%';
+  card.querySelectorAll('.card-number').forEach(el=>el.remove());
+  card.querySelectorAll('.teaser-label').forEach(el=>el.remove());
+
+  if(transparent){
+    card.style.background='transparent';
+    card.style.backgroundImage='none';
+  }
+
+  // Apply per-card text overrides — isExport=true forces gradient→solid c1 (html2canvas can't render text gradients)
+  applyCustomText(card, pidx, true);
+
+  // Apply per-element fonts + auto-fit
+  const ct=getCustomText(pidx);
+  const scales={title:ct.title.scale,body:ct.body.scale,closer:ct.closer.scale};
+  const fitResult=applyFontsWithFit(card, post.format, scales, aspect);
+  const fitFactor=fitResult.worst;
+
+  const canvas=await html2canvas(card,{backgroundColor:null,scale:2,width:aspect.w,height:aspect.h});
+  const a=document.createElement('a');
+  const suffix=transparent?'_T':'';
+  a.download=`pc_${post.format}_${String(pidx+1).padStart(3,'0')}_${aspect.label.replace(':','x')}${suffix}.png`;
+  a.href=canvas.toDataURL('image/png');a.click();
+  stage.innerHTML='';
+  const msgParts=[];
+  if(transparent)msgParts.push('transparent');
+  if(fitFactor<1)msgParts.push(`auto-shrunk to fit (${(fitFactor*100).toFixed(0)}%)`);
+  toast('Exported'+(msgParts.length?' ('+msgParts.join(', ')+')':''));
+}
+
+async function exportReelCover(pidx, transparent){
+  const post=POSTS[pidx];
+  const stage=document.getElementById('exportStage');
+  const W=1080, H=1920;
+  stage.innerHTML=renderReelCover(post,cardBG[pidx],pidx);
+  const card=stage.querySelector('.card.reel-cover');
+
+  card.style.width=W+'px';
+  card.style.height=H+'px';
+  card.style.aspectRatio='auto';
+
+  if(transparent){
+    card.style.background='transparent';
+    card.style.backgroundImage='none';
+  }
+
+  // Apply title text override (use 'title' group) + accent — isExport=true falls back gradient→solid
+  applyCustomText(card, pidx, true);
+
+  // v1.9.2: Cover title base now mirrors the card's FONT_SPEC[fmt].title (not a hardcoded 120).
+  // Previous 120px ignored format-specific sizing and the card's title sizing convention,
+  // producing oversized 4-5-line covers with awkward mid-phrase breaks. Now the cover renders
+  // the title at the SAME px size as the card would, with shrink-only autofit as a safety net.
+  const ct=getCustomText(pidx);
+  const titleEl=card.querySelector('.reel-title');
+  const fs=FONT_SPEC[post.format]||FONT_SPEC.list;
+  const baseTitleSize=fs.title*ct.title.scale;
+  titleEl.style.fontSize=baseTitleSize+'px';
+
+  // Auto-shrink iteratively if title overflows zone EITHER vertically OR horizontally.
+  // Previous version only checked height — long single lines (e.g. "RESTAURANTE") could
+  // still overflow the width and get clipped by the card's overflow:hidden.
+  const zone=card.querySelector('.cover-zone');
+  void zone.offsetHeight;
+  const zoneH=zone.clientHeight;
+  const zoneW=zone.clientWidth;
+  let fitScale=1;
+  for(let attempts=0; attempts<12; attempts++){
+    void titleEl.offsetHeight;
+    const overflowH = titleEl.scrollHeight > zoneH;
+    const overflowW = titleEl.scrollWidth  > zoneW;
+    if(!overflowH && !overflowW)break;
+    const hRatio = overflowH ? (zoneH / titleEl.scrollHeight) : 1;
+    const wRatio = overflowW ? (zoneW / titleEl.scrollWidth ) : 1;
+    fitScale *= Math.min(hRatio, wRatio) * 0.95;
+    titleEl.style.fontSize = (baseTitleSize * fitScale) + 'px';
+  }
+
+  const canvas=await html2canvas(card,{backgroundColor:null,scale:2,width:W,height:H});
+  const a=document.createElement('a');
+  const suffix=transparent?'_T':'';
+  a.download=`pc_${post.format}_${String(pidx+1).padStart(3,'0')}_cover${suffix}.png`;
+  a.href=canvas.toDataURL('image/png');a.click();
+  stage.innerHTML='';
+  const msgParts=[];
+  if(transparent)msgParts.push('transparent');
+  if(fitScale<1)msgParts.push(`auto-shrunk to ${(fitScale*100).toFixed(0)}%`);
+  toast('Reel cover exported'+(msgParts.length?' ('+msgParts.join(', ')+')':''));
+}
+
+// ── Copy ──
+function strip(s){return s.replace(/\*([^*]+)\*/g,'$1');}
+function copyTitle(pidx){navigator.clipboard.writeText(strip(POSTS[pidx].title)).then(()=>toast('Title copied'));}
+function copyCardText(pidx){
+  const p=POSTS[pidx];let lines=[strip(p.title),''];
+  if(p.format==='question'){if(p.sub)lines.push(p.sub,'');}
+  else if(p.format==='script'){
+    // Copy Card = visible card content only (title + teaser + closer).
+    // The guion (full narration / post caption) is in Copy Caption.
+    if(p.teaser)lines.push(p.teaser,'');
+  }
+  else if(p.format==='prompt'){
+    // Card text = body (the visible content). The generator prompt is copied separately.
+    if(p.body)lines.push(p.body,'');
+  }
+  else if(p.format==='3points'&&p.items){
+    p.items.forEach((it,i)=>{
+      lines.push(`${i+1}. ${it.hook}`);
+      lines.push(it.body,'');
+    });
+  }
+  else if(p.items)p.items.forEach((it,i)=>{
+    if(it.kw)lines.push(`${i+1}. ${it.kw} - ${it.desc}`);
+    else lines.push(`${it.label} : ${strip(it.desc)}`);
+  });
+  lines.push('',p.closer);
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>toast('Card copied'));
+}
+function copyPromptText(pidx){
+  const p=POSTS[pidx];
+  if(p.format!=='prompt'||!p.prompt){toast('No prompt on this card');return;}
+  navigator.clipboard.writeText(p.prompt).then(()=>toast('Prompt copied'));
+}
+function copyCaption(pidx){
+  const p=POSTS[pidx];
+  // For script format: caption = guion (the full narration text)
+  // For other formats: caption = the .caption field
+  let text='';
+  if(p.format==='script'){text=p.guion||'';}
+  else{text=p.caption||'';}
+  if(!text){toast('No caption on this card');return;}
+  navigator.clipboard.writeText(text).then(()=>toast('Caption copied'));
+}
+function copyTitleOv(){copyTitle(currentPidx);}
+function copyCardOv(){copyCardText(currentPidx);}
+function copyCaptionOv(){copyCaption(currentPidx);}
+function copyPromptOv(){copyPromptText(currentPidx);}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500);}
+
+// ──────────────────────────────────────────────────────────────
+// IMPORT SYSTEM
+// ──────────────────────────────────────────────────────────────
+let pendingImport=[]; // posts parsed but not yet committed
+
+function openImportModal(){
+  document.getElementById('importText').value='';
+  document.getElementById('parseResult').style.display='none';
+  document.getElementById('importAppendBtn').disabled=true;
+  pendingImport=[];
+  document.getElementById('importModal').classList.add('show');
+}
+function closeImportModal(){document.getElementById('importModal').classList.remove('show');}
+function onImportFileSelect(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=ev=>{document.getElementById('importText').value=ev.target.result;};r.readAsText(f);
+}
+
+const SPANISH_MONTHS=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+const ENGLISH_MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const VALID_MONTHS=SPANISH_MONTHS; // back-compat alias
+const VALID_FORMATS=["identity","list","question","howto","script","3points","prompt"];
+
+function parseImportText(){
+  const txt=document.getElementById('importText').value;
+  if(!txt.trim()){toast('Paste something first');return;}
+  const result=parseCards(txt);
+  pendingImport=result.cards;
+  const out=document.getElementById('parseResult');
+  let html=`<div class="ok">Parsed ${result.cards.length} valid card${result.cards.length!==1?'s':''}.</div>`;
+  if(result.cards.length){
+    const counts={};result.cards.forEach(c=>counts[c.format]=(counts[c.format]||0)+1);
+    html+=`<div style="margin-top:4px;color:#aaa">By format: ${Object.entries(counts).map(([k,v])=>`${k}: ${v}`).join(', ')}</div>`;
+  }
+  result.errors.forEach(err=>{html+=`<div class="err">⚠ ${err}</div>`;});
+  out.innerHTML=html;out.style.display='block';
+  document.getElementById('importAppendBtn').disabled=result.cards.length===0;
+}
+
+function parseCards(text){
+  const cards=[];const errors=[];
+  // Split by ::: blocks
+  const blockRe=/:::\s*(\w+)\s*\n([\s\S]*?)\n:::/g;
+  let m;let blockNum=0;
+  while((m=blockRe.exec(text))!==null){
+    blockNum++;
+    const fmt=m[1].toLowerCase();const body=m[2];
+    if(!VALID_FORMATS.includes(fmt)){errors.push(`Block ${blockNum}: unknown format "${fmt}"`);continue;}
+    try{
+      const card=parseCardBody(fmt,body,blockNum);
+      cards.push(card);
+    }catch(e){errors.push(`Block ${blockNum} (${fmt}): ${e.message}`);}
+  }
+  if(cards.length===0&&errors.length===0)errors.push('No ::: blocks found. Check the syntax help.');
+  return{cards,errors};
+}
+
+function parseCardBody(fmt,body,blockNum){
+  const card={format:fmt};
+  // Title — match only horizontal whitespace, not newlines (prevents eating across lines)
+  const titleM=body.match(/^title:[ \t]*(.*)$/m);
+  if(!titleM)throw new Error('missing title field');
+  const titleText=titleM[1].trim();
+  if(!titleText && fmt!=='prompt')throw new Error('title cannot be empty (except for prompt format)');
+  card.title=titleText;
+  // Closer
+  const closerM=body.match(/^closer:\s*(.+)$/m);
+  card.closer=closerM?closerM[1].trim():'auto';
+  // Caption — optional multi-line block. For non-script formats, this is the FB post caption.
+  // (Script format uses its existing `guion` field as caption.)
+  const captionM=body.match(/^caption:\s*<<<\n([\s\S]*?)\n>>>/m);
+  if(captionM)card.caption=captionM[1].trim();
+  // Format-specific parsing
+  if(fmt==='question'){
+    const subM=body.match(/^sub:\s*(.+)$/m);
+    if(!subM)throw new Error('question requires sub:');
+    card.sub=subM[1].trim();
+  }
+  else if(fmt==='script'){
+    const teaserM=body.match(/^teaser:\s*(.+)$/m);
+    if(!teaserM)throw new Error('script requires teaser:');
+    card.teaser=teaserM[1].trim();
+    // Multi-line guion between <<< and >>>
+    const guionM=body.match(/^guion:\s*<<<\n([\s\S]*?)\n>>>/m);
+    if(!guionM)throw new Error('script requires guion: <<< ... >>> block');
+    card.guion=guionM[1].trim();
+  }
+  else if(fmt==='identity'){
+    // Parse 12 month rows. Accepts either Spanish (Ene…Dic) or English (Jan…Dec).
+    const items=[];const lines=body.split('\n');
+    for(const line of lines){
+      const t=line.trim();
+      const monthM=t.match(/^(Ene|Jan|Feb|Mar|Abr|Apr|May|Jun|Jul|Ago|Aug|Sep|Oct|Nov|Dic|Dec)\s*\|\s*(.+)$/);
+      if(monthM)items.push({label:monthM[1],desc:monthM[2].trim()});
+    }
+    if(items.length!==12)throw new Error(`identity needs exactly 12 month rows, found ${items.length}`);
+    const order=items.map(it=>it.label);
+    // Determine language from first month
+    const lang=(order[0]==='Ene')?'es':((order[0]==='Jan')?'en':null);
+    if(!lang)throw new Error(`identity must start with Ene (Spanish) or Jan (English), got "${order[0]}"`);
+    const expected=lang==='es'?SPANISH_MONTHS:ENGLISH_MONTHS;
+    for(let i=0;i<12;i++){
+      if(order[i]!==expected[i])throw new Error(`identity months must be in order ${expected[0]}…${expected[11]} (no mixing languages), got ${order.join(',')}`);
+    }
+    card.items=items;
+  }
+  else if(fmt==='list'||fmt==='howto'){
+    const items=[];const lines=body.split('\n');
+    for(const line of lines){
+      const t=line.trim();
+      if(!t||t.startsWith('title:')||t.startsWith('closer:'))continue;
+      const pipeM=t.match(/^(.+?)\s*\|\s*(.+)$/);
+      if(pipeM)items.push({kw:pipeM[1].trim(),desc:pipeM[2].trim()});
+    }
+    if(items.length<3)throw new Error(`${fmt} needs at least 3 items, found ${items.length}`);
+    if(items.length>10)throw new Error(`${fmt} too many items (${items.length}), max 10`);
+    card.items=items;
+  }
+  else if(fmt==='3points'){
+    const items=[];const lines=body.split('\n');
+    for(const line of lines){
+      const t=line.trim();
+      if(!t||t.startsWith('title:')||t.startsWith('closer:'))continue;
+      const pipeM=t.match(/^(.+?)\s*\|\s*(.+)$/);
+      if(pipeM)items.push({hook:pipeM[1].trim(),body:pipeM[2].trim()});
+    }
+    if(items.length!==3)throw new Error(`3points requires exactly 3 items (hook | body), found ${items.length}`);
+    card.items=items;
+  }
+  else if(fmt==='prompt'){
+    // body: <<< ... >>> (the content shown on the card)
+    const bodyM=body.match(/^body:\s*<<<\n([\s\S]*?)\n>>>/m);
+    if(!bodyM)throw new Error('prompt requires body: <<< ... >>> block');
+    card.body=bodyM[1].trim();
+    // prompt: <<< ... >>> (the generator instruction; optional but expected)
+    const promptM=body.match(/^prompt:\s*<<<\n([\s\S]*?)\n>>>/m);
+    card.prompt=promptM?promptM[1].trim():'';
+    // preset: optional BG preset hint
+    const presetM=body.match(/^preset:\s*(.+)$/m);
+    if(presetM)card.presetHint=presetM[1].trim().toLowerCase();
+  }
+  return card;
+}
+
+function commitImport(){
+  if(!pendingImport.length)return;
+  // Assign rotating closers for cards with 'auto'
+  let baseIdx=IMPORTED_POSTS.length;
+  pendingImport.forEach((p,i)=>{
+    if(p.closer==='auto'||!p.closer)p.closer=pickAutoCloser(p,baseIdx+i);
+    p.imported=true;
+  });
+  IMPORTED_POSTS.push(...pendingImport);
+  saveImports();
+  pendingImport=[];
+  closeImportModal();
+  toast(`Imported ${IMPORTED_POSTS.length} total. Switch to "Viewing: Imports" to see them.`);
+  // Auto-switch to imports view so user sees what they just added
+  document.getElementById('viewMode').value='imports';
+  viewMode='imports';
+  applyViewMode();
+}
+
+function deleteImport(pidx){
+  const post=POSTS[pidx];
+  if(!post||!post.imported){toast('Not an imported card');return;}
+  if(!confirm('Delete this imported card? This cannot be undone.'))return;
+  // Find it in IMPORTED_POSTS by reference
+  const idx=IMPORTED_POSTS.indexOf(post);
+  if(idx>=0){IMPORTED_POSTS.splice(idx,1);saveImports();applyViewMode();toast('Deleted');}
+}
+
+function clearAllImports(){
+  if(!IMPORTED_POSTS.length){toast('No imports to clear');return;}
+  if(!confirm(`Clear all ${IMPORTED_POSTS.length} imported card(s)? This cannot be undone.`))return;
+  IMPORTED_POSTS=[];saveImports();
+  document.getElementById('viewMode').value='library';
+  viewMode='library';applyViewMode();
+  closeManageModal();
+  toast('All imports cleared');
+}
+
+function closeManageModal(){document.getElementById('manageModal').classList.remove('show');}
+
+function mergeAndDownload(){
+  if(!IMPORTED_POSTS.length){toast('No imports to merge');return;}
+  // Build a new HTML file by patching the LIBRARY_POSTS array with library+imports merged.
+
+  // Close any open modals so they don't get baked into the saved HTML
+  document.querySelectorAll('.modal-backdrop.show').forEach(el=>el.classList.remove('show'));
+
+  const merged=[...LIBRARY_POSTS, ...IMPORTED_POSTS.map(p=>{const{imported,...rest}=p;return rest;})];
+  let html=document.documentElement.outerHTML;
+
+  // Replace the LIBRARY_POSTS literal in the script using a marker.
+  const startMarker='const LIBRARY_POSTS=';
+  const startIdx=html.indexOf(startMarker);
+  if(startIdx<0){alert('Cannot find LIBRARY_POSTS marker in HTML. Merge aborted.');return;}
+  const arrStart=html.indexOf('[',startIdx);
+  let depth=0,i=arrStart;
+  for(;i<html.length;i++){
+    const c=html[i];
+    if(c==='[')depth++;
+    else if(c===']'){depth--;if(depth===0){i++;break;}}
+  }
+  if(depth!==0){alert('Could not parse LIBRARY_POSTS array. Merge aborted.');return;}
+  const newLiteral=JSON.stringify(merged);
+  html=html.slice(0,arrStart)+newLiteral+html.slice(i);
+
+  // Give the merged file a unique FILE_ID so it has its own isolated localStorage
+  // (otherwise it would read the same import pool as the source file and show them again)
+  const stamp=Date.now();
+  const newFileId=`${FILE_ID}-merged-${stamp}`;
+  html=html.replace(`const FILE_ID="${FILE_ID}"`, `const FILE_ID="${newFileId}"`);
+
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const baseName=`pc-layout-2-${FILE_ID}-merged.html`;
+  a.download=baseName;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`Downloaded ${baseName}. Imports still saved here — clear them when you've verified the merge.`);
+}
+
+function downloadImportsOnly(){
+  if(!IMPORTED_POSTS.length){toast('No imports to download');return;}
+  // Build a new HTML file where LIBRARY_POSTS = imports (stripped of imported flag), no library cards
+  document.querySelectorAll('.modal-backdrop.show').forEach(el=>el.classList.remove('show'));
+
+  const importsClean=IMPORTED_POSTS.map(p=>{const{imported,...rest}=p;return rest;});
+  let html=document.documentElement.outerHTML;
+
+  const startMarker='const LIBRARY_POSTS=';
+  const startIdx=html.indexOf(startMarker);
+  if(startIdx<0){alert('Cannot find LIBRARY_POSTS marker in HTML.');return;}
+  const arrStart=html.indexOf('[',startIdx);
+  let depth=0,i=arrStart;
+  for(;i<html.length;i++){
+    const c=html[i];
+    if(c==='[')depth++;
+    else if(c===']'){depth--;if(depth===0){i++;break;}}
+  }
+  if(depth!==0){alert('Could not parse LIBRARY_POSTS array.');return;}
+  const newLiteral=JSON.stringify(importsClean);
+  html=html.slice(0,arrStart)+newLiteral+html.slice(i);
+
+  // Give the new file a unique FILE_ID so its localStorage is fresh (no leftover imports)
+  const stamp=Date.now();
+  const newFileId=`${FILE_ID}-imports-${stamp}`;
+  html=html.replace(`const FILE_ID="${FILE_ID}"`, `const FILE_ID="${newFileId}"`);
+
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const baseName=`pc-layout-2-${FILE_ID}-imports-only.html`;
+  a.download=baseName;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`Downloaded ${baseName} (${importsClean.length} cards).`);
+}
+
+// Open the Manage Imports modal when user clicks something — add a small inline link in the imports view counter area.
+// We piggyback on a keyboard shortcut for now: Shift+M
+document.addEventListener('keydown',e=>{
+  if(e.key==='M'&&e.shiftKey&&!e.target.matches('input,textarea')){
+    const m=document.getElementById('manageModal');
+    document.getElementById('manageInfo').textContent=`You have ${IMPORTED_POSTS.length} imported card(s). Merge writes library+imports combined. Download Imports Only writes just the imports as a new file. Clear removes all imports from this file's storage.`;
+    m.classList.add('show');
+  }
+  if(e.key==='Escape'){
+    document.getElementById('importModal').classList.remove('show');
+    document.getElementById('manageModal').classList.remove('show');
+    document.getElementById('customBgModal').classList.remove('show');
+  }
+});
+
+// Add a "Manage" link that appears in the topbar only when there are imports
+function refreshImportControls(){
+  // Find or create a Manage link next to viewMode select
+  let mgBtn=document.getElementById('manageBtn');
+  if(IMPORTED_POSTS.length>0&&!mgBtn){
+    mgBtn=document.createElement('button');
+    mgBtn.id='manageBtn';
+    mgBtn.textContent=`Manage (${IMPORTED_POSTS.length})`;
+    mgBtn.style.background='#5a3e1e';
+    mgBtn.style.borderColor='#8b6030';
+    mgBtn.onclick=()=>{
+      document.getElementById('manageInfo').textContent=`You have ${IMPORTED_POSTS.length} imported card(s). Merge writes a new HTML file with library + imports baked in. Clear removes all imports from this file's storage.`;
+      document.getElementById('manageModal').classList.add('show');
+    };
+    document.getElementById('viewMode').after(mgBtn);
+  } else if(IMPORTED_POSTS.length>0&&mgBtn){
+    mgBtn.textContent=`Manage (${IMPORTED_POSTS.length})`;
+  } else if(mgBtn){
+    mgBtn.remove();
+  }
+}
+
+// Wrap applyViewMode to also refresh import controls
+const _origApplyViewMode=applyViewMode;
+applyViewMode=function(){_origApplyViewMode();refreshImportControls();};
+
+applyViewMode();
+refreshImportControls();
+// Seed history with the initial state so the first undo always has somewhere to go
+pushHistoryNow();
+</script>
+</body>
+</html>
