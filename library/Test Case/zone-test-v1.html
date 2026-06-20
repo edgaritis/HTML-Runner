@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>PC Zone Layout v1.9.5 — Experiment</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0e0e10;color:#ddd;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;padding:20px;min-height:100vh}
+
+  .toolbar{max-width:1500px;margin:0 auto 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .toolbar button{background:#222;color:#ddd;border:1px solid #444;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px}
+  .toolbar button.active{background:#3EA6FF;border-color:#3EA6FF;color:#000;font-weight:700}
+  .toolbar .info{color:#888;font-size:12px;margin-left:auto;font-family:ui-monospace,monospace}
+
+  .grid{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:700px){.grid{grid-template-columns:1fr}}
+
+  .test{background:#1a1a1c;border:1px solid #2a2a2e;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px}
+  .test h3{font-size:13px;color:#4FC3F7;font-weight:700;letter-spacing:.3px}
+  .test .meta{font-size:11px;color:#888;font-family:ui-monospace,monospace}
+  .test .meta.shrunk{color:#FFB300}
+
+  /* Card scaling wrapper */
+  .card-outer{width:100%;aspect-ratio:4/5;position:relative;overflow:hidden;border-radius:4px}
+  .card-inner{width:1080px;height:1350px;transform-origin:top left;position:absolute;top:0;left:0}
+
+  /* Card — dark variant by default */
+  .card{
+    width:1080px;height:1350px;
+    background:#1a1a1f;color:#f0e6d0;
+    position:relative;overflow:hidden;
+    font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  body.light-bg .card{background:#f9f7f8;color:#1a1a1f}
+
+  /* ZONES — the heart of v1.9.5
+     4:5 (1080×1350): topMargin 5% + title 17% + body 65% + closer 5% + watermark 3% + bottomMargin 5% = 100%
+  */
+  .zone-title    {position:absolute;top:5%; left:10%;right:10%;height:17%;display:flex;align-items:center;justify-content:center;overflow:hidden;text-align:center}
+  .zone-body     {position:absolute;top:22%;left:10%;right:10%;height:65%;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden}
+  .zone-closer   {position:absolute;top:87%;left:10%;right:10%;height:5%; display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .zone-watermark{position:absolute;top:92%;left:0;  right:0;  height:3%; display:flex;align-items:center;justify-content:center;overflow:hidden}
+
+  /* Zone guides (dashed outlines, toggleable) */
+  body.show-guides .zone-title    {outline:2px dashed rgba(80,230,140,.55);outline-offset:-1px}
+  body.show-guides .zone-body     {outline:2px dashed rgba(255,225,80,.55);outline-offset:-1px}
+  body.show-guides .zone-closer   {outline:2px dashed rgba(140,160,255,.55);outline-offset:-1px}
+  body.show-guides .zone-watermark{outline:2px dashed rgba(255,140,220,.55);outline-offset:-1px}
+
+  /* Content */
+  .card-title{font-weight:900;text-transform:uppercase;line-height:1.15;color:#3EA6FF;width:100%}
+  .card-title .accent{color:#FF4444}
+  .item{line-height:1.4}
+  .item .num,.item .kw{font-weight:800;color:#3EA6FF}
+  .closer{font-weight:600;text-align:center;color:inherit;opacity:.75;width:100%}
+  .watermark{letter-spacing:1.5px;font-weight:700;font-size:18px;opacity:.6}
+</style>
+</head>
+<body class="show-guides">
+
+<div class="toolbar">
+  <button id="btnGuides" class="active">Show Zone Guides</button>
+  <button id="btnBg">Light BG</button>
+  <span class="info">v1.9.5 zone-limit · 4:5 (1080×1350) · top 5% · title 17% · body 65% · closer 5% · wm 3% · bottom 5%</span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+// ─── FONT BASELINES (same as production v1.9.4 for the list format) ───
+const FONT = { title:56, item:34, itemMargin:20, closer:24, lineHeight:1.4, titleLH:1.15 };
+
+// ─── ZONE SPEC for 4:5 (% of card height) ───
+const ZONES = {
+  title:    { top:0.05, height:0.17 },
+  body:     { top:0.22, height:0.65 },
+  closer:   { top:0.87, height:0.05 },
+  watermark:{ top:0.92, height:0.03 },
+};
+
+// ─── TEST MATRIX ───
+// Six cards covering: title 1/2/3/4 lines × body short/fits/overflows
+const TESTS = [
+  {
+    label:'A · Title 2 lines · Body fits room to spare',
+    title:'8 SEÑALES DE QUE TE *MINIMIZA* EN PÚBLICO',
+    items:[
+      {num:1, kw:'Te interrumpe', text:'cada vez que cuentas algo tuyo.'},
+      {num:2, kw:'Corrige detalles', text:'que no cambian nada.'},
+      {num:3, kw:'Cambia el tema', text:'cuando recibes un cumplido.'},
+      {num:4, kw:'Bromea', text:'sobre tus logros frente a otros.'},
+      {num:5, kw:'Compara', text:'tu trabajo con el de alguien "mejor".'},
+    ],
+    closer:'Fíjate la próxima reunión.'
+  },
+  {
+    label:'B · Title 3 lines · Body fits exactly',
+    title:'8 COSAS QUE TU CUERPO HACE *CADA DÍA* Y NUNCA SUPISTE',
+    items:[
+      {num:1, kw:'Bostezo contagioso', text:'tus neuronas espejo activan el reflejo.'},
+      {num:2, kw:'Efecto puerta', text:'cruzar un umbral resetea la memoria corta.'},
+      {num:3, kw:'Cortisol 3am', text:'tu cuerpo libera estrés y te despierta.'},
+      {num:4, kw:'Pupila dilatada', text:'crece cuando algo te interesa de verdad.'},
+      {num:5, kw:'Pelo erizado', text:'reflejo de defensa heredado.'},
+      {num:6, kw:'Latido', text:'se sincroniza con quien escuchas con atención.'},
+    ],
+    closer:'Fíjate la próxima vez.'
+  },
+  {
+    label:'C · Title 2 lines · Body overflows → auto-shrink BODY only',
+    title:'10 COSAS QUE TU CUERPO HACE *SIN PERMISO*',
+    items:[
+      {num:1, kw:'Bostezo contagioso', text:'tus neuronas espejo activan el reflejo automáticamente cuando ves a alguien bostezar.'},
+      {num:2, kw:'Efecto puerta', text:'cruzar un umbral resetea tu memoria de corto plazo y olvidas qué buscabas.'},
+      {num:3, kw:'Cortisol 3am', text:'tu cuerpo libera estrés a las 3am y por eso te despiertas y no vuelves a dormir.'},
+      {num:4, kw:'Pupila dilatada', text:'tu pupila crece cuando algo te interesa de verdad, aunque no quieras admitirlo.'},
+      {num:5, kw:'Bostezo doble', text:'enfría tu cerebro cuando se sobrecalienta por concentración.'},
+      {num:6, kw:'Pelo erizado', text:'reflejo de defensa heredado de cuando éramos peludos.'},
+      {num:7, kw:'Mirada fija', text:'tu cuerpo congela músculos para escuchar mejor.'},
+      {num:8, kw:'Manos frías', text:'la sangre va al centro cuando sientes amenaza.'},
+      {num:9, kw:'Respiración', text:'cambia sin que lo notes según la persona al lado.'},
+      {num:10, kw:'Latido', text:'se sincroniza con quien escuchas con atención total.'},
+    ],
+    closer:'Fíjate la próxima vez.'
+  },
+  {
+    label:'D · Title 3 lines · Body overflows → auto-shrink BODY only',
+    title:'10 COSAS QUE TU CUERPO HACE *CADA DÍA* Y NUNCA TE EXPLICARON POR QUÉ',
+    items:[
+      {num:1, kw:'Bostezo contagioso', text:'tus neuronas espejo activan el reflejo automáticamente.'},
+      {num:2, kw:'Efecto puerta', text:'cruzar un umbral resetea tu memoria de corto plazo.'},
+      {num:3, kw:'Cortisol 3am', text:'tu cuerpo libera estrés a las 3am y te despiertas.'},
+      {num:4, kw:'Pupila dilatada', text:'crece cuando algo te interesa de verdad.'},
+      {num:5, kw:'Bostezo doble', text:'enfría tu cerebro cuando se sobrecalienta.'},
+      {num:6, kw:'Pelo erizado', text:'reflejo de defensa heredado.'},
+      {num:7, kw:'Mirada fija', text:'tu cuerpo congela músculos para escuchar.'},
+      {num:8, kw:'Manos frías', text:'la sangre va al centro con amenaza.'},
+      {num:9, kw:'Respiración', text:'cambia según la persona al lado.'},
+      {num:10, kw:'Latido', text:'se sincroniza con quien escuchas.'},
+    ],
+    closer:'Fíjate la próxima vez.'
+  },
+  {
+    label:'E · Title 4 lines (overflow) · Body short → auto-shrink TITLE only',
+    title:'8 COSAS QUE TU CUERPO HACE *CADA DÍA* AUTOMÁTICAMENTE Y NUNCA TE EXPLICARON POR QUÉ TE PASAN',
+    items:[
+      {num:1, kw:'Bostezo', text:'tus neuronas espejo activan el reflejo.'},
+      {num:2, kw:'Pupila', text:'crece con interés genuino.'},
+      {num:3, kw:'Latido', text:'se sincroniza con la atención.'},
+    ],
+    closer:'Fíjate.'
+  },
+  {
+    label:'F · Title 4 lines · Body overflows → BOTH auto-shrink independently',
+    title:'10 COSAS QUE TU CUERPO HACE *CADA DÍA* AUTOMÁTICAMENTE Y NUNCA TE EXPLICARON POR QUÉ TE PASAN',
+    items:[
+      {num:1, kw:'Bostezo contagioso', text:'tus neuronas espejo activan el reflejo automáticamente al ver bostezar.'},
+      {num:2, kw:'Efecto puerta', text:'cruzar un umbral resetea tu memoria corta.'},
+      {num:3, kw:'Cortisol 3am', text:'tu cuerpo libera estrés y te despierta a las 3am.'},
+      {num:4, kw:'Pupila dilatada', text:'crece con interés genuino aunque no lo admitas.'},
+      {num:5, kw:'Bostezo doble', text:'enfría tu cerebro cuando se sobrecalienta.'},
+      {num:6, kw:'Pelo erizado', text:'reflejo heredado de cuando éramos peludos.'},
+      {num:7, kw:'Mirada fija', text:'tu cuerpo congela músculos para escuchar.'},
+      {num:8, kw:'Manos frías', text:'sangre al centro cuando hay amenaza.'},
+      {num:9, kw:'Respiración', text:'cambia según la persona al lado.'},
+      {num:10, kw:'Latido sincronizado', text:'con quien escuchas con atención total.'},
+    ],
+    closer:'Fíjate la próxima vez.'
+  },
+];
+
+// ─── RENDER ───
+function renderCardHtml(t){
+  const titleHtml = t.title.replace(/\*([^*]+)\*/g, '<span class="accent">$1</span>');
+  const itemsHtml = t.items.map(it=>{
+    const numHtml = it.num ? `<span class="num">${it.num}.</span> ` : '';
+    const kwHtml  = it.kw  ? `<span class="kw">${it.kw}:</span> ` : '';
+    return `<div class="item">${numHtml}${kwHtml}${it.text}</div>`;
+  }).join('');
+  return `
+    <div class="card">
+      <div class="zone-title"><div class="card-title">${titleHtml}</div></div>
+      <div class="zone-body">${itemsHtml}</div>
+      <div class="zone-closer"><div class="closer">${t.closer}</div></div>
+      <div class="zone-watermark"><div class="watermark">PSICOLOGÍA CONOCIDA</div></div>
+    </div>`;
+}
+
+// ─── PER-ZONE FIT ENGINE ───
+// Applies base sizes to elements inside a zone, measures, and if content overflows
+// the zone height, scales fonts (and margins) DOWN by a single ratio just for that
+// zone. Returns the scale (1.0 = no shrink, <1.0 = shrunk).
+function fitZone(zoneEl, specs){
+  // specs: [{el, fontSize, marginBottom?}]
+  specs.forEach(s => {
+    s.el.style.fontSize = s.fontSize + 'px';
+    if(s.marginBottom !== undefined) s.el.style.marginBottom = s.marginBottom + 'px';
+  });
+  void zoneEl.offsetHeight; // force reflow
+  const zoneH = zoneEl.clientHeight;
+  const contentH = zoneEl.scrollHeight;
+  let scale = 1;
+  if(contentH > zoneH){
+    scale = (zoneH / contentH) * 0.98; // 2% safety buffer
+    specs.forEach(s => {
+      s.el.style.fontSize = (s.fontSize * scale) + 'px';
+      if(s.marginBottom !== undefined) s.el.style.marginBottom = (s.marginBottom * scale) + 'px';
+    });
+  }
+  return scale;
+}
+
+function applyFit(cardEl){
+  const titleEl  = cardEl.querySelector('.card-title');
+  const itemEls  = Array.from(cardEl.querySelectorAll('.item'));
+  const closerEl = cardEl.querySelector('.closer');
+
+  // Apply line-heights once
+  titleEl.style.lineHeight = FONT.titleLH;
+  itemEls.forEach(el => el.style.lineHeight = FONT.lineHeight);
+
+  // Fit each zone independently
+  const titleScale = fitZone(
+    cardEl.querySelector('.zone-title'),
+    [{ el:titleEl, fontSize:FONT.title }]
+  );
+  const bodyScale = fitZone(
+    cardEl.querySelector('.zone-body'),
+    itemEls.map(el => ({ el, fontSize:FONT.item, marginBottom:FONT.itemMargin }))
+  );
+  const closerScale = fitZone(
+    cardEl.querySelector('.zone-closer'),
+    [{ el:closerEl, fontSize:FONT.closer }]
+  );
+
+  return { titleScale, bodyScale, closerScale };
+}
+
+function fitOuter(outerEl){
+  const inner = outerEl.querySelector('.card-inner');
+  const scale = outerEl.clientWidth / 1080;
+  inner.style.transform = `scale(${scale})`;
+}
+
+function renderAll(){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = TESTS.map((t,i)=>`
+    <div class="test">
+      <h3>${t.label}</h3>
+      <div class="meta" id="meta-${i}">…</div>
+      <div class="card-outer" data-i="${i}">
+        <div class="card-inner">${renderCardHtml(t)}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Pass 1: fit fonts to zones (in unscaled 1080×1350 coordinates)
+  TESTS.forEach((t,i)=>{
+    const cardEl = document.querySelector(`[data-i="${i}"] .card`);
+    const scales = applyFit(cardEl);
+    const meta = document.getElementById(`meta-${i}`);
+    const parts = [
+      `title ${(scales.titleScale*100).toFixed(0)}%`,
+      `body ${(scales.bodyScale*100).toFixed(0)}%`,
+      `closer ${(scales.closerScale*100).toFixed(0)}%`
+    ];
+    const shrunk = scales.titleScale<1 || scales.bodyScale<1 || scales.closerScale<1;
+    meta.textContent = (shrunk ? '⚠ ' : '✓ ') + parts.join(' · ');
+    meta.className = 'meta' + (shrunk ? ' shrunk' : '');
+  });
+
+  // Pass 2: scale outer wrappers to fit grid columns
+  requestAnimationFrame(()=>{
+    document.querySelectorAll('.card-outer').forEach(fitOuter);
+  });
+}
+
+// ─── UI ───
+document.getElementById('btnGuides').addEventListener('click', e=>{
+  document.body.classList.toggle('show-guides');
+  e.target.classList.toggle('active');
+});
+document.getElementById('btnBg').addEventListener('click', e=>{
+  document.body.classList.toggle('light-bg');
+  e.target.textContent = document.body.classList.contains('light-bg') ? 'Dark BG' : 'Light BG';
+});
+window.addEventListener('resize', ()=>{
+  requestAnimationFrame(()=>{
+    document.querySelectorAll('.card-outer').forEach(fitOuter);
+  });
+});
+
+renderAll();
+</script>
+</body>
+</html>
