@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782063388767,
+  "updatedAt": 1782063396990,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -142,16 +142,6 @@
       "size": 247848,
       "sha": "085622d13e27c490cdb6be51a9d73575a3239cfb",
       "uploadedAt": 1781824242427,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqk45jaa67uf4",
-      "name": "viral-facts.html",
-      "folderId": "fd_mqe8lb8crjwl8",
-      "path": "library/Psicología Conocida/viral-facts.html",
-      "size": 347257,
-      "sha": "6f6f9b6bb624bf7aa4b6681aa580894da111372c",
-      "uploadedAt": 1781824251106,
       "lastOpened": null
     }
   ]
