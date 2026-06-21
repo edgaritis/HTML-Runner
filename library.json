@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782063424967,
+  "updatedAt": 1782063430264,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -72,16 +72,6 @@
       "size": 2693323,
       "sha": "fa33c6a8be13c96baed01a708b7d6b1480f0ff12",
       "uploadedAt": 1781822979486,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqk436hcmy7ns",
-      "name": "image-posts-1-lists.html",
-      "folderId": "fd_mqe8lb8crjwl8",
-      "path": "library/Psicología Conocida/image-posts-1-lists.html",
-      "size": 432745,
-      "sha": "ea57f8984dcba90c0e9fc893b7a86de83dd62528",
-      "uploadedAt": 1781824141200,
       "lastOpened": null
     }
   ]
