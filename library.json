@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782063430264,
+  "updatedAt": 1782063434743,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -62,16 +62,6 @@
       "size": 154962,
       "sha": "c4c26f2f93aecb5cd658992bdfe024c585b0c369",
       "uploadedAt": 1781820954868,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqk3ea3imh9qe",
-      "name": "Reels-Focused-part.1.html",
-      "folderId": "fd_mqe8lb8crjwl8",
-      "path": "library/Psicología Conocida/Reels-Focused-part.1.html",
-      "size": 2693323,
-      "sha": "fa33c6a8be13c96baed01a708b7d6b1480f0ff12",
-      "uploadedAt": 1781822979486,
       "lastOpened": null
     }
   ]
