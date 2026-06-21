@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782063396990,
+  "updatedAt": 1782063401694,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -132,16 +132,6 @@
       "size": 304658,
       "sha": "677684bf6105da6f2d1f15fccf30512e77b3371d",
       "uploadedAt": 1781824235210,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqk45cl6pb9tn",
-      "name": "lust-21cards.html",
-      "folderId": "fd_mqe8lb8crjwl8",
-      "path": "library/Psicología Conocida/lust-21cards.html",
-      "size": 247848,
-      "sha": "085622d13e27c490cdb6be51a9d73575a3239cfb",
-      "uploadedAt": 1781824242427,
       "lastOpened": null
     }
   ]
