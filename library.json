@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782063401694,
+  "updatedAt": 1782063406535,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -122,16 +122,6 @@
       "size": 470102,
       "sha": "637440c526dd20e427697d27e88af93161a969e6",
       "uploadedAt": 1781824188556,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqk4570q67s2x",
-      "name": "reels-1-lists.html",
-      "folderId": "fd_mqe8lb8crjwl8",
-      "path": "library/Psicología Conocida/reels-1-lists.html",
-      "size": 304658,
-      "sha": "677684bf6105da6f2d1f15fccf30512e77b3371d",
-      "uploadedAt": 1781824235210,
       "lastOpened": null
     }
   ]
