@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782141089098,
+  "updatedAt": 1782141099698,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -77,6 +77,16 @@
       "size": 165962,
       "sha": "e0d0818c3e01fb271aa617a0d92ec1531111a178",
       "uploadedAt": 1782139482845,
+      "lastOpened": null
+    },
+    {
+      "id": "fl_mqpcsp7nwmre6",
+      "name": "image-posts-1-lists.html",
+      "folderId": "fd_mqpcsh1mn81rk",
+      "path": "library/PC Files/image-posts-1-lists.html",
+      "size": 479547,
+      "sha": "d526d08b589c466c0714f98827a6e7766022f94f",
+      "uploadedAt": 1782141099683,
       "lastOpened": null
     }
   ]
