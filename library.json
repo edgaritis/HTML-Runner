@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782190624859,
+  "updatedAt": 1782190629505,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -87,16 +87,6 @@
       "size": 479547,
       "sha": "d526d08b589c466c0714f98827a6e7766022f94f",
       "uploadedAt": 1782141099683,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqpcta1vejjji",
-      "name": "image-posts-4-howtos.html",
-      "folderId": "fd_mqpcsh1mn81rk",
-      "path": "library/PC Files/image-posts-4-howtos.html",
-      "size": 467571,
-      "sha": "1e416692bc12a414c4856d34b974c068f446f840",
-      "uploadedAt": 1782141126691,
       "lastOpened": null
     },
     {
