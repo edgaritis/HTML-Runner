@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782141176194,
+  "updatedAt": 1782190493678,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -177,16 +177,6 @@
       "size": 349099,
       "sha": "974019420c2b1ea716653494c76e5ffa016b0088",
       "uploadedAt": 1782141169467,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqpcuc7vlsjbc",
-      "name": "reels-5-identity.html",
-      "folderId": "fd_mqpcsh1mn81rk",
-      "path": "library/PC Files/reels-5-identity.html",
-      "size": 372444,
-      "sha": "003208879e97ac2c7bfa1eb5b165361205953789",
-      "uploadedAt": 1782141176155,
       "lastOpened": null
     }
   ]
