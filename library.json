@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782236429315,
+  "updatedAt": 1782236772932,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -137,16 +137,6 @@
       "size": 347994,
       "sha": "b957d7691be3858dd75033f9e2f5aa4ce41b0cb9",
       "uploadedAt": 1782217980856,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqqxjy0p9dd1l",
-      "name": "respeto-pair.html",
-      "folderId": "fd_mqpcsh1mn81rk",
-      "path": "library/PC Files/respeto-pair.html",
-      "size": 321085,
-      "sha": "4f858faa4fd0f6a40894fab3fb046835186cd45e",
-      "uploadedAt": 1782236429305,
       "lastOpened": null
     }
   ]
