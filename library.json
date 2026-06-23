@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782190493678,
+  "updatedAt": 1782190594513,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -167,16 +167,6 @@
       "size": 290121,
       "sha": "5ff4ea4405c91ba1fe955de96c6dbda555f2e1f2",
       "uploadedAt": 1782141162596,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqpcu7231tspv",
-      "name": "reels-4-howtos.html",
-      "folderId": "fd_mqpcsh1mn81rk",
-      "path": "library/PC Files/reels-4-howtos.html",
-      "size": 349099,
-      "sha": "974019420c2b1ea716653494c76e5ffa016b0088",
-      "uploadedAt": 1782141169467,
       "lastOpened": null
     }
   ]
