@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782190615377,
+  "updatedAt": 1782190620225,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -97,16 +97,6 @@
       "size": 431362,
       "sha": "5e2b0a26dba8bc867062b1629db4af372a264227",
       "uploadedAt": 1782141107047,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqpct44s4d856",
-      "name": "image-posts-3-questions.html",
-      "folderId": "fd_mqpcsh1mn81rk",
-      "path": "library/PC Files/image-posts-3-questions.html",
-      "size": 374723,
-      "sha": "be57cc0998d494bf00fb61ca945ec12117f08208",
-      "uploadedAt": 1782141119020,
       "lastOpened": null
     },
     {
