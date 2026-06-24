@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782286087721,
+  "updatedAt": 1782286093081,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -127,16 +127,6 @@
       "size": 510125,
       "sha": "bbb0153383c6cfda5a009de595694fc8480b107e",
       "uploadedAt": 1782217959791,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqqmkj3stcadk",
-      "name": "reels-1-lists.html",
-      "folderId": "fd_mqpcsh1mn81rk",
-      "path": "library/PC Files/reels-1-lists.html",
-      "size": 347994,
-      "sha": "b957d7691be3858dd75033f9e2f5aa4ce41b0cb9",
-      "uploadedAt": 1782217980856,
       "lastOpened": null
     }
   ]
