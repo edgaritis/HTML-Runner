@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782286097441,
+  "updatedAt": 1782286116210,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -107,16 +107,6 @@
       "size": 3178841,
       "sha": "af278807aa2db893f8e487fce1dfff19eb8d34ec",
       "uploadedAt": 1782217870772,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqqmk2unsxwg8",
-      "name": "pc_psychstories_image_phase3.html",
-      "folderId": "fd_mqpcsh1mn81rk",
-      "path": "library/PC Files/pc_psychstories_image_phase3.html",
-      "size": 510125,
-      "sha": "bbb0153383c6cfda5a009de595694fc8480b107e",
-      "uploadedAt": 1782217959791,
       "lastOpened": null
     }
   ]
