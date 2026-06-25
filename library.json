@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1782405665258,
+  "updatedAt": 1782405673215,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -157,6 +157,16 @@
       "size": 729544,
       "sha": "3b6de7b4a1da9370fe62f74a7efbf8cf268b6585",
       "uploadedAt": 1782405665220,
+      "lastOpened": null
+    },
+    {
+      "id": "fl_mqtqbffdzesdg",
+      "name": "pc_quotes_image_phase1.html",
+      "folderId": "fd_mqpcsh1mn81rk",
+      "path": "library/PC Files/pc_quotes_image_phase1.html",
+      "size": 732326,
+      "sha": "61cee00878c8f7a531065b97431925525c35036e",
+      "uploadedAt": 1782405673177,
       "lastOpened": null
     }
   ]
