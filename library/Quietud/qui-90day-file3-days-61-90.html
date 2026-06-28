@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qui — 90-Day Schedule (File 3: Days 61–90)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #F5F0E6; color: #2D3845;
+    line-height: 1.45; padding: 12px; font-size: 14px;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  header { padding: 8px 4px 14px; border-bottom: 1px solid #D8D2C4; margin-bottom: 14px; }
+  h1 { font-size: 18px; font-weight: 600; }
+  header p { font-size: 12px; color: #6B7480; margin-top: 2px; }
+  .controls {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 8px; margin-bottom: 12px; padding: 0 4px;
+  }
+  .search-wrap { flex: 1; min-width: 200px; position: relative; }
+  .search-wrap input {
+    width: 100%; padding: 6px 30px 6px 10px;
+    font-size: 13px; border: 1px solid #D8D2C4; border-radius: 4px;
+    background: #FFFFFF; color: #2D3845; font-family: inherit;
+  }
+  .search-wrap input:focus { outline: none; border-color: #5B7A82; }
+  .search-clear {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: #8A8478;
+    cursor: pointer; font-size: 16px; padding: 2px 6px; display: none;
+  }
+  .search-wrap input:not(:placeholder-shown) ~ .search-clear { display: block; }
+  .controls button.ctrl {
+    background: #FBF7EE; border: 1px solid #D8D2C4; color: #2D3845;
+    border-radius: 4px; padding: 5px 12px;
+    font-size: 11px; font-weight: 600; cursor: pointer; letter-spacing: 0.3px;
+  }
+  .controls button.ctrl:hover { background: #F0EBE0; }
+  #match-count { font-size: 11px; color: #6B7480; white-space: nowrap; padding: 0 4px; }
+  details.day {
+    background: #FBF7EE; border: 1px solid #D8D2C4;
+    border-radius: 5px; margin-bottom: 6px; overflow: hidden;
+  }
+  details.day[open] { background: #FFFFFF; }
+  summary.day-header {
+    list-style: none; cursor: pointer; padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px; user-select: none;
+  }
+  summary.day-header::-webkit-details-marker { display: none; }
+  summary.day-header::before {
+    content: '\25B8'; color: #8A8478; font-size: 11px;
+    transition: transform 0.15s;
+  }
+  details[open] summary.day-header::before { transform: rotate(90deg); }
+  summary.day-header:hover { background: rgba(0,0,0,0.02); }
+  .day-number { font-size: 14px; font-weight: 600; flex: 1; }
+  .badge {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.5px; padding: 3px 8px; border-radius: 3px; color: #FBF7EE;
+  }
+  .badge-wisdom { background: #5B7A82; }
+  .badge-reminder { background: #B89060; }
+  .badge-mindset { background: #A66B5A; }
+  .badge-psychology { background: #7A8B6B; }
+  .badge-poem { background: #B07A7A; }
+  .badge-reflection { background: #8B7A50; }
+  .badge-affirmation { background: #A89055; }
+  .day-content { padding: 4px 14px 14px; }
+  .post { padding: 12px; margin-top: 10px; border-radius: 5px; }
+  .post:first-child { margin-top: 0; }
+  .post.image { background: #EEF1F4; }
+  .post.story { background: #F9F2E3; }
+  .post-type {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.6px; color: #8A8478; margin-bottom: 8px;
+  }
+  .field { padding: 6px 0 10px; display: flex; flex-direction: column; }
+  .field .label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.5px; color: #8A8478; margin-bottom: 4px;
+  }
+  .field .text {
+    font-size: 13px; color: #2D3845;
+    white-space: pre-wrap; overflow-wrap: break-word;
+  }
+  .field .text.title { font-weight: 600; font-size: 16px; color: #2D3845; }
+  .field .text.caption { color: #4A5566; }
+  .field .text.prompt {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+    font-size: 11.5px; color: #4A5566;
+    background: #FFFFFF; padding: 6px 8px;
+    border-radius: 3px; border: 1px solid #E0DDD4; line-height: 1.4;
+  }
+  .field button.copy { align-self: flex-start; margin-top: 6px; }
+  button.copy {
+    background: #2D3845; color: #FBF7EE; border: none; border-radius: 3px;
+    padding: 4px 11px; font-size: 10px; font-weight: 600; cursor: pointer;
+    letter-spacing: 0.3px; transition: background 0.15s; min-width: 80px;
+  }
+  button.copy:hover { background: #1F2832; }
+  button.copy.copied { background: #5B7A82; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Qui — 90-Day Schedule</h1>
+  <p>File 3: Days 61–90. Click a day to expand, or search to filter.</p>
+</header>
+<div class="controls">
+  <div class="search-wrap">
+    <input type="text" id="search" placeholder="Buscar por título o palabras..." autocomplete="off" />
+    <button class="search-clear" onclick="clearSearch()" title="Clear">×</button>
+  </div>
+  <span id="match-count">30 días</span>
+  <button class="ctrl" onclick="expandAll()">Expand all</button>
+  <button class="ctrl" onclick="collapseAll()">Collapse all</button>
+</div>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 61</span>
+    <span class="badge badge-poem">Poem</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d61-img-title">El agua que vuelve</div>
+        <button class="copy" onclick="copy('d61-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d61-img-hook">Como el río, también encuentras tu cauce. Aunque te desvíes, lo natural sabe regresar.</div>
+        <button class="copy" onclick="copy('d61-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d61-img-caption">Aunque te desvíes, el agua siempre encuentra el camino. Tú también, aunque te pierdas, aunque dudes, vas a volver a tu rumbo natural. Lo tuyo no necesita instrucciones complicadas. Solo confianza en que sabe orientarse solo.
+
+¿Hacia dónde te lleva tu cauce natural cuando dejas de pelearte con él?
+
+#poesía #pazinterior #reflexión #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d61-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d61-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with pale lavender accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on a riverside at dawn, positioned in the bottom third of the frame, looking at water with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d61-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d61-st-title">Confía en el agua</div>
+        <button class="copy" onclick="copy('d61-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d61-st-hook">Lo que tiene que llegar, llega. Y forzarlo solo te cansa antes de que llegue.</div>
+        <button class="copy" onclick="copy('d61-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d61-st-caption">No fuerces el camino. Como el río, también tú sabes acomodarte cuando dejas de empujar contra todo. Confía en ese movimiento que ya conoces.
+
+¿Qué necesitas dejar de forzar esta semana?
+
+#poesía #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d61-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d61-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket walking near a small river at dawn, viewed in three-quarter back view, positioned in the bottom third of the frame. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d61-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 62</span>
+    <span class="badge badge-reflection">Reflection</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d62-img-title">Lo que dices sin querer decirlo</div>
+        <button class="copy" onclick="copy('d62-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d62-img-hook">Tu silencio también es lenguaje. Y a veces dice más que las palabras que sí elegiste.</div>
+        <button class="copy" onclick="copy('d62-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d62-img-caption">A veces no es lo que dices, es lo que no dices. La forma en que callas, en que respondes corto, en que no preguntas. Tus silencios cuentan una historia que tú quizás no escuchas pero que los demás sí leen sin esfuerzo.
+
+¿Qué silencio tuyo está diciendo más de lo que crees?
+
+#reflexión #autoconocimiento #pazinterior #comunicación #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d62-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d62-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted ochre accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn long-sleeved shirt seated on a park bench at late afternoon, positioned in the bottom third of the frame, head slightly turned away. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d62-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d62-st-title">Lo no dicho, también pesa</div>
+        <button class="copy" onclick="copy('d62-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d62-st-hook">Lo que callas, también lo escucha el otro. Aunque no lo nombre, lo percibe.</div>
+        <button class="copy" onclick="copy('d62-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d62-st-caption">Aprende a notar tus silencios. A veces son los que más dicen, los que más comunican lo que las palabras no se animan.
+
+¿Qué silencio tuyo te toca romper esta semana?
+
+#reflexión #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d62-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d62-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes on outdoor concrete steps at dusk, positioned in the bottom third of the frame, looking down with contemplative posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d62-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 63</span>
+    <span class="badge badge-affirmation">Affirmation</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d63-img-title">Tengo derecho a estar en duelo</div>
+        <button class="copy" onclick="copy('d63-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d63-img-hook">Lo que duele merece tiempo. No tengo que apurar mi tristeza para acomodarme a nadie.</div>
+        <button class="copy" onclick="copy('d63-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d63-img-caption">No tienes que apurar tu tristeza. No tienes que disculparte por llorar lo que perdiste. El duelo es trabajo del alma y tu alma también merece su tiempo, sin reloj, sin presión, sin que te apuren los demás.
+
+¿Qué duelo estás apurando en lugar de honrar?
+
+#afirmación #pazinterior #duelo #autocuidado #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d63-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d63-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with warm dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on a park bench at golden hour, positioned in the bottom third of the frame, hands open in lap with contemplative posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d63-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d63-st-title">Mi tristeza también es válida</div>
+        <button class="copy" onclick="copy('d63-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d63-st-hook">Sentir no tiene prisa. Y lo que sientes hoy, aunque sea pesado, merece su espacio.</div>
+        <button class="copy" onclick="copy('d63-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d63-st-caption">Lo que duele, duele. Y tiene su ritmo propio. Tú no tienes que apurarlo ni explicarlo a nadie para que sea legítimo.
+
+¿Qué necesitas darte permiso de sentir hoy sin justificarlo?
+
+#afirmación #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d63-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d63-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with pale dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn t-shirt on an outdoor bench at dusk, positioned in the bottom third of the frame, breathing calmly with hands resting in lap. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d63-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 64</span>
+    <span class="badge badge-wisdom">Wisdom</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d64-img-title">El valor de no saber</div>
+        <button class="copy" onclick="copy('d64-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d64-img-hook">No saber también es una respuesta honesta. Y muchas veces, la más sabia de todas.</div>
+        <button class="copy" onclick="copy('d64-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d64-img-caption">A veces la honestidad es decir no sé. No tienes que tener todas las respuestas, ni a tus preguntas internas ni a las de los demás. Aceptar lo que no entiendes, sin disfrazarlo de certeza, también es sabiduría. Y la gente lo nota.
+
+¿Qué estás fingiendo saber que en realidad no sabes?
+
+#sabiduría #pazinterior #autoconocimiento #honestidad #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d64-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d64-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket seated on an outdoor bench at dusk, positioned in the bottom third of the frame, contemplative posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d64-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d64-st-title">La pregunta también es respuesta</div>
+        <button class="copy" onclick="copy('d64-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d64-st-hook">Quien se atreve a preguntar también está aprendiendo. Las preguntas honestas valen oro.</div>
+        <button class="copy" onclick="copy('d64-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d64-st-caption">Las preguntas honestas valen más que las respuestas rápidas hechas para quedar bien. Pregunta sin pena, aunque tiembles, aunque te creas que ya deberías saber.
+
+¿Qué pregunta llevas tiempo evitando hacerle a alguien?
+
+#sabiduría #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d64-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d64-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted sage accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn t-shirt seated on a park bench at morning, positioned in the bottom third of the frame, looking up at sky. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d64-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 65</span>
+    <span class="badge badge-reminder">Reminder</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d65-img-title">No eres tus pensamientos</div>
+        <button class="copy" onclick="copy('d65-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d65-img-hook">Los piensas, no los eres. Y reconocer la diferencia te ahorra años de discutir contigo.</div>
+        <button class="copy" onclick="copy('d65-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d65-img-caption">Los pensamientos cruzan, vienen, van sin pedir permiso. No son tu identidad, son tránsito mental. Cuando aprendes a observarlos sin creerles todos, también empiezas a respirar distinto. La cabeza pesa menos cuando dejas de tomarte cada idea en serio.
+
+¿Qué pensamiento estás creyendo como verdad cuando solo es un pensamiento?
+
+#recordatorio #pazinterior #mente #autoconocimiento #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d65-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d65-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted sage accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes on an outdoor bench at morning, positioned in the bottom third of the frame, eyes closed breathing with hands open. The upper two-thirds is plain warm-cream open background reserved for text overlay. Working-life register.</div>
+        <button class="copy" onclick="copy('d65-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d65-st-title">Solo observa</div>
+        <button class="copy" onclick="copy('d65-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d65-st-hook">Mirar sin juzgar, también calma. No tienes que reaccionar a cada cosa que pasa por tu cabeza.</div>
+        <button class="copy" onclick="copy('d65-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d65-st-caption">No tienes que reaccionar a todo lo que pasa por tu cabeza. A veces solo mirarlo, sin pelearle ni abrazarlo, ya es suficiente.
+
+¿Qué pensamiento estás listo para solo observar sin engancharte?
+
+#recordatorio #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d65-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d65-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn hoodie seated on a park bench at morning, positioned in the bottom third of the frame, looking at distance with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d65-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 66</span>
+    <span class="badge badge-mindset">Mindset</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d66-img-title">La curiosidad, sobre la certeza</div>
+        <button class="copy" onclick="copy('d66-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d66-img-hook">Quien pregunta también está creciendo. La certeza te cierra, la curiosidad te abre puertas.</div>
+        <button class="copy" onclick="copy('d66-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d66-img-caption">La certeza te cierra. La curiosidad te abre. No tienes que saberlo todo para tener valor. Solo querer seguir descubriendo, aunque ya seas adulto, aunque ya creas que aprendiste lo importante. Eso es lo que mantiene la mente joven sin esfuerzo.
+
+¿En qué tema podrías cambiar la certeza por curiosidad esta semana?
+
+#mindset #pazinterior #autoconocimiento #curiosidad #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d66-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d66-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with dusty mustard accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket walking on a quiet country road at dawn, viewed in three-quarter back view, positioned in the bottom third of the frame, looking forward. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d66-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d66-st-title">Pregunta más, decide menos</div>
+        <button class="copy" onclick="copy('d66-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d66-st-hook">Cuando dudas, también estás creciendo. No todas las preguntas necesitan respuesta inmediata.</div>
+        <button class="copy" onclick="copy('d66-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d66-st-caption">No todas las preguntas necesitan respuesta inmediata. Algunas solo necesitan ser sostenidas hasta que la vida las responda sola.
+
+¿Qué pregunta puedes sostener hoy sin apurar la respuesta?
+
+#mindset #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d66-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d66-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with dusty amber accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes walking on a country road at golden hour, viewed in three-quarter back view, positioned in the bottom third of the frame, walking forward. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d66-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 67</span>
+    <span class="badge badge-psychology">Psychology</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d67-img-title">El miedo al abandono</div>
+        <button class="copy" onclick="copy('d67-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d67-img-hook">A veces, antes de que el otro se vaya, tú ya te imaginas que se fue. Y eso te aleja igual.</div>
+        <button class="copy" onclick="copy('d67-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d67-img-caption">Si vives anticipando la pérdida en cada vínculo, no estás disfrutando, estás defendiéndote sin pausa. Reconocer el miedo al abandono te separa de él un poco. Y al separarte, empiezas a confiar despacio, a tu paso, sin obligarte.
+
+¿Qué vínculo te asusta perder antes de que pase algo real?
+
+#psicología #autoconocimiento #pazinterior #abandono #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d67-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d67-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted ochre accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn long-sleeved shirt seated on an outdoor bench at dusk, positioned in the bottom third of the frame, body slightly hunched looking at distance. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d67-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d67-st-title">Confiar también es trabajo</div>
+        <button class="copy" onclick="copy('d67-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d67-st-hook">No todos los vínculos terminan como los pasados. Y mereces dejar que este nuevo sea distinto.</div>
+        <button class="copy" onclick="copy('d67-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d67-st-caption">Cada relación es nueva, aunque tu cuerpo recuerde otras. No le hagas pagar el precio de las anteriores. Tu corazón merece volver a abrirse sin tarifa por adelantado.
+
+¿A qué vínculo nuevo le falta tu confianza limpia, sin pasado?
+
+#psicología #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d67-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d67-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes walking on a quiet path at dawn, viewed in three-quarter back view, positioned in the bottom third of the frame, one hand reaching forward. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d67-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 68</span>
+    <span class="badge badge-poem">Poem</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d68-img-title">Lo pequeño también canta</div>
+        <button class="copy" onclick="copy('d68-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d68-img-hook">No todo lo bueno es grande. Y a veces, los detalles chicos son la vida entera disfrazada.</div>
+        <button class="copy" onclick="copy('d68-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d68-img-caption">Una taza de café tibio. Una conversación corta. Un rayo de sol en la espalda en pleno frío. Los detalles pequeños son vida, quizás son la vida entera, y solo se ven cuando dejas de buscar lo extraordinario en lugares lejanos.
+
+¿Qué pequeño momento de hoy ya fue suficiente sin que lo notaras todavía?
+
+#poesía #pazinterior #presente #gratitud #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d68-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d68-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with dusty amber accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on a building stoop at morning, positioned in the bottom third of the frame, holding a paper coffee cup with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d68-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d68-st-title">Los detalles, también construyen</div>
+        <button class="copy" onclick="copy('d68-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d68-st-hook">La vida grande está hecha de cosas chicas. Y casi nadie te lo dice cuando eres joven.</div>
+        <button class="copy" onclick="copy('d68-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d68-st-caption">No esperes lo extraordinario para empezar a estar contento. Lo cotidiano también es suficiente, si lo miras bien y dejas de compararlo con highlights.
+
+¿Qué cosa pequeña hoy ya te dio algo, aunque no la nombraste?
+
+#poesía #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d68-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d68-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted sage accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn t-shirt seated on a park bench at morning, positioned in the bottom third of the frame, looking down at a small flower with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d68-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 69</span>
+    <span class="badge badge-reflection">Reflection</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d69-img-title">Las amistades que ya no eres</div>
+        <button class="copy" onclick="copy('d69-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d69-img-hook">No todas las relaciones duran. Y no todas tienen que durar para haber valido la pena.</div>
+        <button class="copy" onclick="copy('d69-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d69-img-caption">Algunas amistades cumplieron su tiempo en tu vida. Tú cambiaste, ella cambió, los dos siguieron caminos que ya no cruzan. Soltarlas no es traición. Es respeto al tramo que sí compartieron, sin obligar a estirar lo que ya no estira.
+
+¿Qué amistad reciente sentiste que ya cumplió su tiempo aunque te cueste aceptarlo?
+
+#reflexión #autoconocimiento #pazinterior #amistad #soltar #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d69-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d69-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket walking on a quiet path at dusk, viewed in three-quarter back view, positioned in the bottom third of the frame. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d69-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d69-st-title">Honra el tramo, suelta la insistencia</div>
+        <button class="copy" onclick="copy('d69-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d69-st-hook">Lo que fue, fue. Y eso ya es suficiente, sin necesidad de forzar que siga siendo.</div>
+        <button class="copy" onclick="copy('d69-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d69-st-caption">Guarda con cariño lo que pasó. Pero no obligues a quedarse lo que ya no quiere quedarse, ni tampoco te obligues a quedarte donde ya no eres tú.
+
+¿Qué amistad llevas tiempo forzando que ya cumplió su ciclo?
+
+#reflexión #pazinterior #soltar #frasesenespañol</div>
+        <button class="copy" onclick="copy('d69-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d69-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with dusty terracotta accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes at a modest doorway at dusk, positioned in the bottom third of the frame, hand on door with composed body. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d69-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 70</span>
+    <span class="badge badge-affirmation">Affirmation</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d70-img-title">Confío en mi cuerpo</div>
+        <button class="copy" onclick="copy('d70-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d70-img-hook">Mi cuerpo también sabe. Sabe cuándo descansar, cuándo moverse, cuándo callar. Solo hay que escucharlo.</div>
+        <button class="copy" onclick="copy('d70-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d70-img-caption">Tu cuerpo te dice cuándo estar quieto, cuándo moverte, cuándo descansar. Aprende a escucharlo antes que a tu cabeza, que muchas veces va contra él. Él, también, es sabio, y casi siempre tiene mejor información que tu mente apurada.
+
+¿Qué te está diciendo tu cuerpo hoy que has estado ignorando por costumbre?
+
+#afirmación #pazinterior #cuerpo #autocuidado #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d70-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d70-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted sage accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn t-shirt seated on an outdoor bench at morning, positioned in the bottom third of the frame, hands open in lap with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d70-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d70-st-title">Mi cuerpo también me cuida</div>
+        <button class="copy" onclick="copy('d70-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d70-st-hook">Escúchalo. No solo cuando duele. Cuando susurra también vale la pena pararle bola.</div>
+        <button class="copy" onclick="copy('d70-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d70-st-caption">Tu cuerpo es tu casa, no tu enemigo ni tu herramienta. Trátalo como casa, con respeto y mantenimiento, no como máquina de producir.
+
+¿Qué cuidado le falta a tu cuerpo esta semana que llevas posponiendo?
+
+#afirmación #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d70-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d70-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with pale dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn long-sleeved shirt on a rooftop at dawn, positioned in the bottom third of the frame, body upright breathing with hands at sides. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d70-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 71</span>
+    <span class="badge badge-wisdom">Wisdom</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d71-img-title">Madurar no es endurecerse</div>
+        <button class="copy" onclick="copy('d71-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d71-img-hook">Crecer también es seguir siendo blando, aunque la vida te dé razones para cerrarte.</div>
+        <button class="copy" onclick="copy('d71-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d71-img-caption">Algunos creen que madurar es no sentir. No es. Madurar es seguir sintiendo, pero con más herramientas para sostener lo que sientes sin perderte. Tu ternura, después de todo lo vivido, también es señal de crecimiento real.
+
+¿En qué parte tuya te has endurecido sin querer, solo para sobrevivir?
+
+#sabiduría #pazinterior #autoconocimiento #madurez #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d71-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d71-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with warm dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on a park bench at golden hour, positioned in the bottom third of the frame, calm posture with hands resting in lap. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d71-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d71-st-title">Lo blando también es fuerte</div>
+        <button class="copy" onclick="copy('d71-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d71-st-hook">Quien aún se conmueve también está despierto. La frialdad no es virtud, es defensa cansada.</div>
+        <button class="copy" onclick="copy('d71-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d71-st-caption">No te endurezcas para protegerte. Hay otra forma de cuidarte, una que no te quita el corazón en el proceso.
+
+¿Qué dureza tuya ya no te sirve y solo te aleja de lo que querés?
+
+#sabiduría #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d71-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d71-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with pale lavender accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn t-shirt in a quiet garden corner at morning, positioned in the bottom third of the frame, calm seated posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d71-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 72</span>
+    <span class="badge badge-reminder">Reminder</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d72-img-title">Tu cuerpo te habla</div>
+        <button class="copy" onclick="copy('d72-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d72-img-hook">Las señales también son mensajes. No las ignores hasta que se vuelvan grito.</div>
+        <button class="copy" onclick="copy('d72-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d72-img-caption">El cansancio, el dolor, la tensión. No son obstáculos a vencer, son comunicación que necesitas leer. Tu cuerpo te dice qué necesita en idioma físico. Aprende a escucharlo antes de obligarlo a gritar para que le hagas caso.
+
+¿Qué señal de tu cuerpo estás ignorando últimamente con la excusa de no tener tiempo?
+
+#recordatorio #pazinterior #cuerpo #autocuidado #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d72-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d72-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with dusty amber accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on an outdoor bench at midday, positioned in the bottom third of the frame, head leaned back with eyes closed. The upper two-thirds is plain warm-cream open background reserved for text overlay. Working-life register.</div>
+        <button class="copy" onclick="copy('d72-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d72-st-title">Escucha sin discutir</div>
+        <button class="copy" onclick="copy('d72-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d72-st-hook">Lo que tu cuerpo siente también merece respeto. No es queja, es información.</div>
+        <button class="copy" onclick="copy('d72-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d72-st-caption">No reprimas las señales. Atiéndelas cuando son chicas, así no tienen que crecer hasta volverse problema serio.
+
+¿Qué señal vas a atender hoy aunque sea breve?
+
+#recordatorio #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d72-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d72-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted sage accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn hoodie seated on a park bench at afternoon, positioned in the bottom third of the frame, calm relaxed posture looking at trees. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d72-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 73</span>
+    <span class="badge badge-mindset">Mindset</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d73-img-title">La disciplina del amor propio</div>
+        <button class="copy" onclick="copy('d73-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d73-img-hook">Amarte también es una práctica. No llega como descubrimiento, llega como hábito sostenido.</div>
+        <button class="copy" onclick="copy('d73-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d73-img-caption">El amor propio no es solo sentir bonito de ti los días buenos. Es elegir cuidarte incluso cuando no tienes ganas, cuando no te lo mereces según tu cabeza. Es la disciplina silenciosa de tratarte bien todos los días, no solo los que se sienten.
+
+¿Qué pequeña acción de amor propio harías hoy aunque no tengas ganas reales?
+
+#mindset #pazinterior #amorpropio #autocuidado #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d73-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d73-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with dusty mustard accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket mid-step on outdoor concrete stairs at morning, positioned in the bottom third of the frame, looking forward with calm intent. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d73-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d73-st-title">Practica, no esperes</div>
+        <button class="copy" onclick="copy('d73-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d73-st-hook">El cariño también se enseña a uno mismo. No esperes sentirlo para empezar a darlo.</div>
+        <button class="copy" onclick="copy('d73-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d73-st-caption">No tienes que sentirte digno para empezar a tratarte como tal. La disciplina viene primero, el sentimiento llega después. Así funciona casi todo lo que vale la pena.
+
+¿Qué hábito de amor propio empezarías esta semana sin esperar a sentirte listo?
+
+#mindset #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d73-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d73-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with dusty amber accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes walking on a country road at dawn, viewed in three-quarter back view, positioned in the bottom third of the frame, walking forward. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d73-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 74</span>
+    <span class="badge badge-psychology">Psychology</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d74-img-title">El apego ansioso</div>
+        <button class="copy" onclick="copy('d74-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d74-img-hook">Si te aferras antes de saber, no es amor. Es miedo aprendiendo a llamarse amor.</div>
+        <button class="copy" onclick="copy('d74-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d74-img-caption">Si te aceleras cuando tarda en responder, si te imaginas lo peor cuando hay silencio, no es defecto tuyo. Es una herida vieja que aprendió a vivir en alerta. Reconocerla es el primer paso a calmarla, sin culparte por sentirla.
+
+¿Qué silencio te activa lo peor antes de saber qué pasó realmente?
+
+#psicología #autoconocimiento #pazinterior #apego #vínculos #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d74-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d74-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted ochre accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn long-sleeved shirt seated on an outdoor bench at late afternoon, positioned in the bottom third of the frame, looking at phone with tense posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d74-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d74-st-title">Respira antes de reaccionar</div>
+        <button class="copy" onclick="copy('d74-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d74-st-hook">El otro no siempre se va. A veces solo está ocupado y tu cabeza arma la película.</div>
+        <button class="copy" onclick="copy('d74-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d74-st-caption">A veces el silencio del otro no es rechazo, es solo silencio. Aprende a sostener la pausa sin imaginar el final dramático que tu mente prepara sin pedir permiso.
+
+¿Qué pausa te toca sostener hoy sin asustarte ni rellenarla con peores escenarios?
+
+#psicología #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d74-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d74-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn t-shirt seated on a park bench at morning, positioned in the bottom third of the frame, eyes closed breathing with hands open. The upper two-thirds is plain warm-cream open background reserved for text overlay. Working-life register.</div>
+        <button class="copy" onclick="copy('d74-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 75</span>
+    <span class="badge badge-poem">Poem</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d75-img-title">La luz del invierno</div>
+        <button class="copy" onclick="copy('d75-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d75-img-hook">Aunque débil, también es luz. No tienes que brillar fuerte para tener valor en el mundo.</div>
+        <button class="copy" onclick="copy('d75-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d75-img-caption">No todas las luces son intensas. Algunas son tibias, quietas, casi imperceptibles. Pero también iluminan, también guían a quien las sabe ver. Tú también, aunque hoy estés bajo, sigues siendo luz para alguien que ni te imaginas.
+
+¿Qué luz tuya hoy es tibia pero sigue alumbrando sin hacer ruido?
+
+#poesía #pazinterior #reflexión #esperanza #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d75-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d75-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with pale dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on a park bench at midday with low filtered light, positioned in the bottom third of the frame, calm composed posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d75-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d75-st-title">Sigues alumbrando</div>
+        <button class="copy" onclick="copy('d75-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d75-st-hook">Aún en tus días bajos, también das. Aunque no lo notes, aunque no te lo digan.</div>
+        <button class="copy" onclick="copy('d75-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d75-st-caption">No tienes que brillar fuerte para tener valor. La luz que persiste, aunque sea pequeña, también basta para alguien que va caminando en lo oscuro.
+
+¿Qué luz tuya hoy es la que persiste sin que la riegues?
+
+#poesía #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d75-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d75-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with warm dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket on a doorstep at morning, positioned in the bottom third of the frame, calm posture with gentle light. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d75-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 76</span>
+    <span class="badge badge-reflection">Reflection</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d76-img-title">Lo que enseñas con cómo vives</div>
+        <button class="copy" onclick="copy('d76-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d76-img-hook">No es lo que dices. Es lo que muestras sin querer. Y eso es lo que se queda en la gente.</div>
+        <button class="copy" onclick="copy('d76-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d76-img-caption">Los que te observan no aprenden de tus discursos preparados. Aprenden de tu manera diaria. Cómo tratas a quien sirve la mesa, cómo respondes cuando algo sale mal, cómo descansas. Tu vida también es lección, aunque tú no te creas maestro.
+
+¿Qué estás enseñando hoy con cómo vives, aunque no te lo propongas?
+
+#reflexión #autoconocimiento #pazinterior #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d76-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d76-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with warm dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on a park bench at golden hour, positioned in the bottom third of the frame, calm composed posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d76-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d76-st-title">Vives lo que enseñas</div>
+        <button class="copy" onclick="copy('d76-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d76-st-hook">Lo que crees, se ve. No tienes que predicar, solo vivir lo que dices que creés.</div>
+        <button class="copy" onclick="copy('d76-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d76-st-caption">No tienes que predicar nada. Vive bien y eso ya enseña sin esfuerzo extra. Los demás copian lo que ven, no lo que les contás.
+
+¿Qué lección estás dando sin darte cuenta esta semana?
+
+#reflexión #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d76-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d76-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted sage accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn long-sleeved shirt walking on a quiet path at morning, viewed in three-quarter back view, positioned in the bottom third of the frame. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d76-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 77</span>
+    <span class="badge badge-affirmation">Affirmation</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d77-img-title">Mi voz también vale</div>
+        <button class="copy" onclick="copy('d77-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d77-img-hook">Lo que pienso también es válido. No necesito ser experto para tener opinión sobre mi vida.</div>
+        <button class="copy" onclick="copy('d77-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d77-img-caption">No tienes que ser experto para tener opinión. No tienes que tener razón absoluta para hablar. Tu voz, con todas tus dudas y certezas mezcladas, también vale en la conversación. Úsala, aunque tiembles, aunque no salga perfecta.
+
+¿Qué opinión llevas callando que ya es momento de poner en palabras?
+
+#afirmación #autoestima #pazinterior #voz #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d77-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d77-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket on an outdoor terrace at dawn, positioned in the bottom third of the frame, body upright with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d77-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d77-st-title">Habla, aunque tiembles</div>
+        <button class="copy" onclick="copy('d77-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d77-st-hook">Mi opinión también suma. No tengo que llegar al final con la mejor versión para decirla.</div>
+        <button class="copy" onclick="copy('d77-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d77-st-caption">No te quedes callado por miedo a equivocarte. Lo que piensas también enriquece, aunque sea un punto de vista incompleto. Los demás también vienen incompletos, solo que algunos no lo admiten.
+
+¿Qué vas a decir esta semana aunque te tiemble la voz al hacerlo?
+
+#afirmación #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d77-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d77-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with deep golden amber accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes on a rooftop at dawn, positioned in the bottom third of the frame, body upright looking at horizon. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d77-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 78</span>
+    <span class="badge badge-wisdom">Wisdom</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d78-img-title">El peso de la palabra</div>
+        <button class="copy" onclick="copy('d78-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d78-img-hook">Lo que dices también construye. Sobre todo lo que te repites a ti mismo cuando nadie escucha.</div>
+        <button class="copy" onclick="copy('d78-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d78-img-caption">Las palabras crean realidad lenta. Lo que repites de ti, bueno o malo, eventualmente te forma desde adentro. Por eso vale la pena cuidar cómo te hablas en privado. Lo que dices de ti también edifica lo que vas a ser en cinco años.
+
+¿Qué frase te repites de ti que te está construyendo en contra?
+
+#sabiduría #pazinterior #autoconocimiento #palabra #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d78-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d78-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on an outdoor bench at dusk, positioned in the bottom third of the frame, contemplative posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d78-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d78-st-title">Cuida cómo te nombras</div>
+        <button class="copy" onclick="copy('d78-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d78-st-hook">Lo que dices de ti también te lo crees. Aunque empieces diciéndolo de mentira.</div>
+        <button class="copy" onclick="copy('d78-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d78-st-caption">Empieza por las palabras internas. Las que te diriges al despertar, las que te repites en los errores, las que cargan tu día sin que las notes.
+
+¿Qué palabra tuya de hoy querés cambiar antes de mañana?
+
+#sabiduría #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d78-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d78-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted ochre accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn t-shirt seated on a park bench at golden hour, positioned in the bottom third of the frame, calm hands in lap. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d78-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 79</span>
+    <span class="badge badge-reminder">Reminder</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d79-img-title">Tienes el día</div>
+        <button class="copy" onclick="copy('d79-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d79-img-hook">Hoy también puedes elegir. No tienes que decidir el resto del año, solo las próximas horas.</div>
+        <button class="copy" onclick="copy('d79-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d79-img-caption">No tienes que decidir mañana. Ni la próxima semana. Solo hoy, solo estas horas que ya están en tus manos. ¿Qué eliges traer a este día? Calma, foco, espacio, descanso. Eres dueño de las próximas veinticuatro horas sin pedir permiso.
+
+¿Qué eliges traer al día de hoy, aunque sea pequeño?
+
+#recordatorio #pazinterior #presente #autoconocimiento #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d79-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d79-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with dusty amber accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes on a building stoop at morning, positioned in the bottom third of the frame, holding paper coffee cup with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d79-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d79-st-title">Hoy, basta hoy</div>
+        <button class="copy" onclick="copy('d79-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d79-st-hook">No tienes que resolverlo todo de una vez. Hoy es suficiente foco para una persona sola.</div>
+        <button class="copy" onclick="copy('d79-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d79-st-caption">Solo este día. Solo este momento. Es suficiente para concentrarte sin perderte en planes muy grandes que aún no necesitan tu energía.
+
+¿Qué puedes dejar para mañana sin culpa, sabiendo que mañana lo retomas?
+
+#recordatorio #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d79-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d79-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted sage accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn t-shirt on a park bench at morning, positioned in the bottom third of the frame, calm posture looking at distance. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d79-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 80</span>
+    <span class="badge badge-mindset">Mindset</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d80-img-title">Hacer menos, mejor</div>
+        <button class="copy" onclick="copy('d80-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d80-img-hook">La concentración también es estrategia. Hacer mucho a la vez casi nunca es hacer bien nada.</div>
+        <button class="copy" onclick="copy('d80-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d80-img-caption">Hacer mucho, casi siempre, no es hacer bien. Concentrarte en lo importante y soltar el resto es lo que produce resultados reales que se notan. La calidad también es elección, no don. Y se entrena cuando dejas de querer abarcar todo.
+
+¿Qué tres cosas concentrarías esta semana en lugar de querer hacer diez a medias?
+
+#mindset #pazinterior #productividad #concentración #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d80-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d80-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with dusty mustard accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket on outdoor concrete steps at morning, positioned in the bottom third of the frame, sitting with calm focus. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d80-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d80-st-title">Una cosa. A la vez.</div>
+        <button class="copy" onclick="copy('d80-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d80-st-hook">Lo que importa merece tu atención entera. No la mitad, no de fondo, no entre otras dos.</div>
+        <button class="copy" onclick="copy('d80-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d80-st-caption">Cierra las pestañas mentales. Cierra los proyectos a medias que ya no van a avanzar así. Una cosa a fondo. Funciona mejor que diez empezadas.
+
+¿Qué proyecto necesitas cerrar antes de empezar otro nuevo?
+
+#mindset #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d80-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d80-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes walking on a quiet country road at dawn, viewed in three-quarter back view, positioned in the bottom third of the frame. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d80-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 81</span>
+    <span class="badge badge-psychology">Psychology</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d81-img-title">La rumiación</div>
+        <button class="copy" onclick="copy('d81-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d81-img-hook">Pensar lo mismo mil veces no es pensar. Es huir disfrazado de productividad mental.</div>
+        <button class="copy" onclick="copy('d81-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d81-img-caption">Cuando repites el mismo problema sin avanzar, no estás resolviendo, estás esquivando. La rumiación a veces es una forma de quedarte ocupado para no sentir lo que está debajo del problema. Reconocerla te libera de un trabajo que no te paga nada.
+
+¿Qué tema llevas semanas repitiendo en tu cabeza sin avanzar de verdad?
+
+#psicología #autoconocimiento #pazinterior #rumiación #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d81-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d81-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted ochre accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn long-sleeved shirt seated on an outdoor bench at dusk, positioned in the bottom third of the frame, head resting in hand. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d81-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d81-st-title">Sal de la cabeza, vuelve al cuerpo</div>
+        <button class="copy" onclick="copy('d81-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d81-st-hook">Cuando piensas demasiado, respira. La calma muchas veces desbloquea lo que la mente no puede.</div>
+        <button class="copy" onclick="copy('d81-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d81-st-caption">Si no puedes resolverlo pensando, deja de pensar por un rato. Camina, respira, lava platos. La calma también desbloquea lo que la sobreanalización mantiene atorado.
+
+¿Qué necesitas dejar de pensar para empezar a sentir lo que hay debajo?
+
+#psicología #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d81-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d81-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn t-shirt on a park bench at morning, positioned in the bottom third of the frame, eyes closed breathing with hands open. The upper two-thirds is plain warm-cream open background reserved for text overlay. Working-life register.</div>
+        <button class="copy" onclick="copy('d81-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 82</span>
+    <span class="badge badge-poem">Poem</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d82-img-title">El último tren</div>
+        <button class="copy" onclick="copy('d82-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d82-img-hook">No todo lo que se va, vuelve. Y aceptarlo también es parte de aprender a vivir mejor.</div>
+        <button class="copy" onclick="copy('d82-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d82-img-caption">A veces hay trenes que se van sin ti. Y no hay otro saliendo después. Aceptarlo no es resignación, es honrar la realidad para poder, por fin, mirar lo que sí está parado en el andén esperándote.
+
+¿Qué tren se fue sin ti y aún estás parado esperando otro que no llega?
+
+#poesía #pazinterior #aceptación #reflexión #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d82-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d82-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket on a train platform at dusk, positioned in the bottom third of the frame, calm composed posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d82-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d82-st-title">Mira lo que sí está</div>
+        <button class="copy" onclick="copy('d82-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d82-st-hook">Lo que se fue también enseña a apreciar. Pero no a costa de no ver lo que llegó después.</div>
+        <button class="copy" onclick="copy('d82-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d82-st-caption">No todos los trenes son para ti. Y eso, aunque cueste años aceptarlo, también está bien. Mira los que sí están, los que sí pararon en tu estación.
+
+¿Qué de lo que sí está hoy estás dejando pasar por estar mirando lo que se fue?
+
+#poesía #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d82-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d82-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with warm dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes on a park bench at golden hour, positioned in the bottom third of the frame, looking at distance with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d82-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 83</span>
+    <span class="badge badge-reflection">Reflection</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d83-img-title">Los duelos sin nombre</div>
+        <button class="copy" onclick="copy('d83-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d83-img-hook">No todo lo que perdiste recibió luto. Y por eso, a veces, sigue doliendo sin que sepas por qué.</div>
+        <button class="copy" onclick="copy('d83-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d83-img-caption">Hay duelos que nunca nombraste. La amistad que se fue silenciosa. La versión tuya que dejaste atrás sin despedida. La rutina vieja que ya no es. Honrarlos, aunque sea tarde, también es sanar lo que quedó abierto sin querer.
+
+¿Qué pérdida tuya nunca recibió su duelo formal y aún te pesa?
+
+#reflexión #autoconocimiento #pazinterior #duelo #sanación #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d83-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d83-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with deep golden amber accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket on a rooftop at sunset, positioned in the bottom third of the frame, contemplative posture looking at city. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d83-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d83-st-title">Pon nombre, también es sanar</div>
+        <button class="copy" onclick="copy('d83-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d83-st-hook">Lo que se nombra también empieza a cerrar. Y nombrar no exige discurso, solo honestidad.</div>
+        <button class="copy" onclick="copy('d83-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d83-st-caption">No todos los duelos son obvios para los demás. Pero todos merecen su pausa interna. ¿Qué pérdida te falta nombrar, aunque sea para ti mismo?
+
+¿Qué cosa vieja te toca, por fin, nombrar y soltar sin tanto ruido?
+
+#reflexión #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d83-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d83-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with dusty terracotta accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes at a modest doorway at dusk, positioned in the bottom third of the frame, hand on door with composed body. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d83-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 84</span>
+    <span class="badge badge-affirmation">Affirmation</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d84-img-title">Estoy aprendiendo a quererme</div>
+        <button class="copy" onclick="copy('d84-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d84-img-hook">No es destino, es práctica. Y la práctica admite tropiezos, retrocesos, días en cero.</div>
+        <button class="copy" onclick="copy('d84-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d84-img-caption">Quererte no llega como un descubrimiento súbito. Llega como un aprendizaje lento, con tropiezos, con días buenos y malos. Estás aprendiendo, y eso ya vale más que tenerlo resuelto desde el principio. Confía en el proceso, no en el resultado.
+
+¿En qué parte de ti estás aprendiendo a quererte últimamente, aunque sea de a poco?
+
+#afirmación #pazinterior #amorpropio #autoconocimiento #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d84-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d84-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with warm dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on an outdoor bench at golden hour, positioned in the bottom third of the frame, hands open in lap with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d84-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d84-st-title">Cada día, un poco más</div>
+        <button class="copy" onclick="copy('d84-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d84-st-hook">No tienes que llegar, solo seguir. El amor propio no tiene línea de meta visible.</div>
+        <button class="copy" onclick="copy('d84-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d84-st-caption">El amor propio también es proceso. Día a día, sin prisa, pero sin pausa larga. Lo que se construye despacio, dura más.
+
+¿Qué pequeña práctica de amor propio harías esta semana sin esperar resultado?
+
+#afirmación #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d84-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d84-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with pale dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket walking on a quiet path at dawn, viewed in three-quarter back view, positioned in the bottom third of the frame. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d84-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 85</span>
+    <span class="badge badge-wisdom">Wisdom</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d85-img-title">Lo que la calma enseña</div>
+        <button class="copy" onclick="copy('d85-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d85-img-hook">En la quietud también se escucha. Y lo que se escucha ahí, vale más que mil consejos prestados.</div>
+        <button class="copy" onclick="copy('d85-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d85-img-caption">Cuando no haces nada, no estás perdiendo tiempo. Estás escuchando lo que el ruido no te dejaba oír antes. La calma también es información, quizás la más valiosa porque viene de adentro, no de afuera.
+
+¿Qué te ha dicho tu última pausa real cuando dejaste de hacer y solo estuviste?
+
+#sabiduría #pazinterior #calma #autoconocimiento #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d85-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d85-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn t-shirt on an outdoor terrace at dusk, positioned in the bottom third of the frame, calm contemplative posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d85-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d85-st-title">La calma, también responde</div>
+        <button class="copy" onclick="copy('d85-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d85-st-hook">Sin prisa, también se entiende. La impaciencia te quita las respuestas que solo llegan despacio.</div>
+        <button class="copy" onclick="copy('d85-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d85-st-caption">No fuerces las respuestas a salir. La calma las trae cuando están listas, no cuando tú las exiges. Confía en ese trabajo silencioso del tiempo.
+
+¿Qué respuesta llevas tiempo forzando que necesita más calma para aparecer?
+
+#sabiduría #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d85-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d85-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted sage accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes on a park bench at golden hour, positioned in the bottom third of the frame, eyes closed with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Working-life register.</div>
+        <button class="copy" onclick="copy('d85-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 86</span>
+    <span class="badge badge-reminder">Reminder</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d86-img-title">Lo que pides, también vuelve</div>
+        <button class="copy" onclick="copy('d86-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d86-img-hook">Cómo das, también es cómo recibes. No necesariamente del mismo, pero la vida lleva cuenta.</div>
+        <button class="copy" onclick="copy('d86-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d86-img-caption">Lo que entregas, atención, paciencia, cariño, eventualmente vuelve. No necesariamente de quien diste, pero vuelve por algún lado, en otro momento, de otra persona. La vida lleva una contabilidad propia que no entiende de plazos cortos.
+
+¿Qué das hoy que confías que volverá, aunque no sea por la misma puerta?
+
+#recordatorio #pazinterior #vínculos #generosidad #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d86-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d86-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted sage accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on a park bench at morning, positioned in the bottom third of the frame, hands open in lap with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d86-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d86-st-title">Da, sin esperar el mismo lugar</div>
+        <button class="copy" onclick="copy('d86-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d86-st-hook">Lo que sale también encuentra forma de regresar. Solo que no siempre por donde uno espera.</div>
+        <button class="copy" onclick="copy('d86-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d86-st-caption">No mides el cariño por quién lo devuelve. Da por dar, sin lista de cuentas pendientes. Y la vida también te cubrirá, aunque sea por caminos que no te imaginabas.
+
+¿A quién darías esta semana sin esperar nada concreto de vuelta?
+
+#recordatorio #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d86-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d86-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with dusty amber accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket walking on a quiet path at morning, viewed in three-quarter back view, positioned in the bottom third of the frame. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d86-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 87</span>
+    <span class="badge badge-mindset">Mindset</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d87-img-title">El progreso invisible</div>
+        <button class="copy" onclick="copy('d87-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d87-img-hook">Lo que cambia por dentro también cuenta. Aunque nadie te lo aplauda, aunque no se vea en fotos.</div>
+        <button class="copy" onclick="copy('d87-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d87-img-caption">No todo crecimiento se ve en lo externo. A veces lo que avanzaste fue tu paciencia con la gente, tu calma al esperar, tu capacidad de respirar antes de reaccionar. Eso también es progreso, aunque no haya forma de mostrarlo en una historia.
+
+¿Qué progreso interno tuyo, este año, no se ve pero te ha cambiado por dentro?
+
+#mindset #pazinterior #crecimiento #autoconocimiento #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d87-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d87-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with warm dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on a park bench at golden hour, positioned in the bottom third of the frame, contemplative posture looking at distance. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d87-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d87-st-title">Sigues, aunque no se note</div>
+        <button class="copy" onclick="copy('d87-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d87-st-hook">Lo interno también es real. Solo que nadie te firma certificado de cambio por adentro.</div>
+        <button class="copy" onclick="copy('d87-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d87-st-caption">Tu progreso silencioso es el más importante de todos los progresos. Confía, aunque no veas medallas ni reconocimientos por él.
+
+¿Qué confianza puedes darte hoy aunque no se note tu avance desde afuera?
+
+#mindset #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d87-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d87-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with deep golden amber accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn long-sleeved shirt on a hilltop at sunrise, positioned in the bottom third of the frame, body upright looking forward. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d87-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 88</span>
+    <span class="badge badge-psychology">Psychology</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d88-img-title">La disociación cotidiana</div>
+        <button class="copy" onclick="copy('d88-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d88-img-hook">A veces estás presente sin estar. El cuerpo en la silla, la mente en cualquier otro lado.</div>
+        <button class="copy" onclick="copy('d88-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d88-img-caption">Cuando la vida se vuelve demasiado, te desconectas sin notarlo. No es falta de interés ni de cariño. Es una forma de protección que tu mente aprendió hace años. Volver a tu cuerpo, despacio y sin presión, es donde empieza el regreso real.
+
+¿En qué momento reciente notaste que estabas presente sin estar de verdad?
+
+#psicología #autoconocimiento #pazinterior #disociación #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d88-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d88-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with muted ochre accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on an outdoor bench at dusk, positioned in the bottom third of the frame, looking at distance with quiet posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d88-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d88-st-title">Vuelve, despacio</div>
+        <button class="copy" onclick="copy('d88-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d88-st-hook">No tienes que estar siempre presente. Solo volver cuando puedas, sin reproche por la ausencia.</div>
+        <button class="copy" onclick="copy('d88-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d88-st-caption">Si te desconectaste, no te castigues por haberte ido sin avisar. Solo regresa, sin culpa, y empieza otra vez donde puedas retomar.
+
+¿Cómo te toca volver a ti hoy, despacio, sin exigirte estar al cien?
+
+#psicología #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d88-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d88-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted teal accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn t-shirt seated on a park bench at morning, positioned in the bottom third of the frame, breathing with eyes closed. The upper two-thirds is plain warm-cream open background reserved for text overlay. Working-life register.</div>
+        <button class="copy" onclick="copy('d88-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 89</span>
+    <span class="badge badge-poem">Poem</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d89-img-title">El silencio de los lunes</div>
+        <button class="copy" onclick="copy('d89-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d89-img-hook">Hay días que solo necesitan paciencia. No te piden alegría, no te piden energía, solo aguante.</div>
+        <button class="copy" onclick="copy('d89-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d89-img-caption">Algunos lunes son silenciosos por dentro. No traen claridad, no traen ánimo, no traen respuestas para la semana. Solo traen ellos mismos, exigiendo que los atravieses sin esperar más. Y a veces, eso es suficiente para empezar.
+
+¿Cómo recibirías tu próximo lunes silencioso sin pelearte con él?
+
+#poesía #pazinterior #reflexión #lunes #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d89-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d89-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with dusty amber accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket on a building stoop at dawn, positioned in the bottom third of the frame, holding paper coffee cup with calm posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d89-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d89-st-title">Lunes, también es comienzo</div>
+        <button class="copy" onclick="copy('d89-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d89-st-hook">Aunque cueste, también empieza algo. No tienes que adorarlo para atravesarlo bien.</div>
+        <button class="copy" onclick="copy('d89-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d89-st-caption">No tienes que adorar los lunes para que sean tuyos. Solo atravesarlos sin tanto drama. Y eso también es un acto, aunque parezca poco visto desde afuera.
+
+¿Cómo vas a recibir esta semana sin exigirle que empiece perfecta?
+
+#poesía #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d89-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d89-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with muted sage accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes seated on a park bench at morning, positioned in the bottom third of the frame, calm composed posture. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d89-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <summary class="day-header">
+    <span class="day-number">Day 90</span>
+    <span class="badge badge-reflection">Reflection</span>
+  </summary>
+  <div class="day-content">
+    <div class="post image">
+      <div class="post-type">Image Post</div>
+      <div class="field">
+        <div class="text title" id="d90-img-title">Lo que llevas a tu próximo año</div>
+        <button class="copy" onclick="copy('d90-img-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d90-img-hook">No es lo que pasó. Es lo que aprendiste y decidiste guardarte para lo que sigue.</div>
+        <button class="copy" onclick="copy('d90-img-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d90-img-caption">Mira atrás un momento sin sentencias. Lo que viviste, te dejó algo, aunque no lo hayas registrado todavía. Decide qué te llevas y qué dejas en este año que termina. Tu próximo año empieza por esa elección consciente, no por la fecha del calendario.
+
+¿Qué te llevas de este año y qué dejas atrás antes de empezar otro?
+
+#reflexión #pazinterior #cierre #autoconocimiento #gratitud #frasesenespañol #pensamientos</div>
+        <button class="copy" onclick="copy('d90-img-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d90-img-prompt">Mid-century editorial illustration, vertical 4:5, two-tone slate-blue and warm-cream with deep golden amber accent, halftone texture, flat painterly shapes. A late-twenties figure in a worn jacket on a rooftop at sunset, positioned in the bottom third of the frame, hands resting on parapet looking at city. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d90-img-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+    <div class="post story">
+      <div class="post-type">Story Post</div>
+      <div class="field">
+        <div class="text title" id="d90-st-title">Elige lo que te llevas</div>
+        <button class="copy" onclick="copy('d90-st-title', this)">Copy Title</button>
+      </div>
+      <div class="field">
+        <span class="label">Hook</span>
+        <div class="text" id="d90-st-hook">Lo que te formó también es tu base. Lo que no te formó, puedes dejarlo donde pasó.</div>
+        <button class="copy" onclick="copy('d90-st-hook', this)">Copy Hook</button>
+      </div>
+      <div class="field">
+        <span class="label">Caption</span>
+        <div class="text caption" id="d90-st-caption">No todo lo de este año te define para siempre. Pero algo sí. Reconócelo con honestidad y úsalo como base para lo que sigue.
+
+¿Qué aprendizaje de este año te llevas como base, aunque haya costado?
+
+#reflexión #pazinterior #frasesenespañol</div>
+        <button class="copy" onclick="copy('d90-st-caption', this)">Copy Caption</button>
+      </div>
+      <div class="field">
+        <span class="label">Prompt</span>
+        <div class="text prompt" id="d90-st-prompt">Mid-century editorial illustration, vertical 9:16, two-tone slate-blue and warm-cream with warm dusty rose accent, halftone texture, flat painterly shapes. A late-twenties figure in worn casual clothes on a hilltop at sunrise, positioned in the bottom third of the frame, body upright looking forward at horizon. The upper two-thirds is plain warm-cream open background reserved for text overlay. Eyes not toward viewer. Working-life register.</div>
+        <button class="copy" onclick="copy('d90-st-prompt', this)">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</details>
+</div>
+<script>
+function copy(id, btn) {
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.innerText;
+    btn.innerText = 'Copied'; btn.classList.add('copied');
+    setTimeout(() => { btn.innerText = original; btn.classList.remove('copied'); }, 1500);
+  }).catch(() => { btn.innerText = 'Failed'; setTimeout(() => btn.innerText = 'Copy', 1500); });
+}
+function expandAll() { document.querySelectorAll('details.day').forEach(d => d.open = true); }
+function collapseAll() { document.querySelectorAll('details.day').forEach(d => d.open = false); }
+function clearSearch() {
+  const inp = document.getElementById('search');
+  inp.value = ''; searchDays(); inp.focus();
+}
+function searchDays() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const counter = document.getElementById('match-count');
+  const allDays = document.querySelectorAll('details.day');
+  const total = allDays.length;
+  let visible = 0;
+  allDays.forEach(day => {
+    if (!q) { day.style.display = ''; day.open = false; visible++; return; }
+    const texts = day.querySelectorAll('.text');
+    let matches = false;
+    texts.forEach(t => { if (t.innerText.toLowerCase().includes(q)) matches = true; });
+    if (matches) { day.style.display = ''; day.open = true; visible++; }
+    else { day.style.display = 'none'; }
+  });
+  counter.innerText = q ? visible + ' de ' + total + ' días' : total + ' días';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('search').addEventListener('input', searchDays);
+});
+</script>
+</body>
+</html>
