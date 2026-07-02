@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1783013787143,
+  "updatedAt": 1783013791903,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -202,16 +202,6 @@
       "size": 121702,
       "sha": "fd164d6dd69dc4053e1b09add318095bd49f844a",
       "uploadedAt": 1782658181456,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqy8f5q4d3chx",
-      "name": "Mw-pack-extra.html",
-      "folderId": "fd_mqgj5ezpxrbt9",
-      "path": "library/Marcus Wise/Mw-pack-extra.html",
-      "size": 1886415,
-      "sha": "478c58004d11d5dcaa635d081e1a15889f907aaf",
-      "uploadedAt": 1782677945020,
       "lastOpened": null
     }
   ]
