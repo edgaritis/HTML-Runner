@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1784809649361,
+  "updatedAt": 1784811732052,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -347,16 +347,6 @@
       "size": 1326233,
       "sha": "7830064b76f4a94ac3523d904c080c969afe2cf9",
       "uploadedAt": 1784482915523,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mrxhkzb9c5jo2",
-      "name": "fb-reels-system-teardown.html",
-      "folderId": "fd_mrxhkrslpxamb",
-      "path": "library/Mix Files/fb-reels-system-teardown.html",
-      "size": 32736,
-      "sha": "a829693a6a1f7d9d8a159f7902aba75da7e2e55f",
-      "uploadedAt": 1784809649349,
       "lastOpened": null
     }
   ]
