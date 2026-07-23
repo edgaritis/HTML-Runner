@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teardown — "How I make $1,024,937 in 90 Days posting Facebook Reels"</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E7EAEE;
+  --panel:#FFFFFF;
+  --ink:#141B24;
+  --muted:#5C6773;
+  --rule:#C6CDD5;
+  --flag:#A5153C;
+  --flag-bg:#FCF0F3;
+  --solid:#1E6E52;
+  --shaky:#8A6A12;
+  --wrong:#A5153C;
+  --funnel:#4A3AA8;
+  --display:'Archivo',system-ui,-apple-system,sans-serif;
+  --body:'Newsreader',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--body);font-size:17px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px 96px}
+
+/* ---------- masthead ---------- */
+.mast{padding:56px 0 28px;border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--flag);font-weight:600;margin:0 0 14px
+}
+.mast h1{
+  font-family:var(--display);font-weight:800;font-size:clamp(28px,5.4vw,46px);
+  line-height:1.04;letter-spacing:-.025em;margin:0 0 16px
+}
+.source{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.7;margin:0}
+.source b{color:var(--ink);font-weight:500}
+
+/* ---------- hero: the recompute ---------- */
+.ledger{margin:34px 0 8px;background:var(--panel);border:1px solid var(--rule);padding:26px 24px 22px}
+.ledger-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px;margin-bottom:6px}
+.ledger-label{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);min-width:150px
+}
+.big{
+  font-family:var(--display);font-weight:800;letter-spacing:-.035em;
+  font-size:clamp(34px,8vw,60px);line-height:1;position:relative;display:inline-block
+}
+.big.struck::after{
+  content:"";position:absolute;left:-2%;top:52%;height:3px;width:104%;
+  background:var(--flag);transform:scaleX(0);transform-origin:left;
+  animation:strike .5s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:1.5s
+}
+@keyframes strike{to{transform:scaleX(1)}}
+.big.actual{color:var(--flag)}
+.ledger-note{font-family:var(--mono);font-size:12px;color:var(--muted);margin:2px 0 20px;line-height:1.65}
+.ledger-sep{border:0;border-top:1px solid var(--rule);margin:20px 0}
+.tally{font-family:var(--mono);font-size:12.5px;line-height:2;color:var(--ink);margin:0}
+.tally span{color:var(--muted)}
+.gap{
+  margin-top:18px;padding-top:16px;border-top:2px solid var(--ink);
+  font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:-.01em
+}
+.gap em{font-style:normal;color:var(--flag)}
+
+/* ---------- controls ---------- */
+.controls{
+  position:sticky;top:0;z-index:20;background:var(--paper);
+  padding:14px 0 12px;border-bottom:1px solid var(--rule);
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:40px
+}
+.btn{
+  font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  background:transparent;border:1px solid var(--rule);color:var(--muted);
+  padding:7px 11px;cursor:pointer;border-radius:2px
+}
+.btn:hover{border-color:var(--ink);color:var(--ink)}
+.btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn:focus-visible,summary:focus-visible{outline:2px solid var(--flag);outline-offset:2px}
+.spacer{flex:1 1 auto}
+
+/* ---------- sections ---------- */
+.sec{border-bottom:1px solid var(--rule);margin:0}
+.sec[hidden]{display:none}
+.sec > summary{
+  list-style:none;cursor:pointer;padding:22px 0;display:grid;
+  grid-template-columns:1fr auto;gap:6px 14px;align-items:start
+}
+.sec > summary::-webkit-details-marker{display:none}
+.stamp{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);
+  grid-column:1/-1;margin-bottom:2px
+}
+.sec h2{
+  font-family:var(--display);font-weight:700;font-size:clamp(19px,3.2vw,24px);
+  letter-spacing:-.02em;line-height:1.22;margin:0
+}
+.chip{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:600;padding:4px 8px;border:1px solid currentColor;border-radius:2px;white-space:nowrap
+}
+.v-solid{color:var(--solid)} .v-shaky{color:var(--shaky)}
+.v-wrong{color:var(--wrong)} .v-funnel{color:var(--funnel)}
+.sec-body{padding:0 0 30px}
+.sec-body p{margin:0 0 14px}
+.sec-body ul{margin:0 0 14px;padding-left:20px}
+.sec-body li{margin-bottom:7px}
+.sec-body strong{font-weight:500;background:linear-gradient(transparent 62%,#DDE3EA 62%)}
+
+/* ---------- the annotation (my comments) ---------- */
+.note{
+  background:var(--flag-bg);border-left:4px solid var(--flag);
+  padding:18px 20px 14px;margin:22px 0 24px;position:relative
+}
+.note-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--flag);font-weight:600;margin:0 0 9px;display:block
+}
+.note p{margin:0 0 11px;font-size:16.2px}
+.note p:last-child{margin-bottom:2px}
+.note ul{margin:0 0 11px;padding-left:19px;font-size:16.2px}
+.note li{margin-bottom:6px}
+.note strong{font-weight:500;color:var(--flag)}
+.note code{font-family:var(--mono);font-size:13px;background:#fff;padding:1px 5px;border:1px solid #EBD5DB}
+body.notes-only .sec-body > :not(.note){display:none}
+body.notes-only .sec-body{padding-top:4px}
+
+/* ---------- closing blocks ---------- */
+.block{background:var(--panel);border:1px solid var(--rule);padding:26px 24px;margin:34px 0}
+.block h2{
+  font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.02em;margin:0 0 6px
+}
+.block .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 18px}
+.plan{counter-reset:step;list-style:none;padding:0;margin:0}
+.plan li{
+  padding-left:44px;position:relative;margin-bottom:18px;counter-increment:step
+}
+.plan li::before{
+  content:counter(step,decimal-leading-zero);position:absolute;left:0;top:2px;
+  font-family:var(--mono);font-size:12px;font-weight:600;color:var(--flag)
+}
+.plan b{font-family:var(--display);font-weight:700;font-size:16px;display:block;margin-bottom:3px;letter-spacing:-.01em}
+.good{list-style:none;padding:0;margin:0}
+.good li{padding-left:26px;position:relative;margin-bottom:12px}
+.good li::before{content:"+";position:absolute;left:0;top:0;font-family:var(--mono);color:var(--solid);font-weight:600}
+.foot{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.8;margin-top:40px;text-align:center}
+
+@media (prefers-reduced-motion:reduce){
+  .big.struck::after{animation:none;transform:scaleX(1)}
+  html{scroll-behavior:auto}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .ledger-label{min-width:100%}
+  .sec > summary{grid-template-columns:1fr}
+  .chip{justify-self:start;margin-top:8px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">Source teardown · annotated</p>
+  <h1>"How I make $1,024,937 in 90 Days posting Facebook Reels"</h1>
+  <p class="source">
+    <b>Format:</b> ~21 min YouTube tutorial, screen-recorded walkthrough<br>
+    <b>Read as:</b> section summary in black · <span style="color:var(--flag)">my commentary in the red-ruled blocks</span><br>
+    <b>Reviewed:</b> July 2026 — against current Meta monetization and originality rules
+  </p>
+</header>
+
+<!-- HERO: the recompute -->
+<section class="ledger" aria-label="Claim versus the video's own numbers">
+  <div class="ledger-row">
+    <span class="ledger-label">Title claims</span>
+  </div>
+  <div class="big struck">$1,024,937</div>
+  <p class="ledger-note">in 90 days, from Facebook Reels</p>
+
+  <hr class="ledger-sep">
+
+  <div class="ledger-row">
+    <span class="ledger-label">Shown on screen</span>
+  </div>
+  <p class="tally">
+    Page 1 — April <span>·············</span> $49,000<br>
+    Page 1 — May <span>···············</span> $37,000<br>
+    Page 1 — June <span>··············</span> $43,000<br>
+    Page 2 — April <span>·············</span> $19,000<br>
+    Page 2 — May <span>···············</span> $21,000
+  </p>
+  <div class="big actual" style="margin-top:14px">≈ $169,000</div>
+  <p class="ledger-note">every dashboard figure in the video, added together — across two pages, and Page&nbsp;2's total covers only two of the three months</p>
+
+  <p class="gap">The video's own evidence supports about <em>16%</em> of its title. The other 84% is never shown.</p>
+</section>
+
+<!-- CONTROLS -->
+<nav class="controls" aria-label="Reading controls">
+  <button class="btn" id="expandAll">Expand all</button>
+  <button class="btn" id="collapseAll">Collapse all</button>
+  <span class="spacer"></span>
+  <button class="btn" id="notesToggle" aria-pressed="false">My comments only</button>
+</nav>
+
+<!-- 1 -->
+<details class="sec" open>
+  <summary>
+    <span class="stamp">00:00 — 02:02</span>
+    <h2>The earnings proof</h2>
+    <span class="chip v-wrong">Claim fails</span>
+  </summary>
+  <div class="sec-body">
+    <p>Opens on a live monetization dashboard rather than a screenshot: $49k in April, $37k in May, $43k in June, all from Reels and photos only. A second page is shown at $19k and $21k. He attributes the rates to audience geography — <strong>95% of viewers in the US</strong> — and promises to explain how to achieve that.</p>
+    <p>Framing: this is not a get-rich-quick scheme, Facebook is underrated, not all content is monetizable.</p>
+
+    <div class="note">
+      <span class="note-label">Comment</span>
+      <p>The arithmetic above is the whole review in one line. <strong>He never shows a single figure that supports the title.</strong> He isn't lying about what's on screen — he's letting a headline do work the evidence doesn't do. Once you notice that, treat every other unverified claim in the video as decorative.</p>
+      <p>Two more things the dashboard doesn't tell you: it reports <em>estimated gross</em>, not what cleared a bank after payout thresholds, withholding and tax; and a dashboard proves someone had access to a page, not that the described method built it.</p>
+      <p><strong>Better move:</strong> ignore totals, reverse-engineer the unit. The only number that transfers to you is <code>RPM</code> — revenue per 1,000 views. If he made $49k, ask what view volume that implies at a plausible US Reels RPM. Every "big total" video collapses the moment you insist on the unit economics, and the ones that survive that test are the ones worth studying.</p>
+      <p>The one claim here that <em>is</em> load-bearing and correct: <strong>geography drives RPM more than anything else you control.</strong> Hold on to that — it has a direct consequence for you at the bottom of this page.</p>
+    </div>
+  </div>
+</details>
+
+<!-- 2 -->
+<details class="sec">
+  <summary>
+    <span class="stamp">02:02 — 07:04</span>
+    <h2>Setting up the page</h2>
+    <span class="chip v-shaky">Partly wrong</span>
+  </summary>
+  <div class="sec-body">
+    <p>Create a fresh personal profile, then create a Page <em>from</em> that profile (not upgrade it), so one profile can run several pages. Name the page with a high-volume keyword rather than a personal name, because — he argues — Meta folded its AI directory into Facebook search, making the platform a discovery engine.</p>
+    <p>Keyword research is done in <strong>vidIQ</strong>: search "self-improvement", see 1.5M searches, then feed five high-volume keywords into a purchased prompt to generate 50+ unique page names. Pick one, modify it by hand, sanity-check the keyword volume, set category to Digital Creator, generate a bio from a second prompt, then switch Page type to Creator in settings.</p>
+
+    <div class="note">
+      <span class="note-label">Comment</span>
+      <p><strong>The research step is a category error.</strong> vidIQ measures <em>YouTube</em> search volume. He uses it to pick a <em>Facebook</em> page name and presents the number as if it were Facebook demand. Those are different search corpora with different user intent — people don't use Facebook search the way they use YouTube search. The "1.5 million searches" figure is real and irrelevant.</p>
+      <p>The Meta-AI-directory premise is asserted with no evidence and no demonstration. Nothing later in the video tests whether the keyword name did anything.</p>
+      <p><strong>What actually holds:</strong> your page name should make the niche legible in half a second, because a name is a positioning decision, not an SEO slot. Put keywords where they're genuinely indexed and read — the bio, captions, and tags — and validate demand with Facebook's own signals instead: search the topic on Facebook, look at what competing pages actually get in engagement, and check the Meta Ad Library for how saturated the space is.</p>
+      <p><strong>Two risks he skips entirely:</strong> a brand-new profile spinning up multiple pages and immediately publishing AI-assembled video is close to the shape of behaviour Meta's spam enforcement looks for; and current monetization eligibility has an account-age floor. If you have an aged, clean profile, that's an asset — don't start cold to follow a tutorial.</p>
+      <p><strong>And the part that applies specifically to you:</strong> you already run a Facebook page in this exact territory. Testing a hypothesis on a page with real audience data beats testing it on a page with none. "Start a fresh page" is generic advice written for someone with nothing; you're not that person.</p>
+    </div>
+  </div>
+</details>
+
+<!-- 3 -->
+<details class="sec">
+  <summary>
+    <span class="stamp">07:04 — 09:22</span>
+    <h2>How he says the algorithm works</h2>
+    <span class="chip v-wrong">Self-contradicting</span>
+  </summary>
+  <div class="sec-body">
+    <p>Claims ~1M views per post and 5–15 posts a day. The mechanism, as he describes it: Facebook runs a <strong>test-and-expand</strong> process — a reel is shown to a small pool first, and how that pool reacts decides whether it gets pushed.</p>
+    <p>His key assertion: <strong>Facebook does not care whether people finish the video.</strong> What counts is likes, comments, saves and shares. So content should be designed as "social currency" — screenshot-able, save-able, share-able. The lever for that is emotion, which means the script does all the work.</p>
+
+    <div class="note">
+      <span class="note-label">Comment</span>
+      <p>This section contradicts itself twelve minutes later. At 18:46 he says the eligibility bar is <strong>"60,000 total minutes viewed"</strong> — that is watch time, the exact metric he just told you Facebook ignores. Both statements can't be true, and the second one is closer to how the system actually pays.</p>
+      <p>Cleaner model to hold in your head:</p>
+      <ul>
+        <li><strong>Retention</strong> buys you distribution. A reel that dies at 2 seconds doesn't get an expansion round no matter how many hearts it collects.</li>
+        <li><strong>Distribution × RPM</strong> is the money. Views are the payout currency; engagement is a ranking input, not a revenue input.</li>
+        <li><strong>Engagement</strong> is the tiebreaker, and shares/saves genuinely are weighted heavily on Facebook — that part of his advice is directionally right.</li>
+      </ul>
+      <p>So: he's right that emotional, share-driven scripting works on Facebook. He's wrong that you can therefore stop caring about whether people watch. Optimizing for screenshots while ignoring retention is how you build a page with high engagement rate and no monetizable minutes.</p>
+    </div>
+  </div>
+</details>
+
+<!-- 4 -->
+<details class="sec">
+  <summary>
+    <span class="stamp">09:22 — 13:10</span>
+    <h2>The script structure and the prompt pack</h2>
+    <span class="chip v-funnel">Useful + sales funnel</span>
+  </summary>
+  <div class="sec-body">
+    <p>A four-part structure, described as the core of the system:</p>
+    <ul>
+      <li><strong>Hook</strong> — treated like a Netflix thumbnail; must stop the scroll in 3 seconds.</li>
+      <li><strong>Message</strong> — the actual value, delivered immediately after the hook lands.</li>
+      <li><strong>Metaphor</strong> — makes the idea sticky and visual; this is where screenshots and rewatches happen.</li>
+      <li><strong>Conclusion</strong> — a loop, so the video never really ends.</li>
+    </ul>
+    <p>Execution is three purchased prompts run in <strong>Abacus AI</strong> in agent mode: an ideation prompt (generates topics with core message, hook line, emotional arc, target audience), a script prompt (you paste those four fields in), and a visual prompt that generates the images and colour grading in one pass — seven images for a seven-line script, one-to-one. The prompts are pay-what-you-want, "enter 0 if you want it free."</p>
+    <p>He justifies Abacus AI over ChatGPT or Claude on price: $10/month for everything, 30% off through his link.</p>
+
+    <div class="note">
+      <span class="note-label">Comment</span>
+      <p><strong>The four-part structure is the only genuinely valuable thing in this video, and it's free.</strong> Hook / message / metaphor / loop is a sound short-form skeleton — the metaphor slot in particular is a real insight, because a concrete image is what makes an abstract idea screenshot-able. Take it and stop watching.</p>
+      <p>Now the funnel. He says "I've not been paid to promote this" while handing you an affiliate link with a negotiated 30% discount code. Those two things do not coexist. The pay-what-you-want prompt pack with "enter 0" is an email capture — the free option exists so the list grows, and "it won't be free forever" is manufactured scarcity. <strong>None of this makes the structure wrong. It does tell you what the video is optimizing for, and it isn't your $49k.</strong></p>
+      <p><strong>Where this collides with your situation:</strong> you already have a script corpus and a writing standard that demands one nameable mechanism per script with a diagnostic and an intervention. That bar is <em>higher</em> than what a generic ideation prompt produces. Adopting a prompt chain that generates emotional-arc filler would be a downgrade dressed up as a system. Use the four-part structure as a <em>container</em> for your existing standard, not as a replacement for it.</p>
+      <p><strong>And the strategic risk he never mentions:</strong> one prompt chain producing script + images at 5–15 assets a day is precisely the production profile Meta's originality enforcement is built to detect. More on that below.</p>
+    </div>
+  </div>
+</details>
+
+<!-- 5 -->
+<details class="sec">
+  <summary>
+    <span class="stamp">13:10 — 17:26</span>
+    <h2>Assembly in CapCut</h2>
+    <span class="chip v-solid">Mostly sound craft</span>
+  </summary>
+  <div class="sec-body">
+    <p>Import images and voiceover. Lay the voiceover down <em>first</em>, play it through, and split out every unnatural pause before touching the visuals — this is what stops TTS sounding robotic. Then place images 1–7 in order, and trim each one to end exactly where its matching script line ends.</p>
+    <p>Finishing: background music synced to the voiceover at ~80% volume, vignette effect at 50% texture, black-noise effect at 10% speed, a subtle wobble at amount and speed 5, both stretched across the full timeline. Auto-captions in Freehand, centred, size 15, broken into 2–4 word chunks. Rename the export file to a target keyword rather than leaving the CapCut default. He also advises varying which effects you use between videos.</p>
+
+    <div class="note">
+      <span class="note-label">Comment</span>
+      <p>This is the most honest section in the video. Trimming TTS pauses by ear and cutting each image to its own script line are cheap, real craft wins, and 2–4 word caption chunks is correct for mobile reading speed.</p>
+      <p>Three corrections:</p>
+      <ul>
+        <li><strong>The filename thing is folklore.</strong> There's no evidence Facebook indexes an uploaded file's name for Reels ranking. It costs nothing, so do it if you like — just don't file it under "growth lever," because believing in fake levers is how you stop looking for real ones.</li>
+        <li><strong>Still image per line is your biggest unforced retention loss.</strong> One static frame per line is a slideshow, and slideshows leak viewers at every cut. Add slow push-in or parallax on every image — it's a one-time template in CapCut and it measurably holds attention. If you can afford generated video for the hook shot alone, that's where the 3-second battle is won.</li>
+        <li><strong>"Vary your effects" is right for the wrong reason.</strong> Effect rotation doesn't influence ranking. But <em>visual sameness across every upload</em> now genuinely matters, because templated output that's hard to tell apart video-to-video is what triggers unoriginal-content demotion. His instinct is accidentally correct; the mechanism he gives you is not.</li>
+      </ul>
+    </div>
+  </div>
+</details>
+
+<!-- 6 -->
+<details class="sec">
+  <summary>
+    <span class="stamp">17:26 — 19:12</span>
+    <h2>How monetization works (his version)</h2>
+    <span class="chip v-wrong">Outdated numbers</span>
+  </summary>
+  <div class="sec-body">
+    <p>He clicks Monetization on the new page, shows it reads <strong>invite-only</strong>, and explains that Facebook isn't like YouTube's published thresholds — you must be invited before you can earn anything.</p>
+    <p>From his own experience running seven monetized pages, he estimates the real bar at <strong>5,000 followers and 60,000 total minutes viewed</strong> (~1,000 watch hours), and claims a serious creator can hit that inside a month.</p>
+
+    <div class="note">
+      <span class="note-label">Comment</span>
+      <p><strong>Do not plan a business on a stranger's remembered thresholds.</strong> Facebook has since consolidated in-stream ads, ads on Reels and the performance bonus into a single unified Content Monetization program run out of Meta Business Suite, and the invite-only beta has opened up across most major markets. The commonly cited current bar is materially higher than his numbers — in the region of 10,000 followers and 600,000 total video minutes or Reel plays in a rolling 60 days, plus an account-age minimum, an eligible country, no recent policy violations, and an explicit <strong>originality</strong> requirement.</p>
+      <p>I'm giving you those figures as a scale check, not as gospel — third-party guides disagree with each other and Meta changes them. <strong>The only authoritative source is your own Monetization tab in Business Suite.</strong> Check it before you decide anything, because "5,000 followers in a month" and "10,000 followers plus 600k minutes in 60 days" are two completely different businesses with two completely different runway requirements.</p>
+      <p>Also note what his own estimate quietly concedes: eligibility is gated on <em>minutes viewed</em>. Which is watch time. Which he told you Facebook doesn't care about.</p>
+    </div>
+  </div>
+</details>
+
+<!-- 7 -->
+<details class="sec">
+  <summary>
+    <span class="stamp">19:12 — 20:29</span>
+    <h2>Publishing the reel</h2>
+    <span class="chip v-wrong">Don't follow this</span>
+  </summary>
+  <div class="sec-body">
+    <p>Upload, generate a title from a prompt (and rewrite it if it's weak), tag with <strong>poetry, quotes, deep thoughts</strong>, run the "safe to publish" check, repeat title and tags on the next screen, set audience to Public.</p>
+    <p>On the AI label: he says that although AI did most of the work, "we transformed it into a video ourselves," so he <strong>leaves the AI label off</strong> and posts.</p>
+
+    <div class="note">
+      <span class="note-label">Comment</span>
+      <p><strong>This is the one piece of advice in the video I'd tell you flatly to ignore.</strong> Meta requires disclosure of photorealistic AI-generated or altered imagery and realistic synthetic audio. Your reel is AI-generated images plus an AI voiceover. Cutting them together in CapCut is assembly, not transformation, and "I edited it myself" is not the exemption he thinks it is.</p>
+      <p>It's also not really his call any more. Meta detects AI provenance automatically through embedded C2PA content credentials, so the label can land whether or not you tick the box — the only thing skipping the toggle changes is whether it looks like you tried to hide it. And since monetization eligibility is conditional on the page being in good standing, you'd be risking the entire asset for an unproven distribution benefit that he never measures or demonstrates.</p>
+      <p><strong>Label it.</strong> If labelled AI content can't earn in your niche, you need to know that in week one on a test page, not in month six on the page you've built everything on.</p>
+      <p>One more thing hiding in plain sight: those tags — poetry, quotes, deep thoughts — tell you what these pages actually are. Generic inspirational quote reels. That's the most saturated, most templated, most enforcement-exposed category on the platform, and it's the category his own advice is tuned for. Yours doesn't have to be.</p>
+    </div>
+  </div>
+</details>
+
+<!-- 8 -->
+<details class="sec">
+  <summary>
+    <span class="stamp">20:29 — end</span>
+    <h2>Scaling and the next pitch</h2>
+    <span class="chip v-shaky">Right idea, dangerous dosage</span>
+  </summary>
+  <div class="sec-body">
+    <p>The scaling advice is volume: post at least three times a day, ideally more. "There's no other trick than posting more" once the page is set up properly and the videos are structured. He recommends organic growth over paid promotion, urges patience, and closes by pointing at another video — <strong>$400,000 in 3 months from YouTube Shorts</strong>.</p>
+
+    <div class="note">
+      <span class="note-label">Comment</span>
+      <p>Volume is directionally right — short-form is a portfolio game and no single asset is predictable. But <strong>"5–15 near-identical AI videos a day" is the single fastest route to an unoriginal-content demotion.</strong> Meta's enforcement explicitly targets mass-produced, templated, easily-replicable output, and the penalty isn't limited to the offending post: reduced distribution applies to everything the page publishes, and repeat offenders lose monetization access for a period. Volume without genuine differentiation isn't a growth strategy, it's an enforcement trigger.</p>
+      <p>On the closing pitch: $1,024,937 from Facebook, then $400,000 from Shorts, from the same creator, in overlapping windows. <strong>That's a pattern, not a coincidence.</strong> The product is the next video.</p>
+      <p><strong>Reframe volume as capacity:</strong> what's the most output you can produce per day <em>without</em> dropping below your own quality bar? That number — not his — is your posting rate. If it's four a day, four a day is the plan.</p>
+    </div>
+  </div>
+</details>
+
+<!-- WHAT IT GETS RIGHT -->
+<section class="block">
+  <p class="kicker">Keeping it fair</p>
+  <h2>What the video actually gets right</h2>
+  <ul class="good" style="margin-top:16px">
+    <li><strong>Audience geography drives RPM more than niche does.</strong> This is the most important true thing in the video and he states it in the first two minutes.</li>
+    <li><strong>Hook / message / metaphor / loop</strong> is a real short-form skeleton, and the metaphor slot is a genuine insight about what makes ideas shareable.</li>
+    <li><strong>Cut the TTS pauses before you touch the visuals.</strong> Small, unglamorous, and the difference between a voiceover that sounds human and one that doesn't.</li>
+    <li><strong>Shares and saves are weighted heavily on Facebook</strong> — more so than on most platforms. Designing for the screenshot is legitimate.</li>
+    <li><strong>Volume beats perfectionism</strong> in short-form. He's wrong about the dosage, right about the direction.</li>
+  </ul>
+</section>
+
+<!-- COUNTER-PLAN -->
+<section class="block">
+  <p class="kicker">Counter-plan</p>
+  <h2>What I'd do instead</h2>
+  <p style="margin:0 0 22px;color:var(--muted)">You said the niche is still undecided. That's the thing to fix first — not because you need to commit, but because <strong style="color:var(--ink);font-weight:500">niche determines audience geography, geography determines RPM, and RPM determines whether any of the rest of this is worth your production hours.</strong> Choosing it last means every decision before it is uncalibrated.</p>
+  <ol class="plan">
+    <li>
+      <b>Pick the niche from RPM × leverage you already have, not from a tutorial's keyword tool.</b>
+      You are not starting from zero, so don't plan like someone who is. English-language psychology aimed at US readers sits directly in the high-RPM audience this video says is the whole game — and you already have a script corpus and a locked visual system for it. Spanish-language content has your strongest existing distribution muscle but a fraction of the US RPM. That trade-off is the actual decision. Make it explicitly, on paper, before you produce anything.
+    </li>
+    <li>
+      <b>Check your real eligibility bar before you build a runway.</b>
+      Open Monetization in Meta Business Suite on the account you'd actually use and read the current requirements and your status. Ten minutes. Everything downstream — how many months of unpaid production you're funding, whether the target is realistic — depends on that number, and right now you'd be planning against a stranger's memory of it.
+    </li>
+    <li>
+      <b>Run a 30-day calibration, not a launch.</b>
+      One page, one niche, a fixed number of reels, and kill criteria written down <em>before</em> you start. Measure four things per post: 3-second retention, total plays, follows per 1,000 views, and — once anything is earning — RPM. The video has no measurement layer at all. That's its deepest structural flaw, and instrumentation is the part you're already good at.
+    </li>
+    <li>
+      <b>Treat originality as the moat, not the bottleneck.</b>
+      Enforcement is now aimed precisely at templated AI output at volume, which means the standard you already hold yourself to — one nameable mechanism per script, no pop-psych folklore — stops being a slowdown and starts being the thing that keeps you eligible while imitators get demoted. Vary hooks, visual treatment and pacing deliberately across uploads, and never ship two assets a viewer couldn't tell apart.
+    </li>
+    <li>
+      <b>Label AI content and find out early what that costs.</b>
+      If the label suppresses reach in your niche, you need that data point in week one on a disposable test page, not in month six on the page carrying the whole project.
+    </li>
+    <li>
+      <b>Set the expectation you can actually defend.</b>
+      You told me this is going to be your success project. Wanting that is fine; anchoring on it is not. The honest planning number for month one is <em>zero revenue and a follower graph</em>, because eligibility gates everything and you can't be paid before you clear it. Judge month one on retention and follow rate. If those move, the money question becomes worth asking. If they don't, no amount of volume fixes it — and finding that out in 30 days for the price of a test page is a good outcome, not a failed one.
+    </li>
+  </ol>
+</section>
+
+<p class="foot">
+  Section summaries are neutral restatements of the transcript.<br>
+  Red-ruled blocks are my commentary and should be argued with.<br>
+  Monetization figures cited are current as of July 2026 and change without notice — verify in Business Suite.
+</p>
+
+</div>
+
+<script>
+(function(){
+  var secs = Array.prototype.slice.call(document.querySelectorAll('.sec'));
+
+  document.getElementById('expandAll').addEventListener('click', function(){
+    secs.forEach(function(s){ s.open = true; });
+  });
+  document.getElementById('collapseAll').addEventListener('click', function(){
+    secs.forEach(function(s){ s.open = false; });
+  });
+
+  var toggle = document.getElementById('notesToggle');
+  toggle.addEventListener('click', function(){
+    var on = toggle.getAttribute('aria-pressed') === 'true';
+    toggle.setAttribute('aria-pressed', String(!on));
+    document.body.classList.toggle('notes-only', !on);
+    if (!on) { secs.forEach(function(s){ s.open = true; }); }
+  });
+})();
+</script>
+</body>
+</html>
