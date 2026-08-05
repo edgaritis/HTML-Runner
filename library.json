@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": 1785957033254,
+  "updatedAt": 1785957038591,
   "folders": [
     {
       "id": "fd_mqe8lb8crjwl8",
@@ -87,16 +87,6 @@
       "size": 930650,
       "sha": "40b4a9238aa41535928154bdef0587b230c00ed3",
       "uploadedAt": 1782286937558,
-      "lastOpened": null
-    },
-    {
-      "id": "fl_mqrs6icic4y04",
-      "name": "viralFact.html",
-      "folderId": "fd_mqpcsh1mn81rk",
-      "path": "library/PC Files/viralFact.html",
-      "size": 839143,
-      "sha": "b3ea773ff7fd536de363d3abfc590257950d5509",
-      "uploadedAt": 1782287870562,
       "lastOpened": null
     },
     {
